@@ -1,0 +1,758 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/dns_firewall:
+    post:
+      description: Create a DNS Firewall cluster
+      operationId: dns-firewall-create-dns-firewall-cluster
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Identifier.
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            type: string
+            x-auditable: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - properties:
+                    attack_mitigation:
+                      description: Attack mitigation settings
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: >-
+                            When enabled, automatically mitigate random-prefix
+                            attacks to protect upstream DNS servers
+                          example: true
+                          type: boolean
+                          x-auditable: true
+                        only_when_upstream_unhealthy:
+                          default: true
+                          description: >-
+                            Only mitigate attacks when upstream servers seem
+                            unhealthy
+                          example: false
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                    deprecate_any_requests:
+                      description: Whether to refuse to answer queries for the ANY type
+                      example: true
+                      type: boolean
+                      x-auditable: true
+                    ecs_fallback:
+                      description: >-
+                        Whether to forward client IP (resolver) subnet if no
+                        EDNS Client Subnet is sent
+                      example: false
+                      type: boolean
+                      x-auditable: true
+                    maximum_cache_ttl:
+                      default: 900
+                      description: >-
+                        Maximum DNS cache TTL This setting sets an upper bound
+                        on DNS TTLs for purposes of caching between DNS Firewall
+                        and the upstream servers. Higher TTLs will be decreased
+                        to the maximum defined here for caching purposes.
+                      example: 900
+                      maximum: 36000
+                      minimum: 30
+                      type: number
+                      x-auditable: true
+                    minimum_cache_ttl:
+                      default: 60
+                      description: >-
+                        Minimum DNS cache TTL This setting sets a lower bound on
+                        DNS TTLs for purposes of caching between DNS Firewall
+                        and the upstream servers. Lower TTLs will be increased
+                        to the minimum defined here for caching purposes.
+                      example: 60
+                      maximum: 36000
+                      minimum: 30
+                      type: number
+                      x-auditable: true
+                    name:
+                      description: DNS Firewall cluster name
+                      example: My Awesome DNS Firewall cluster
+                      maxLength: 160
+                      minLength: 1
+                      type: string
+                      x-auditable: true
+                    negative_cache_ttl:
+                      description: >-
+                        Negative DNS cache TTL This setting controls how long
+                        DNS Firewall should cache negative responses (e.g.,
+                        NXDOMAIN) from the upstream servers.
+                      example: 900
+                      maximum: 36000
+                      minimum: 30
+                      nullable: true
+                      type: number
+                      x-auditable: true
+                    ratelimit:
+                      description: >-
+                        Ratelimit in queries per second per datacenter (applies
+                        to DNS queries sent to the upstream nameservers
+                        configured on the cluster)
+                      example: 600
+                      maximum: 1000000000
+                      minimum: 100
+                      nullable: true
+                      type: number
+                      x-auditable: true
+                    retries:
+                      default: 2
+                      description: >-
+                        Number of retries for fetching DNS responses from
+                        upstream nameservers (not counting the initial attempt)
+                      example: 2
+                      maximum: 2
+                      minimum: 0
+                      type: number
+                      x-auditable: true
+                    upstream_ips:
+                      example:
+                        - 192.0.2.1
+                        - 198.51.100.1
+                        - 2001:DB8:100::CF
+                      items:
+                        anyOf:
+                          - description: Upstream DNS Server IPv4 address
+                            example: 192.0.2.1
+                            format: ipv4
+                            type: string
+                            x-auditable: true
+                          - description: Upstream DNS Server IPv6 address
+                            example: 2001:DB8:100::CF
+                            format: ipv6
+                            type: string
+                            x-auditable: true
+                      minLength: 1
+                      type: array
+                  type: object
+              required:
+                - name
+                - upstream_ips
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          success:
+                            description: Whether the API call was successful.
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                        type: object
+                    type: object
+                  - properties:
+                      result:
+                        allOf:
+                          - properties:
+                              attack_mitigation:
+                                description: Attack mitigation settings
+                                nullable: true
+                                properties:
+                                  enabled:
+                                    description: >-
+                                      When enabled, automatically mitigate
+                                      random-prefix attacks to protect upstream
+                                      DNS servers
+                                    example: true
+                                    type: boolean
+                                    x-auditable: true
+                                  only_when_upstream_unhealthy:
+                                    default: true
+                                    description: >-
+                                      Only mitigate attacks when upstream
+                                      servers seem unhealthy
+                                    example: false
+                                    type: boolean
+                                    x-auditable: true
+                                type: object
+                              deprecate_any_requests:
+                                description: >-
+                                  Whether to refuse to answer queries for the
+                                  ANY type
+                                example: true
+                                type: boolean
+                                x-auditable: true
+                              ecs_fallback:
+                                description: >-
+                                  Whether to forward client IP (resolver) subnet
+                                  if no EDNS Client Subnet is sent
+                                example: false
+                                type: boolean
+                                x-auditable: true
+                              maximum_cache_ttl:
+                                default: 900
+                                description: >-
+                                  Maximum DNS cache TTL This setting sets an
+                                  upper bound on DNS TTLs for purposes of
+                                  caching between DNS Firewall and the upstream
+                                  servers. Higher TTLs will be decreased to the
+                                  maximum defined here for caching purposes.
+                                example: 900
+                                maximum: 36000
+                                minimum: 30
+                                type: number
+                                x-auditable: true
+                              minimum_cache_ttl:
+                                default: 60
+                                description: >-
+                                  Minimum DNS cache TTL This setting sets a
+                                  lower bound on DNS TTLs for purposes of
+                                  caching between DNS Firewall and the upstream
+                                  servers. Lower TTLs will be increased to the
+                                  minimum defined here for caching purposes.
+                                example: 60
+                                maximum: 36000
+                                minimum: 30
+                                type: number
+                                x-auditable: true
+                              name:
+                                description: DNS Firewall cluster name
+                                example: My Awesome DNS Firewall cluster
+                                maxLength: 160
+                                minLength: 1
+                                type: string
+                                x-auditable: true
+                              negative_cache_ttl:
+                                description: >-
+                                  Negative DNS cache TTL This setting controls
+                                  how long DNS Firewall should cache negative
+                                  responses (e.g., NXDOMAIN) from the upstream
+                                  servers.
+                                example: 900
+                                maximum: 36000
+                                minimum: 30
+                                nullable: true
+                                type: number
+                                x-auditable: true
+                              ratelimit:
+                                description: >-
+                                  Ratelimit in queries per second per datacenter
+                                  (applies to DNS queries sent to the upstream
+                                  nameservers configured on the cluster)
+                                example: 600
+                                maximum: 1000000000
+                                minimum: 100
+                                nullable: true
+                                type: number
+                                x-auditable: true
+                              retries:
+                                default: 2
+                                description: >-
+                                  Number of retries for fetching DNS responses
+                                  from upstream nameservers (not counting the
+                                  initial attempt)
+                                example: 2
+                                maximum: 2
+                                minimum: 0
+                                type: number
+                                x-auditable: true
+                              upstream_ips:
+                                example:
+                                  - 192.0.2.1
+                                  - 198.51.100.1
+                                  - 2001:DB8:100::CF
+                                items:
+                                  anyOf:
+                                    - description: Upstream DNS Server IPv4 address
+                                      example: 192.0.2.1
+                                      format: ipv4
+                                      type: string
+                                      x-auditable: true
+                                    - description: Upstream DNS Server IPv6 address
+                                      example: 2001:DB8:100::CF
+                                      format: ipv6
+                                      type: string
+                                      x-auditable: true
+                                minLength: 1
+                                type: array
+                            type: object
+                          - properties:
+                              dns_firewall_ips:
+                                example:
+                                  - 203.0.113.1
+                                  - 203.0.113.254
+                                  - 2001:DB8:AB::CF
+                                  - 2001:DB8:CD::CF
+                                items:
+                                  anyOf:
+                                    - description: Cloudflare-assigned DNS IPv4 address
+                                      example: 203.0.113.1
+                                      format: ipv4
+                                      type: string
+                                      x-auditable: true
+                                    - description: Cloudflare-assigned DNS IPv6 address
+                                      example: 2001:DB8:ab::CF
+                                      format: ipv6
+                                      type: string
+                                      x-auditable: true
+                                type: array
+                              id:
+                                description: Identifier.
+                                example: 023e105f4ecef8ad9ca31a8372d0c353
+                                maxLength: 32
+                                type: string
+                                x-auditable: true
+                              modified_on:
+                                description: Last modification of DNS Firewall cluster
+                                example: '2014-01-01T05:20:00.12345Z'
+                                format: date-time
+                                type: string
+                                x-auditable: true
+                            required:
+                              - id
+                              - dns_firewall_ips
+                              - modified_on
+                            type: object
+                        required:
+                          - name
+                          - upstream_ips
+                          - minimum_cache_ttl
+                          - maximum_cache_ttl
+                          - negative_cache_ttl
+                          - deprecate_any_requests
+                          - ecs_fallback
+                          - ratelimit
+                          - retries
+                        type: object
+          description: Create DNS Firewall Cluster response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - allOf:
+                          - properties:
+                              errors:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    documentation_url:
+                                      type: string
+                                    message:
+                                      type: string
+                                    source:
+                                      properties:
+                                        pointer:
+                                          type: string
+                                      type: object
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              messages:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    documentation_url:
+                                      type: string
+                                    message:
+                                      type: string
+                                    source:
+                                      properties:
+                                        pointer:
+                                          type: string
+                                      type: object
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              success:
+                                description: Whether the API call was successful.
+                                enum:
+                                  - true
+                                example: true
+                                type: boolean
+                            required:
+                              - success
+                              - errors
+                              - messages
+                            type: object
+                        type: object
+                      - properties:
+                          result:
+                            allOf:
+                              - properties:
+                                  attack_mitigation:
+                                    description: Attack mitigation settings
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: >-
+                                          When enabled, automatically mitigate
+                                          random-prefix attacks to protect
+                                          upstream DNS servers
+                                        example: true
+                                        type: boolean
+                                        x-auditable: true
+                                      only_when_upstream_unhealthy:
+                                        default: true
+                                        description: >-
+                                          Only mitigate attacks when upstream
+                                          servers seem unhealthy
+                                        example: false
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                  deprecate_any_requests:
+                                    description: >-
+                                      Whether to refuse to answer queries for
+                                      the ANY type
+                                    example: true
+                                    type: boolean
+                                    x-auditable: true
+                                  ecs_fallback:
+                                    description: >-
+                                      Whether to forward client IP (resolver)
+                                      subnet if no EDNS Client Subnet is sent
+                                    example: false
+                                    type: boolean
+                                    x-auditable: true
+                                  maximum_cache_ttl:
+                                    default: 900
+                                    description: >-
+                                      Maximum DNS cache TTL This setting sets an
+                                      upper bound on DNS TTLs for purposes of
+                                      caching between DNS Firewall and the
+                                      upstream servers. Higher TTLs will be
+                                      decreased to the maximum defined here for
+                                      caching purposes.
+                                    example: 900
+                                    maximum: 36000
+                                    minimum: 30
+                                    type: number
+                                    x-auditable: true
+                                  minimum_cache_ttl:
+                                    default: 60
+                                    description: >-
+                                      Minimum DNS cache TTL This setting sets a
+                                      lower bound on DNS TTLs for purposes of
+                                      caching between DNS Firewall and the
+                                      upstream servers. Lower TTLs will be
+                                      increased to the minimum defined here for
+                                      caching purposes.
+                                    example: 60
+                                    maximum: 36000
+                                    minimum: 30
+                                    type: number
+                                    x-auditable: true
+                                  name:
+                                    description: DNS Firewall cluster name
+                                    example: My Awesome DNS Firewall cluster
+                                    maxLength: 160
+                                    minLength: 1
+                                    type: string
+                                    x-auditable: true
+                                  negative_cache_ttl:
+                                    description: >-
+                                      Negative DNS cache TTL This setting
+                                      controls how long DNS Firewall should
+                                      cache negative responses (e.g., NXDOMAIN)
+                                      from the upstream servers.
+                                    example: 900
+                                    maximum: 36000
+                                    minimum: 30
+                                    nullable: true
+                                    type: number
+                                    x-auditable: true
+                                  ratelimit:
+                                    description: >-
+                                      Ratelimit in queries per second per
+                                      datacenter (applies to DNS queries sent to
+                                      the upstream nameservers configured on the
+                                      cluster)
+                                    example: 600
+                                    maximum: 1000000000
+                                    minimum: 100
+                                    nullable: true
+                                    type: number
+                                    x-auditable: true
+                                  retries:
+                                    default: 2
+                                    description: >-
+                                      Number of retries for fetching DNS
+                                      responses from upstream nameservers (not
+                                      counting the initial attempt)
+                                    example: 2
+                                    maximum: 2
+                                    minimum: 0
+                                    type: number
+                                    x-auditable: true
+                                  upstream_ips:
+                                    example:
+                                      - 192.0.2.1
+                                      - 198.51.100.1
+                                      - 2001:DB8:100::CF
+                                    items:
+                                      anyOf:
+                                        - description: Upstream DNS Server IPv4 address
+                                          example: 192.0.2.1
+                                          format: ipv4
+                                          type: string
+                                          x-auditable: true
+                                        - description: Upstream DNS Server IPv6 address
+                                          example: 2001:DB8:100::CF
+                                          format: ipv6
+                                          type: string
+                                          x-auditable: true
+                                    minLength: 1
+                                    type: array
+                                type: object
+                              - properties:
+                                  dns_firewall_ips:
+                                    example:
+                                      - 203.0.113.1
+                                      - 203.0.113.254
+                                      - 2001:DB8:AB::CF
+                                      - 2001:DB8:CD::CF
+                                    items:
+                                      anyOf:
+                                        - description: Cloudflare-assigned DNS IPv4 address
+                                          example: 203.0.113.1
+                                          format: ipv4
+                                          type: string
+                                          x-auditable: true
+                                        - description: Cloudflare-assigned DNS IPv6 address
+                                          example: 2001:DB8:ab::CF
+                                          format: ipv6
+                                          type: string
+                                          x-auditable: true
+                                    type: array
+                                  id:
+                                    description: Identifier.
+                                    example: 023e105f4ecef8ad9ca31a8372d0c353
+                                    maxLength: 32
+                                    type: string
+                                    x-auditable: true
+                                  modified_on:
+                                    description: Last modification of DNS Firewall cluster
+                                    example: '2014-01-01T05:20:00.12345Z'
+                                    format: date-time
+                                    type: string
+                                    x-auditable: true
+                                required:
+                                  - id
+                                  - dns_firewall_ips
+                                  - modified_on
+                                type: object
+                            required:
+                              - name
+                              - upstream_ips
+                              - minimum_cache_ttl
+                              - maximum_cache_ttl
+                              - negative_cache_ttl
+                              - deprecate_any_requests
+                              - ecs_fallback
+                              - ratelimit
+                              - retries
+                            type: object
+                  - properties:
+                      errors:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example:
+                          - code: 7003
+                            message: No route for the URI
+                        minLength: 1
+                      messages:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example: []
+                      result:
+                        enum:
+                          - null
+                        nullable: true
+                        type: object
+                      success:
+                        description: Whether the API call was successful.
+                        enum:
+                          - false
+                        example: false
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+          description: Create DNS Firewall Cluster response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create DNS Firewall Cluster
+      tags:
+        - DNS Firewall
+      x-api-token-group:
+        - DNS Firewall Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false

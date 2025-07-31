@@ -1,0 +1,1187 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/cfd_tunnel:
+    get:
+      description: Lists and filters Cloudflare Tunnels in an account.
+      operationId: cloudflare-tunnel-list-cloudflare-tunnels
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: name
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_name'
+        - in: query
+          name: is_deleted
+          schema:
+            description: >-
+              If `true`, only include deleted tunnels. If `false`, exclude
+              deleted tunnels. If empty, all tunnels will be included.
+            example: true
+            type: boolean
+        - in: query
+          name: existed_at
+          schema:
+            $ref: '#/components/schemas/tunnel_existed_at'
+        - in: query
+          name: uuid
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: query
+          name: was_active_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: was_inactive_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: include_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: exclude_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/tunnel_status'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/tunnel_per_page'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/tunnel_page_number'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+          description: List Cloudflare Tunnels response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: List Cloudflare Tunnels response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List Cloudflare Tunnels
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: cloudflared Write'
+        - 'Cloudflare One Connector: cloudflared Read'
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+    post:
+      description: Creates a new Cloudflare Tunnel in an account.
+      operationId: cloudflare-tunnel-create-a-cloudflare-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                config_src:
+                  $ref: '#/components/schemas/tunnel_config_src'
+                name:
+                  $ref: '#/components/schemas/tunnel_tunnel_name'
+                tunnel_secret:
+                  $ref: '#/components/schemas/tunnel_tunnel_secret'
+              required:
+                - name
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Create a Cloudflare Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Create a Cloudflare Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Create a Cloudflare Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/cfd_tunnel/{tunnel_id}:
+    get:
+      description: Fetches a single Cloudflare Tunnel.
+      operationId: cloudflare-tunnel-get-a-cloudflare-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Get a Cloudflare Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get a Cloudflare Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a Cloudflare Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: cloudflared Write'
+        - 'Cloudflare One Connector: cloudflared Read'
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+    patch:
+      description: Updates an existing Cloudflare Tunnel.
+      operationId: cloudflare-tunnel-update-a-cloudflare-tunnel
+      parameters:
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  $ref: '#/components/schemas/tunnel_tunnel_name'
+                tunnel_secret:
+                  $ref: '#/components/schemas/tunnel_tunnel_secret'
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Update a Cloudflare Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Update a Cloudflare Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Update a Cloudflare Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+    delete:
+      description: Deletes a Cloudflare Tunnel from an account.
+      operationId: cloudflare-tunnel-delete-a-cloudflare-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Delete a Cloudflare Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Delete a Cloudflare Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Delete a Cloudflare Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/cfd_tunnel/{tunnel_id}/connections:
+    get:
+      description: Fetches connection details for a Cloudflare Tunnel.
+      operationId: cloudflare-tunnel-list-cloudflare-tunnel-connections
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel_connections_response'
+          description: List Cloudflare Tunnel connections response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel_connections_response'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: List Cloudflare Tunnel connections response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List Cloudflare Tunnel connections
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: cloudflared Write'
+        - 'Cloudflare One Connector: cloudflared Read'
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+    delete:
+      description: >-
+        Removes a connection (aka Cloudflare Tunnel Connector) from a Cloudflare
+        Tunnel independently of its current state. If no connector id
+        (client_id) is provided all connectors will be removed. We recommend
+        running this command after rotating tokens.
+      operationId: cloudflare-tunnel-clean-up-cloudflare-tunnel-connections
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: query
+          name: client_id
+          schema:
+            $ref: '#/components/schemas/tunnel_client_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_empty_response'
+          description: Clean up Cloudflare Tunnel connections response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_empty_response'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Clean up Cloudflare Tunnel connections response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Clean up Cloudflare Tunnel connections
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/cfd_tunnel/{tunnel_id}/connectors/{connector_id}:
+    get:
+      description: Fetches connector and connection details for a Cloudflare Tunnel.
+      operationId: cloudflare-tunnel-get-cloudflare-tunnel-connector
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: path
+          name: connector_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_client_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel_client_response'
+          description: Get Cloudflare Tunnel connector response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel_client_response'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get Cloudflare Tunnel connector response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get Cloudflare Tunnel connector
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: cloudflared Write'
+        - 'Cloudflare One Connector: cloudflared Read'
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+  /accounts/{account_id}/cfd_tunnel/{tunnel_id}/management:
+    post:
+      description: >-
+        Gets a management token used to access the management resources (i.e.
+        Streaming Logs) of a tunnel.
+      operationId: cloudflare-tunnel-get-a-cloudflare-tunnel-management-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                resources:
+                  items:
+                    $ref: '#/components/schemas/tunnel_management-resources'
+                  type: array
+              required:
+                - resources
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel_response_token'
+          description: Get a Cloudflare Tunnel management token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel_response_token'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Cloudflare API response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a Cloudflare Tunnel management token
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/cfd_tunnel/{tunnel_id}/token:
+    get:
+      description: Gets the token used to associate cloudflared with a specific tunnel.
+      operationId: cloudflare-tunnel-get-a-cloudflare-tunnel-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel_response_token'
+          description: Get a Cloudflare Tunnel token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel_response_token'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get a Cloudflare Tunnel token response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a Cloudflare Tunnel token
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/tunnels:
+    get:
+      description: Lists and filters all types of Tunnels in an account.
+      operationId: cloudflare-tunnel-list-all-tunnels
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: name
+          schema:
+            description: A user-friendly name for the tunnel.
+            example: blog
+            type: string
+        - in: query
+          name: is_deleted
+          schema:
+            description: >-
+              If `true`, only include deleted tunnels. If `false`, exclude
+              deleted tunnels. If empty, all tunnels will be included.
+            example: true
+            type: boolean
+        - in: query
+          name: existed_at
+          schema:
+            $ref: '#/components/schemas/tunnel_existed_at'
+        - in: query
+          name: uuid
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: query
+          name: was_active_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: was_inactive_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: include_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: exclude_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: tun_types
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_types'
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/tunnel_status'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/tunnel_per_page'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/tunnel_page_number'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+          description: List Tunnels response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: List Tunnels response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List All Tunnels
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: cloudflared Write'
+        - 'Cloudflare One Connector: cloudflared Read'
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+  /accounts/{account_id}/warp_connector:
+    get:
+      description: Lists and filters Warp Connector Tunnels in an account.
+      operationId: cloudflare-tunnel-list-warp-connector-tunnels
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: name
+          schema:
+            description: A user-friendly name for the tunnel.
+            example: blog
+            type: string
+        - in: query
+          name: is_deleted
+          schema:
+            description: >-
+              If `true`, only include deleted tunnels. If `false`, exclude
+              deleted tunnels. If empty, all tunnels will be included.
+            example: true
+            type: boolean
+        - in: query
+          name: existed_at
+          schema:
+            $ref: '#/components/schemas/tunnel_existed_at'
+        - in: query
+          name: uuid
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: query
+          name: was_active_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: was_inactive_at
+          schema:
+            example: '2009-11-10T23:00:00Z'
+            format: date-time
+            type: string
+        - in: query
+          name: include_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: exclude_prefix
+          schema:
+            example: vpc1-
+            type: string
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/tunnel_status'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/tunnel_per_page'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/tunnel_page_number'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+          description: List Warp Connector Tunnels response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-collection'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: List Warp Connector Tunnels response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List Warp Connector Tunnels
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: WARP Write'
+        - 'Cloudflare One Connector: WARP Read'
+    post:
+      description: Creates a new Warp Connector Tunnel in an account.
+      operationId: cloudflare-tunnel-create-a-warp-connector-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  $ref: '#/components/schemas/tunnel_tunnel_name'
+              required:
+                - name
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Create a Warp Connector Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Create a Warp Connector Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Create a Warp Connector Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: WARP Write'
+  /accounts/{account_id}/warp_connector/{tunnel_id}:
+    get:
+      description: Fetches a single Warp Connector Tunnel.
+      operationId: cloudflare-tunnel-get-a-warp-connector-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Get a Warp Connector Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get a Warp Connector Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a Warp Connector Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - Cloudflare One Connectors Read
+        - 'Cloudflare One Connector: WARP Write'
+        - 'Cloudflare One Connector: WARP Read'
+    patch:
+      description: Updates an existing Warp Connector Tunnel.
+      operationId: cloudflare-tunnel-update-a-warp-connector-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  $ref: '#/components/schemas/tunnel_tunnel_name'
+                tunnel_secret:
+                  $ref: '#/components/schemas/tunnel_tunnel_secret'
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Update a Warp Connector Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Update a Warp Connector Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Update a Warp Connector Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: WARP Write'
+    delete:
+      description: Deletes a Warp Connector Tunnel from an account.
+      operationId: cloudflare-tunnel-delete-a-warp-connector-tunnel
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel-response-single'
+          description: Delete a Warp Connector Tunnel response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel-response-single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Delete a Warp Connector Tunnel response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Delete a Warp Connector Tunnel
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: WARP Write'
+  /accounts/{account_id}/warp_connector/{tunnel_id}/token:
+    get:
+      description: >-
+        Gets the token used to associate warp device with a specific Warp
+        Connector tunnel.
+      operationId: cloudflare-tunnel-get-a-warp-connector-tunnel-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: tunnel_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_tunnel_response_token'
+          description: Get a Warp Connector Tunnel token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_tunnel_response_token'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get a Warp Connector Tunnel token response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a Warp Connector Tunnel token
+      tags:
+        - Cloudflare Tunnel
+      x-api-token-group:
+        - Cloudflare One Connectors Write
+        - 'Cloudflare One Connector: cloudflared Write'
+        - Cloudflare Tunnel Write
+components:
+  schemas:
+    tunnel_account_id:
+      description: Cloudflare account ID
+      example: 699d98642c564d2e855e9661899b7252
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    tunnel_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/tunnel_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/tunnel_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    tunnel_client_id:
+      description: UUID of the Cloudflare Tunnel connector.
+      example: 1bedc50d-42b3-473c-b108-ff3d10c0d925
+      format: uuid
+      maxLength: 36
+      readOnly: true
+      type: string
+      x-auditable: true
+    tunnel_config_src:
+      default: local
+      description: >-
+        Indicates if this is a locally or remotely configured tunnel. If
+        `local`, manage the tunnel using a YAML file on the origin machine. If
+        `cloudflare`, manage the tunnel on the Zero Trust dashboard.
+      enum:
+        - local
+        - cloudflare
+      example: cloudflare
+      type: string
+    tunnel_empty_response:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              enum:
+                - null
+              nullable: true
+              type: object
+          type: object
+    tunnel_existed_at:
+      description: >-
+        If provided, include only resources that were created (and not deleted)
+        before this time. URL encoded.
+      example: 2019-10-12T07%3A20%3A50.52Z
+      format: url-encoded-date-time
+      type: string
+    tunnel_management-resources:
+      description: Management resources the token will have access to.
+      enum:
+        - logs
+      example: logs
+      type: string
+    tunnel_page_number:
+      default: 1
+      description: Page number of paginated results.
+      minimum: 1
+      type: number
+    tunnel_per_page:
+      description: Number of results to display.
+      maximum: 1000
+      minimum: 1
+      type: number
+    tunnel_status:
+      description: >-
+        The status of the tunnel. Valid values are `inactive` (tunnel has never
+        been run), `degraded` (tunnel is active and able to serve traffic but in
+        an unhealthy state), `healthy` (tunnel is active and able to serve
+        traffic), or `down` (tunnel can not serve traffic as it has no
+        connections to the Cloudflare Edge).
+      enum:
+        - inactive
+        - degraded
+        - healthy
+        - down
+      example: healthy
+      type: string
+    tunnel_tunnel-response-collection:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-collection'
+        - properties:
+            result:
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/tunnel_cfd_tunnel'
+                  - $ref: '#/components/schemas/tunnel_warp_connector_tunnel'
+              type: array
+          type: object
+    tunnel_tunnel-response-single:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              anyOf:
+                - $ref: '#/components/schemas/tunnel_cfd_tunnel'
+                - $ref: '#/components/schemas/tunnel_warp_connector_tunnel'
+          type: object
+    tunnel_tunnel_client_response:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/tunnel_tunnel_client'
+          type: object
+    tunnel_tunnel_connections_response:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/tunnel_tunnel_client'
+              type: array
+          type: object
+    tunnel_tunnel_id:
+      description: UUID of the tunnel.
+      example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+      format: uuid
+      maxLength: 36
+      readOnly: true
+      type: string
+      x-auditable: true
+    tunnel_tunnel_name:
+      description: A user-friendly name for a tunnel.
+      example: blog
+      type: string
+    tunnel_tunnel_response_token:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/tunnel_tunnel_token'
+          type: object
+    tunnel_tunnel_secret:
+      description: >-
+        Sets the password required to run a locally-managed tunnel. Must be at
+        least 32 bytes and encoded as a base64 string.
+      example: AQIDBAUGBwgBAgMEBQYHCAECAwQFBgcIAQIDBAUGBwg=
+      type: string
+      x-sensitive: true
+    tunnel_tunnel_types:
+      description: The types of tunnels to filter by, separated by commas.
+      example: cfd_tunnel,warp_connector
+      items:
+        $ref: '#/components/schemas/tunnel_tunnel_type'
+      type: array

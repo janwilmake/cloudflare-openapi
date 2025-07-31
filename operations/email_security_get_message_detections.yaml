@@ -1,0 +1,380 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/email-security/investigate/{postfix_id}/detections:
+    get:
+      description: >-
+        Returns detection details such as threat categories and sender
+        information for non-benign messages.
+      operationId: email_security_get_message_detections
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account Identifier
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            minLength: 32
+            readOnly: true
+            title: account_id
+            type: string
+        - in: path
+          name: postfix_id
+          required: true
+          schema:
+            description: The identifier of the message.
+            example: 4Njp3P0STMz2c02Q
+            title: postfix_id
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      errors:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      messages:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      success:
+                        example: true
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                    type: object
+                  - properties:
+                      result:
+                        example:
+                          action: QUARANTINED
+                          attachments: []
+                          final_disposition: MALICIOUS
+                          headers:
+                            - name: From
+                              value: Sender Name <d1994@example.com>
+                            - name: Subject
+                              value: >-
+                                listen, I highly recommend u to read that email,
+                                just to ensure not a thing will take place
+                          links:
+                            - href: https://example.com
+                              text: Click here!
+                          sender_info:
+                            as_name: AS0
+                            as_number: 0
+                            geo: US/-/-
+                            ip: 127.0.0.1
+                            pld: example.com
+                          threat_categories:
+                            - description: null
+                              id: 1234
+                              name: IP Reputation
+                          validation:
+                            comment: null
+                            dkim: pass
+                            dmarc: none
+                            spf: fail
+                        properties:
+                          action:
+                            type: string
+                          attachments:
+                            items:
+                              properties:
+                                content_type:
+                                  nullable: true
+                                  type: string
+                                detection:
+                                  allOf:
+                                    - enum:
+                                        - MALICIOUS
+                                        - MALICIOUS-BEC
+                                        - SUSPICIOUS
+                                        - SPOOF
+                                        - SPAM
+                                        - BULK
+                                        - ENCRYPTED
+                                        - EXTERNAL
+                                        - UNKNOWN
+                                        - NONE
+                                      type: string
+                                    - nullable: true
+                                      type: string
+                                encrypted:
+                                  nullable: true
+                                  type: boolean
+                                name:
+                                  nullable: true
+                                  type: string
+                                size:
+                                  minimum: 0
+                                  type: integer
+                              required:
+                                - size
+                              type: object
+                            type: array
+                          final_disposition:
+                            allOf:
+                              - enum:
+                                  - MALICIOUS
+                                  - MALICIOUS-BEC
+                                  - SUSPICIOUS
+                                  - SPOOF
+                                  - SPAM
+                                  - BULK
+                                  - ENCRYPTED
+                                  - EXTERNAL
+                                  - UNKNOWN
+                                  - NONE
+                                type: string
+                              - nullable: true
+                                type: string
+                          headers:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                                - name
+                                - value
+                              type: object
+                            type: array
+                          links:
+                            items:
+                              properties:
+                                href:
+                                  type: string
+                                text:
+                                  nullable: true
+                                  type: string
+                              required:
+                                - href
+                              type: object
+                            type: array
+                          sender_info:
+                            properties:
+                              as_name:
+                                description: The name of the autonomous system.
+                                nullable: true
+                                type: string
+                              as_number:
+                                description: The number of the autonomous system.
+                                format: int64
+                                nullable: true
+                                type: integer
+                              geo:
+                                nullable: true
+                                type: string
+                              ip:
+                                nullable: true
+                                type: string
+                              pld:
+                                nullable: true
+                                type: string
+                            type: object
+                          threat_categories:
+                            items:
+                              properties:
+                                description:
+                                  nullable: true
+                                  type: string
+                                id:
+                                  format: int64
+                                  type: integer
+                                name:
+                                  nullable: true
+                                  type: string
+                              required:
+                                - id
+                              type: object
+                            type: array
+                          validation:
+                            properties:
+                              comment:
+                                nullable: true
+                                type: string
+                              dkim:
+                                allOf:
+                                  - enum:
+                                      - pass
+                                      - neutral
+                                      - fail
+                                      - error
+                                      - none
+                                    type: string
+                                  - nullable: true
+                                    type: string
+                              dmarc:
+                                allOf:
+                                  - enum:
+                                      - pass
+                                      - neutral
+                                      - fail
+                                      - error
+                                      - none
+                                    type: string
+                                  - nullable: true
+                                    type: string
+                              spf:
+                                allOf:
+                                  - enum:
+                                      - pass
+                                      - neutral
+                                      - fail
+                                      - error
+                                      - none
+                                    type: string
+                                  - nullable: true
+                                    type: string
+                            type: object
+                        required:
+                          - validation
+                          - headers
+                          - threat_categories
+                          - sender_info
+                          - links
+                          - action
+                          - attachments
+                        type: object
+                    required:
+                      - result
+                    type: object
+          description: Contains the email message details.
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    example: []
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    nullable: true
+                    type: object
+                  success:
+                    example: false
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Client Error
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get message detection details
+      tags:
+        - Email Security
+      x-api-token-group:
+        - 'Cloud Email Security: Write'
+        - 'Cloud Email Security: Read'

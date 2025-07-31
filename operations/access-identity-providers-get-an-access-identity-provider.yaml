@@ -1,0 +1,2608 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/access/identity_providers/{identity_provider_id}:
+    get:
+      description: Fetches a configured identity provider.
+      operationId: access-identity-providers-get-an-access-identity-provider
+      parameters:
+        - in: path
+          name: identity_provider_id
+          required: true
+          schema:
+            description: UUID.
+            example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+            maxLength: 36
+            type: string
+            x-auditable: true
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Identifier.
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            type: string
+            x-auditable: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          success:
+                            description: Whether the API call was successful.
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                        type: object
+                    type: object
+                  - properties:
+                      result:
+                        anyOf:
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          conditional_access_enabled:
+                                            description: >-
+                                              Should Cloudflare try to load
+                                              authentication contexts from your
+                                              account
+                                            type: boolean
+                                            x-auditable: true
+                                          directory_id:
+                                            description: Your Azure directory uuid
+                                            example: <your azure directory uuid>
+                                            type: string
+                                            x-auditable: true
+                                          prompt:
+                                            description: >-
+                                              Indicates the type of user interaction
+                                              that is required. prompt=login forces
+                                              the user to enter their credentials on
+                                              that request, negating single-sign on.
+                                              prompt=none is the opposite. It ensures
+                                              that the user isn't presented with any
+                                              interactive prompt. If the request can't
+                                              be completed silently by using
+                                              single-sign on, the Microsoft identity
+                                              platform returns an interaction_required
+                                              error. prompt=select_account interrupts
+                                              single sign-on providing account
+                                              selection experience listing all the
+                                              accounts either in session or any
+                                              remembered account or an option to
+                                              choose to use a different account
+                                              altogether.
+                                            enum:
+                                              - login
+                                              - select_account
+                                              - none
+                                            type: string
+                                            x-auditable: true
+                                          support_groups:
+                                            description: >-
+                                              Should Cloudflare try to load groups
+                                              from your account
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                    type: object
+                                type: object
+                            title: Azure AD
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          centrify_account:
+                                            description: Your centrify account url
+                                            example: https://abc123.my.centrify.com/
+                                            type: string
+                                            x-auditable: true
+                                          centrify_app_id:
+                                            description: Your centrify app id
+                                            example: exampleapp
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                type: object
+                            title: Centrify
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      client_id:
+                                        description: Your OAuth Client ID
+                                        example: <your client id>
+                                        type: string
+                                      client_secret:
+                                        description: Your OAuth Client Secret
+                                        example: <your client secret>
+                                        type: string
+                                        x-sensitive: true
+                                    type: object
+                                type: object
+                            title: Facebook
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      client_id:
+                                        description: Your OAuth Client ID
+                                        example: <your client id>
+                                        type: string
+                                      client_secret:
+                                        description: Your OAuth Client Secret
+                                        example: <your client secret>
+                                        type: string
+                                        x-sensitive: true
+                                    type: object
+                                type: object
+                            title: GitHub
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                type: object
+                            title: Google
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          apps_domain:
+                                            description: Your companies TLD
+                                            example: mycompany.com
+                                            type: string
+                                        type: object
+                                type: object
+                            title: Google Workspace
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      client_id:
+                                        description: Your OAuth Client ID
+                                        example: <your client id>
+                                        type: string
+                                      client_secret:
+                                        description: Your OAuth Client Secret
+                                        example: <your client secret>
+                                        type: string
+                                        x-sensitive: true
+                                    type: object
+                                type: object
+                            title: LinkedIn
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          auth_url:
+                                            description: >-
+                                              The authorization_endpoint URL of your
+                                              IdP
+                                            example: >-
+                                              https://accounts.google.com/o/oauth2/auth
+                                            type: string
+                                          certs_url:
+                                            description: >-
+                                              The jwks_uri endpoint of your IdP to
+                                              allow the IdP keys to sign the tokens
+                                            example: >-
+                                              https://www.googleapis.com/oauth2/v3/certs
+                                            type: string
+                                          pkce_enabled:
+                                            description: >-
+                                              Enable Proof Key for Code Exchange
+                                              (PKCE)
+                                            type: boolean
+                                          scopes:
+                                            description: OAuth scopes
+                                            example:
+                                              - openid
+                                              - email
+                                              - profile
+                                            items:
+                                              type: string
+                                            type: array
+                                          token_url:
+                                            description: The token_endpoint URL of your IdP
+                                            example: >-
+                                              https://accounts.google.com/o/oauth2/token
+                                            type: string
+                                        type: object
+                                type: object
+                            title: Generic OAuth
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          authorization_server_id:
+                                            description: Your okta authorization server id
+                                            example: aus9o8wzkhckw9TLa0h7z
+                                            type: string
+                                          okta_account:
+                                            description: Your okta account url
+                                            example: https://dev-abc123.oktapreview.com
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                type: object
+                            title: Okta
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          onelogin_account:
+                                            description: Your OneLogin account url
+                                            example: https://mycompany.onelogin.com
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                type: object
+                            title: OneLogin
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    allOf:
+                                      - properties:
+                                          client_id:
+                                            description: Your OAuth Client ID
+                                            example: <your client id>
+                                            type: string
+                                          client_secret:
+                                            description: Your OAuth Client Secret
+                                            example: <your client secret>
+                                            type: string
+                                            x-sensitive: true
+                                        type: object
+                                      - properties:
+                                          claims:
+                                            description: Custom claims
+                                            example:
+                                              - email_verified
+                                              - preferred_username
+                                              - custom_claim_name
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-auditable: true
+                                          email_claim_name:
+                                            description: >-
+                                              The claim name for email in the id_token
+                                              response.
+                                            example: custom_claim_name
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                      - properties:
+                                          ping_env_id:
+                                            description: Your PingOne environment identifier
+                                            example: 342b5660-0c32-4936-a5a4-ce21fae57b0a
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                type: object
+                            title: PingOne
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      attributes:
+                                        description: >-
+                                          A list of SAML attribute names that will
+                                          be added to your signed JWT token and
+                                          can be used in SAML policy rules.
+                                        example:
+                                          - group
+                                          - department_code
+                                          - divison
+                                        items:
+                                          type: string
+                                        type: array
+                                      email_attribute_name:
+                                        description: >-
+                                          The attribute name for email in the SAML
+                                          response.
+                                        example: Email
+                                        type: string
+                                        x-auditable: true
+                                      header_attributes:
+                                        description: >-
+                                          Add a list of attribute names that will
+                                          be returned in the response header from
+                                          the Access callback.
+                                        items:
+                                          properties:
+                                            attribute_name:
+                                              description: attribute name from the IDP
+                                              type: string
+                                            header_name:
+                                              description: >-
+                                                header that will be added on the request
+                                                to the origin
+                                              type: string
+                                          type: object
+                                        type: array
+                                      idp_public_certs:
+                                        description: >-
+                                          X509 certificate to verify the signature
+                                          in the SAML authentication response
+                                        items:
+                                          type: string
+                                        type: array
+                                      issuer_url:
+                                        description: IdP Entity ID or Issuer URL
+                                        example: https://whoami.com
+                                        type: string
+                                        x-auditable: true
+                                      sign_request:
+                                        default: false
+                                        description: >-
+                                          Sign the SAML authentication request
+                                          with Access credentials. To verify the
+                                          signature, use the public key from the
+                                          Access certs endpoints.
+                                        type: boolean
+                                      sso_target_url:
+                                        description: >-
+                                          URL to send the SAML authentication
+                                          requests to
+                                        example: https://edgeaccess.org/idp/saml/login
+                                        type: string
+                                        x-auditable: true
+                                    type: object
+                                type: object
+                            title: Generic SAML
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      client_id:
+                                        description: Your OAuth Client ID
+                                        example: <your client id>
+                                        type: string
+                                      client_secret:
+                                        description: Your OAuth Client Secret
+                                        example: <your client secret>
+                                        type: string
+                                        x-sensitive: true
+                                    type: object
+                                type: object
+                            title: Yandex
+                            type: object
+                          - allOf:
+                              - properties:
+                                  config:
+                                    description: >-
+                                      The configuration parameters for the
+                                      identity provider. To view the required
+                                      parameters for a specific provider, refer
+                                      to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    type: object
+                                  id:
+                                    description: UUID.
+                                    example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                    maxLength: 36
+                                    type: string
+                                    x-auditable: true
+                                  name:
+                                    description: >-
+                                      The name of the identity provider, shown
+                                      to users on the login page.
+                                    example: Widget Corps IDP
+                                    type: string
+                                  scim_config:
+                                    description: >-
+                                      The configuration settings for enabling a
+                                      System for Cross-Domain Identity
+                                      Management (SCIM) with the identity
+                                      provider.
+                                    properties:
+                                      enabled:
+                                        default: false
+                                        description: >-
+                                          A flag to enable or disable SCIM for the
+                                          identity provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      identity_update_behavior:
+                                        default: no_action
+                                        description: >-
+                                          Indicates how a SCIM event updates a
+                                          user identity used for policy
+                                          evaluation. Use "automatic" to
+                                          automatically update a user's identity
+                                          and augment it with fields from the SCIM
+                                          user resource. Use "reauth" to force
+                                          re-authentication on group membership
+                                          updates, user identity update will only
+                                          occur after successful
+                                          re-authentication. With "reauth"
+                                          identities will not contain fields from
+                                          the SCIM user resource. With "no_action"
+                                          identities will not be changed by SCIM
+                                          updates in any way and users will not be
+                                          prompted to reauthenticate.
+                                        enum:
+                                          - automatic
+                                          - reauth
+                                          - no_action
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      scim_base_url:
+                                        description: >-
+                                          The base URL of Cloudflare's SCIM V2.0
+                                          API endpoint.
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      seat_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to remove a user's seat in Zero
+                                          Trust when they have been deprovisioned
+                                          in the Identity Provider.  This cannot
+                                          be enabled unless user_deprovision is
+                                          also enabled.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      secret:
+                                        description: >-
+                                          A read-only token generated when the
+                                          SCIM integration is enabled for the
+                                          first time.  It is redacted on
+                                          subsequent requests.  If you lose this
+                                          you will need to refresh it at
+                                          /access/identity_providers/:idpID/refresh_scim_secret.
+                                        readOnly: true
+                                        type: string
+                                        x-sensitive: true
+                                      user_deprovision:
+                                        default: false
+                                        description: >-
+                                          A flag to enable revoking a user's
+                                          session in Access and Gateway when they
+                                          have been deprovisioned in the Identity
+                                          Provider.
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                  type:
+                                    description: >-
+                                      The type of identity provider. To
+                                      determine the value for a specific
+                                      provider, refer to our [developer
+                                      documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/).
+                                    enum:
+                                      - onetimepin
+                                      - azureAD
+                                      - saml
+                                      - centrify
+                                      - facebook
+                                      - github
+                                      - google-apps
+                                      - google
+                                      - linkedin
+                                      - oidc
+                                      - okta
+                                      - onelogin
+                                      - pingone
+                                      - yandex
+                                    example: onetimepin
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - config
+                                type: object
+                              - properties:
+                                  config:
+                                    properties:
+                                      redirect_url:
+                                        readOnly: true
+                                        type: string
+                                    type: object
+                                  type:
+                                    enum:
+                                      - onetimepin
+                                    type: string
+                            title: One Time Pin
+                            type: object
+                        type: object
+                type: object
+          description: Get an Access identity provider response
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    minLength: 1
+                  messages:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example: []
+                  result:
+                    enum:
+                      - null
+                    nullable: true
+                    type: object
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                      - false
+                    example: false
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - messages
+                  - result
+                type: object
+          description: Get an Access identity provider response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get an Access identity provider
+      tags:
+        - Access identity providers
+      x-api-token-group:
+        - 'Access: Organizations, Identity Providers, and Groups Write'
+        - 'Access: Organizations, Identity Providers, and Groups Read'

@@ -1,0 +1,433 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/access/service_tokens:
+    get:
+      description: Lists all service tokens.
+      operationId: access-service-tokens-list-service-tokens
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+        - in: query
+          name: name
+          schema:
+            description: The name of the service token.
+            type: string
+        - in: query
+          name: search
+          schema:
+            description: Search for service tokens by other listed query parameters.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_components-schemas-response_collection
+          description: List service tokens response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: List service tokens response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List service tokens
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+        - 'Access: Service Tokens Read'
+    post:
+      description: >-
+        Generates a new service token. **Note:** This is the only time you can
+        get the Client Secret. If you lose the Client Secret, you will have to
+        rotate the Client Secret or create a new service token.
+      operationId: access-service-tokens-create-a-service-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                duration:
+                  $ref: '#/components/schemas/access_duration'
+                name:
+                  $ref: '#/components/schemas/access_schemas-name'
+              required:
+                - name
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_create_response'
+          description: Create a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Create a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a service token
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+  /accounts/{account_id}/access/service_tokens/{service_token_id}:
+    get:
+      description: Fetches a single service token.
+      operationId: access-service-tokens-get-a-service-token
+      parameters:
+        - in: path
+          name: service_token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_schemas-single_response'
+          description: Get a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Get a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a service token
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+        - 'Access: Service Tokens Read'
+    put:
+      description: Updates a configured service token.
+      operationId: access-service-tokens-update-a-service-token
+      parameters:
+        - in: path
+          name: service_token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                duration:
+                  $ref: '#/components/schemas/access_duration'
+                name:
+                  $ref: '#/components/schemas/access_schemas-name'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_schemas-single_response'
+          description: Update a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Update a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a service token
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+    delete:
+      description: Deletes a service token.
+      operationId: access-service-tokens-delete-a-service-token
+      parameters:
+        - in: path
+          name: service_token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_schemas-single_response'
+          description: Delete a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Delete a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a service token
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+  /accounts/{account_id}/access/service_tokens/{service_token_id}/refresh:
+    post:
+      description: Refreshes the expiration of a service token.
+      operationId: access-service-tokens-refresh-a-service-token
+      parameters:
+        - in: path
+          name: service_token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_schemas-single_response'
+          description: Refresh a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Refresh a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Refresh a service token
+      tags:
+        - Access service tokens
+      x-api-token-group:
+        - 'Access: Service Tokens Write'
+  /accounts/{account_id}/access/service_tokens/{service_token_id}/rotate:
+    post:
+      description: >-
+        Generates a new Client Secret for a service token and revokes the old
+        one.
+      operationId: access-service-tokens-rotate-a-service-token
+      parameters:
+        - in: path
+          name: service_token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_create_response'
+          description: Rotate a service token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Rotate a service token response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Rotate a service token
+      tags:
+        - Access service tokens
+components:
+  schemas:
+    access_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    access_components-schemas-response_collection:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/access_service-tokens'
+              type: array
+      type: object
+    access_create_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              properties:
+                client_id:
+                  $ref: '#/components/schemas/access_client_id'
+                client_secret:
+                  $ref: '#/components/schemas/access_client_secret'
+                created_at:
+                  $ref: '#/components/schemas/access_timestamp'
+                duration:
+                  $ref: '#/components/schemas/access_duration'
+                id:
+                  description: The ID of the service token.
+                  type: string
+                name:
+                  $ref: '#/components/schemas/access_schemas-name'
+                updated_at:
+                  $ref: '#/components/schemas/access_timestamp'
+              type: object
+      type: object
+    access_duration:
+      default: 8760h
+      description: >-
+        The duration for how long the service token will be valid. Must be in
+        the format `300ms` or `2h45m`. Valid time units are: ns, us (or µs), ms,
+        s, m, h. The default is 1 year in hours (8760h).
+      example: 60m
+      type: string
+      x-auditable: true
+    access_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    access_schemas-name:
+      description: The name of the service token.
+      example: CI/CD token
+      type: string
+      x-auditable: true
+    access_schemas-single_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/access_service-tokens'
+      type: object
+    access_uuid:
+      description: UUID.
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      maxLength: 36
+      type: string
+      x-auditable: true

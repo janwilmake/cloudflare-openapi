@@ -1,0 +1,418 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/schema_validation/settings:
+    get:
+      operationId: schema-validation-get-settings
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_global_settings_get_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get global schema validation settings
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+    put:
+      operationId: schema-validation-update-settings
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_global_settings_update'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_global_settings_update_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Update global schema validation settings
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+    patch:
+      operationId: schema-validation-edit-settings
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_global_settings_edit'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_global_settings_edit_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Edit global schema validation settings
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+  /zones/{zone_id}/schema_validation/settings/operations:
+    get:
+      operationId: schema-validation-list-per-operation-settings
+      parameters:
+        - $ref: '#/components/parameters/api-shield_page'
+        - $ref: '#/components/parameters/api-shield_per_page'
+      responses:
+        '200':
+          $ref: >-
+            #/components/responses/api-shield_per_operation_settings_list_success
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: List per-operation schema validation settings
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+    patch:
+      operationId: schema-validation-bulk-edit-per-operation-settings
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_per_operation_settings_bulk_edit'
+      responses:
+        '200':
+          $ref: >-
+            #/components/responses/api-shield_per_operation_settings_bulk_edit_success
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Bulk edit per-operation schema validation settings
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+  /zones/{zone_id}/schema_validation/settings/operations/{operation_id}:
+    get:
+      operationId: schema-validation-get-per-operation-setting
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_per_operation_setting_get_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get per-operation schema validation setting
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+    put:
+      operationId: schema-validation-update-per-operation-setting
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_per_operation_setting_update'
+      responses:
+        '200':
+          $ref: >-
+            #/components/responses/api-shield_per_operation_setting_update_success
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Update per-operation schema validation setting
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+    delete:
+      operationId: schema-validation-delete-per-operation-setting
+      responses:
+        '200':
+          $ref: >-
+            #/components/responses/api-shield_per_operation_settings_delete_success
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Delete per-operation schema validation setting
+      tags:
+        - Schema Validation Settings
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+components:
+  parameters:
+    api-shield_page:
+      description: Page number of paginated results.
+      in: query
+      name: page
+      schema:
+        default: 1
+        minimum: 1
+        type: integer
+    api-shield_per_page:
+      description: Maximum number of results per page.
+      in: query
+      name: per_page
+      schema:
+        default: 20
+        maximum: 50
+        minimum: 5
+        type: integer
+  responses:
+    api-shield_generic_failure:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/api-shield_api-response-common-failure'
+      description: Failure
+    api-shield_global_settings_edit_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-single'
+              - properties:
+                  result:
+                    $ref: '#/components/schemas/api-shield_global_settings'
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+    api-shield_global_settings_get_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-single'
+              - properties:
+                  result:
+                    $ref: '#/components/schemas/api-shield_global_settings'
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+    api-shield_global_settings_update_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-single'
+              - properties:
+                  result:
+                    $ref: '#/components/schemas/api-shield_global_settings'
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+    api-shield_per_operation_setting_get_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-common'
+              - properties:
+                  result:
+                    $ref: '#/components/schemas/api-shield_per_operation_setting'
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+    api-shield_per_operation_setting_update_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-common'
+              - properties:
+                  result:
+                    $ref: '#/components/schemas/api-shield_per_operation_setting'
+                required:
+                  - result
+                type: object
+            type: object
+      description: Successfully updated
+    api-shield_per_operation_settings_bulk_edit_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-common'
+              - properties:
+                  result:
+                    $ref: >-
+                      #/components/schemas/api-shield_per_operation_bulk_settings
+                required:
+                  - result
+                type: object
+            type: object
+      description: Update multiple operation-level schema validation settings response
+    api-shield_per_operation_settings_delete_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-common'
+              - properties:
+                  result:
+                    properties:
+                      operation_id:
+                        $ref: '#/components/schemas/api-shield_schemas-uuid'
+                    type: object
+                required:
+                  - result
+                type: object
+            type: object
+      description: Successfully deleted
+    api-shield_per_operation_settings_list_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-collection'
+              - properties:
+                  result:
+                    items:
+                      $ref: '#/components/schemas/api-shield_per_operation_setting'
+                    type: array
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+  requestBodies:
+    api-shield_global_settings_edit:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/api-shield_global_setting_change_base'
+      required: true
+    api-shield_global_settings_update:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_global_setting_change_base'
+              - required:
+                  - validation_default_mitigation_action
+                type: object
+            type: object
+      required: true
+    api-shield_per_operation_setting_update:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: >-
+                  #/components/schemas/api-shield_per_operation_setting_change_base
+              - required:
+                  - mitigation_action
+                type: object
+            type: object
+      required: true
+    api-shield_per_operation_settings_bulk_edit:
+      content:
+        application/json:
+          schema:
+            additionalProperties:
+              description: Operation ID to mitigation action mappings
+              properties:
+                mitigation_action:
+                  description: >
+                    Mitigation actions are as follows:
+
+                    * `log` - log request when request does not conform to
+                    schema * `block` - deny access to the site when request does
+                    not conform to schema * `none` - skip running schema
+                    validation * null - clears any existing per-operation
+                    setting
+                  enum:
+                    - none
+                    - log
+                    - block
+                    - null
+                  example: block
+                  nullable: true
+                  type: string
+              type: object
+            example:
+              3818d821-5901-4147-a474-f5f5aec1d54e:
+                mitigation_action: log
+              b17c8043-99a0-4202-b7d9-8f7cdbee02cd:
+                mitigation_action: block
+            type: object
+      required: true

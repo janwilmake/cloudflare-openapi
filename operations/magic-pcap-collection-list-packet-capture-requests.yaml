@@ -1,0 +1,789 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/pcaps:
+    get:
+      description: Lists all packet capture requests for an account.
+      operationId: magic-pcap-collection-list-packet-capture-requests
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Identifier
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            readOnly: true
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          result:
+                            anyOf:
+                              - type: object
+                              - items: {}
+                                type: array
+                              - type: string
+                          success:
+                            description: Whether the API call was successful
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                          - result
+                        type: object
+                      - properties:
+                          result:
+                            items: {}
+                            nullable: true
+                            type: array
+                          result_info:
+                            properties:
+                              count:
+                                description: >-
+                                  Total number of results for the requested
+                                  service
+                                example: 1
+                                type: number
+                              page:
+                                description: Current page within paginated list of results
+                                example: 1
+                                type: number
+                              per_page:
+                                description: Number of results per page of results
+                                example: 20
+                                type: number
+                              total_count:
+                                description: >-
+                                  Total results available without any search
+                                  parameters
+                                example: 2000
+                                type: number
+                            type: object
+                    type: object
+                  - properties:
+                      result:
+                        items:
+                          anyOf:
+                            - properties:
+                                filter_v1:
+                                  description: >-
+                                    The packet capture filter. When this field
+                                    is empty, all packets are captured.
+                                  properties:
+                                    destination_address:
+                                      description: >-
+                                        The destination IP address of the
+                                        packet.
+                                      example: 1.2.3.4
+                                      type: string
+                                      x-auditable: true
+                                    destination_port:
+                                      description: The destination port of the packet.
+                                      example: 80
+                                      type: number
+                                      x-auditable: true
+                                    protocol:
+                                      description: The protocol number of the packet.
+                                      example: 6
+                                      type: number
+                                      x-auditable: true
+                                    source_address:
+                                      description: The source IP address of the packet.
+                                      example: 1.2.3.4
+                                      type: string
+                                      x-auditable: true
+                                    source_port:
+                                      description: The source port of the packet.
+                                      example: 123
+                                      type: number
+                                      x-auditable: true
+                                  type: object
+                                id:
+                                  description: The ID for the packet capture.
+                                  example: 66802ca5668e47a2b82c2e6746e45037
+                                  maxLength: 32
+                                  minLength: 32
+                                  type: string
+                                  x-auditable: true
+                                offset_time:
+                                  description: >-
+                                    The RFC 3339 offset timestamp from which to
+                                    query backwards for packets. Must be within
+                                    the last 24h. When this field is empty,
+                                    defaults to time of request.
+                                  example: '2020-01-01T08:00:00Z'
+                                  format: date-time
+                                  type: string
+                                  x-auditable: true
+                                status:
+                                  description: The status of the packet capture request.
+                                  enum:
+                                    - unknown
+                                    - success
+                                    - pending
+                                    - running
+                                    - conversion_pending
+                                    - conversion_running
+                                    - complete
+                                    - failed
+                                  example: success
+                                  type: string
+                                submitted:
+                                  description: >-
+                                    The RFC 3339 timestamp when the packet
+                                    capture was created.
+                                  example: '2020-01-01T08:00:00Z'
+                                  type: string
+                                system:
+                                  description: The system used to collect packet captures.
+                                  enum:
+                                    - magic-transit
+                                  example: magic-transit
+                                  type: string
+                                  x-auditable: true
+                                time_limit:
+                                  description: The packet capture duration in seconds.
+                                  example: 300
+                                  maximum: 300
+                                  minimum: 1
+                                  type: number
+                                  x-auditable: true
+                                type:
+                                  description: >-
+                                    The type of packet capture. `Simple`
+                                    captures sampled packets, and `full`
+                                    captures entire payloads and non-sampled
+                                    packets.
+                                  enum:
+                                    - simple
+                                    - full
+                                  example: simple
+                                  type: string
+                                  x-auditable: true
+                              type: object
+                            - properties:
+                                byte_limit:
+                                  description: >-
+                                    The maximum number of bytes to capture. This
+                                    field only applies to `full` packet
+                                    captures.
+                                  example: 500000
+                                  maximum: 1000000000
+                                  minimum: 1
+                                  type: number
+                                  x-auditable: true
+                                colo_name:
+                                  description: >-
+                                    The name of the data center used for the
+                                    packet capture. This can be a specific colo
+                                    (ord02) or a multi-colo name (ORD). This
+                                    field only applies to `full` packet
+                                    captures.
+                                  example: ord02
+                                  type: string
+                                  x-auditable: true
+                                destination_conf:
+                                  description: >-
+                                    The full URI for the bucket. This field only
+                                    applies to `full` packet captures.
+                                  example: s3://pcaps-bucket?region=us-east-1
+                                  type: string
+                                error_message:
+                                  description: >-
+                                    An error message that describes why the
+                                    packet capture failed. This field only
+                                    applies to `full` packet captures.
+                                  example: >-
+                                    No packets matched the filter in the time
+                                    limit given. Please modify the filter or try
+                                    again.
+                                  type: string
+                                filter_v1:
+                                  description: >-
+                                    The packet capture filter. When this field
+                                    is empty, all packets are captured.
+                                  properties:
+                                    destination_address:
+                                      description: >-
+                                        The destination IP address of the
+                                        packet.
+                                      example: 1.2.3.4
+                                      type: string
+                                      x-auditable: true
+                                    destination_port:
+                                      description: The destination port of the packet.
+                                      example: 80
+                                      type: number
+                                      x-auditable: true
+                                    protocol:
+                                      description: The protocol number of the packet.
+                                      example: 6
+                                      type: number
+                                      x-auditable: true
+                                    source_address:
+                                      description: The source IP address of the packet.
+                                      example: 1.2.3.4
+                                      type: string
+                                      x-auditable: true
+                                    source_port:
+                                      description: The source port of the packet.
+                                      example: 123
+                                      type: number
+                                      x-auditable: true
+                                  type: object
+                                id:
+                                  description: The ID for the packet capture.
+                                  example: 66802ca5668e47a2b82c2e6746e45037
+                                  maxLength: 32
+                                  minLength: 32
+                                  type: string
+                                  x-auditable: true
+                                packets_captured:
+                                  description: The number of packets captured.
+                                  type: integer
+                                status:
+                                  description: The status of the packet capture request.
+                                  enum:
+                                    - unknown
+                                    - success
+                                    - pending
+                                    - running
+                                    - conversion_pending
+                                    - conversion_running
+                                    - complete
+                                    - failed
+                                  example: success
+                                  type: string
+                                stop_requested:
+                                  description: >-
+                                    The RFC 3339 timestamp when stopping the
+                                    packet capture was requested. This field
+                                    only applies to `full` packet captures.
+                                  format: date-time
+                                  type: string
+                                submitted:
+                                  description: >-
+                                    The RFC 3339 timestamp when the packet
+                                    capture was created.
+                                  example: '2020-01-01T08:00:00Z'
+                                  type: string
+                                system:
+                                  description: The system used to collect packet captures.
+                                  enum:
+                                    - magic-transit
+                                  example: magic-transit
+                                  type: string
+                                  x-auditable: true
+                                time_limit:
+                                  description: The packet capture duration in seconds.
+                                  example: 86400
+                                  maximum: 86400
+                                  minimum: 1
+                                  type: number
+                                  x-auditable: true
+                                type:
+                                  description: >-
+                                    The type of packet capture. `Simple`
+                                    captures sampled packets, and `full`
+                                    captures entire payloads and non-sampled
+                                    packets.
+                                  enum:
+                                    - simple
+                                    - full
+                                  example: simple
+                                  type: string
+                                  x-auditable: true
+                              type: object
+                        type: array
+          description: List packet capture requests response
+        default:
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - allOf:
+                      - allOf:
+                          - properties:
+                              errors:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    message:
+                                      type: string
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              messages:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    message:
+                                      type: string
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              result:
+                                anyOf:
+                                  - type: object
+                                  - items: {}
+                                    type: array
+                                  - type: string
+                              success:
+                                description: Whether the API call was successful
+                                enum:
+                                  - true
+                                example: true
+                                type: boolean
+                            required:
+                              - success
+                              - errors
+                              - messages
+                              - result
+                            type: object
+                          - properties:
+                              result:
+                                items: {}
+                                nullable: true
+                                type: array
+                              result_info:
+                                properties:
+                                  count:
+                                    description: >-
+                                      Total number of results for the requested
+                                      service
+                                    example: 1
+                                    type: number
+                                  page:
+                                    description: >-
+                                      Current page within paginated list of
+                                      results
+                                    example: 1
+                                    type: number
+                                  per_page:
+                                    description: Number of results per page of results
+                                    example: 20
+                                    type: number
+                                  total_count:
+                                    description: >-
+                                      Total results available without any search
+                                      parameters
+                                    example: 2000
+                                    type: number
+                                type: object
+                        type: object
+                      - properties:
+                          result:
+                            items:
+                              anyOf:
+                                - properties:
+                                    filter_v1:
+                                      description: >-
+                                        The packet capture filter. When this
+                                        field is empty, all packets are
+                                        captured.
+                                      properties:
+                                        destination_address:
+                                          description: >-
+                                            The destination IP address of the
+                                            packet.
+                                          example: 1.2.3.4
+                                          type: string
+                                          x-auditable: true
+                                        destination_port:
+                                          description: The destination port of the packet.
+                                          example: 80
+                                          type: number
+                                          x-auditable: true
+                                        protocol:
+                                          description: The protocol number of the packet.
+                                          example: 6
+                                          type: number
+                                          x-auditable: true
+                                        source_address:
+                                          description: The source IP address of the packet.
+                                          example: 1.2.3.4
+                                          type: string
+                                          x-auditable: true
+                                        source_port:
+                                          description: The source port of the packet.
+                                          example: 123
+                                          type: number
+                                          x-auditable: true
+                                      type: object
+                                    id:
+                                      description: The ID for the packet capture.
+                                      example: 66802ca5668e47a2b82c2e6746e45037
+                                      maxLength: 32
+                                      minLength: 32
+                                      type: string
+                                      x-auditable: true
+                                    offset_time:
+                                      description: >-
+                                        The RFC 3339 offset timestamp from which
+                                        to query backwards for packets. Must be
+                                        within the last 24h. When this field is
+                                        empty, defaults to time of request.
+                                      example: '2020-01-01T08:00:00Z'
+                                      format: date-time
+                                      type: string
+                                      x-auditable: true
+                                    status:
+                                      description: >-
+                                        The status of the packet capture
+                                        request.
+                                      enum:
+                                        - unknown
+                                        - success
+                                        - pending
+                                        - running
+                                        - conversion_pending
+                                        - conversion_running
+                                        - complete
+                                        - failed
+                                      example: success
+                                      type: string
+                                    submitted:
+                                      description: >-
+                                        The RFC 3339 timestamp when the packet
+                                        capture was created.
+                                      example: '2020-01-01T08:00:00Z'
+                                      type: string
+                                    system:
+                                      description: >-
+                                        The system used to collect packet
+                                        captures.
+                                      enum:
+                                        - magic-transit
+                                      example: magic-transit
+                                      type: string
+                                      x-auditable: true
+                                    time_limit:
+                                      description: The packet capture duration in seconds.
+                                      example: 300
+                                      maximum: 300
+                                      minimum: 1
+                                      type: number
+                                      x-auditable: true
+                                    type:
+                                      description: >-
+                                        The type of packet capture. `Simple`
+                                        captures sampled packets, and `full`
+                                        captures entire payloads and non-sampled
+                                        packets.
+                                      enum:
+                                        - simple
+                                        - full
+                                      example: simple
+                                      type: string
+                                      x-auditable: true
+                                  type: object
+                                - properties:
+                                    byte_limit:
+                                      description: >-
+                                        The maximum number of bytes to capture.
+                                        This field only applies to `full` packet
+                                        captures.
+                                      example: 500000
+                                      maximum: 1000000000
+                                      minimum: 1
+                                      type: number
+                                      x-auditable: true
+                                    colo_name:
+                                      description: >-
+                                        The name of the data center used for the
+                                        packet capture. This can be a specific
+                                        colo (ord02) or a multi-colo name (ORD).
+                                        This field only applies to `full` packet
+                                        captures.
+                                      example: ord02
+                                      type: string
+                                      x-auditable: true
+                                    destination_conf:
+                                      description: >-
+                                        The full URI for the bucket. This field
+                                        only applies to `full` packet captures.
+                                      example: s3://pcaps-bucket?region=us-east-1
+                                      type: string
+                                    error_message:
+                                      description: >-
+                                        An error message that describes why the
+                                        packet capture failed. This field only
+                                        applies to `full` packet captures.
+                                      example: >-
+                                        No packets matched the filter in the
+                                        time limit given. Please modify the
+                                        filter or try again.
+                                      type: string
+                                    filter_v1:
+                                      description: >-
+                                        The packet capture filter. When this
+                                        field is empty, all packets are
+                                        captured.
+                                      properties:
+                                        destination_address:
+                                          description: >-
+                                            The destination IP address of the
+                                            packet.
+                                          example: 1.2.3.4
+                                          type: string
+                                          x-auditable: true
+                                        destination_port:
+                                          description: The destination port of the packet.
+                                          example: 80
+                                          type: number
+                                          x-auditable: true
+                                        protocol:
+                                          description: The protocol number of the packet.
+                                          example: 6
+                                          type: number
+                                          x-auditable: true
+                                        source_address:
+                                          description: The source IP address of the packet.
+                                          example: 1.2.3.4
+                                          type: string
+                                          x-auditable: true
+                                        source_port:
+                                          description: The source port of the packet.
+                                          example: 123
+                                          type: number
+                                          x-auditable: true
+                                      type: object
+                                    id:
+                                      description: The ID for the packet capture.
+                                      example: 66802ca5668e47a2b82c2e6746e45037
+                                      maxLength: 32
+                                      minLength: 32
+                                      type: string
+                                      x-auditable: true
+                                    packets_captured:
+                                      description: The number of packets captured.
+                                      type: integer
+                                    status:
+                                      description: >-
+                                        The status of the packet capture
+                                        request.
+                                      enum:
+                                        - unknown
+                                        - success
+                                        - pending
+                                        - running
+                                        - conversion_pending
+                                        - conversion_running
+                                        - complete
+                                        - failed
+                                      example: success
+                                      type: string
+                                    stop_requested:
+                                      description: >-
+                                        The RFC 3339 timestamp when stopping the
+                                        packet capture was requested. This field
+                                        only applies to `full` packet captures.
+                                      format: date-time
+                                      type: string
+                                    submitted:
+                                      description: >-
+                                        The RFC 3339 timestamp when the packet
+                                        capture was created.
+                                      example: '2020-01-01T08:00:00Z'
+                                      type: string
+                                    system:
+                                      description: >-
+                                        The system used to collect packet
+                                        captures.
+                                      enum:
+                                        - magic-transit
+                                      example: magic-transit
+                                      type: string
+                                      x-auditable: true
+                                    time_limit:
+                                      description: The packet capture duration in seconds.
+                                      example: 86400
+                                      maximum: 86400
+                                      minimum: 1
+                                      type: number
+                                      x-auditable: true
+                                    type:
+                                      description: >-
+                                        The type of packet capture. `Simple`
+                                        captures sampled packets, and `full`
+                                        captures entire payloads and non-sampled
+                                        packets.
+                                      enum:
+                                        - simple
+                                        - full
+                                      example: simple
+                                      type: string
+                                      x-auditable: true
+                                  type: object
+                            type: array
+                  - properties:
+                      errors:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example:
+                          - code: 7003
+                            message: No route for the URI
+                        minLength: 1
+                      messages:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example: []
+                      result:
+                        enum:
+                          - null
+                        nullable: true
+                        type: object
+                      success:
+                        description: Whether the API call was successful
+                        enum:
+                          - false
+                        example: false
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+          description: List packet capture requests response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List packet capture requests
+      tags:
+        - Magic PCAP collection
+      x-api-token-group:
+        - Magic Firewall Packet Captures - Write PCAPs API
+        - Magic Firewall Packet Captures - Read PCAPs API
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false

@@ -1,0 +1,704 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/teamnet/routes:
+    get:
+      description: Lists and filters private network routes in an account.
+      operationId: tunnel-route-list-tunnel-routes
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: comment
+          schema:
+            $ref: '#/components/schemas/tunnel_route_comment'
+        - in: query
+          name: is_deleted
+          schema:
+            description: >-
+              If `true`, only include deleted routes. If `false`, exclude
+              deleted routes. If empty, all routes will be included.
+            type: boolean
+        - in: query
+          name: network_subset
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/tunnel_ip_network'
+            description: If set, only list routes that are contained within this IP range.
+        - in: query
+          name: network_superset
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/tunnel_ip_network'
+            description: If set, only list routes that contain this IP range.
+        - in: query
+          name: existed_at
+          schema:
+            $ref: '#/components/schemas/tunnel_existed_at'
+        - in: query
+          name: tunnel_id
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+        - in: query
+          name: route_id
+          schema:
+            $ref: '#/components/schemas/tunnel_route_id'
+        - in: query
+          name: tun_types
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_types'
+        - in: query
+          name: virtual_network_id
+          schema:
+            $ref: '#/components/schemas/tunnel_virtual_network_id'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/tunnel_per_page'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/tunnel_page_number'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_teamnet_response_collection'
+          description: List tunnel routes response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_teamnet_response_collection'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: List tunnel routes response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List tunnel routes
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare One Networks Read
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+    post:
+      description: Routes a private network through a Cloudflare Tunnel.
+      operationId: tunnel-route-create-a-tunnel-route
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                comment:
+                  $ref: '#/components/schemas/tunnel_route_comment'
+                network:
+                  $ref: '#/components/schemas/tunnel_ip_network'
+                tunnel_id:
+                  $ref: '#/components/schemas/tunnel_tunnel_id'
+                virtual_network_id:
+                  $ref: >-
+                    #/components/schemas/tunnel_virtual_network_id_computed_optional
+              required:
+                - network
+                - tunnel_id
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Create a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Create a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Create a tunnel route
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+  /accounts/{account_id}/teamnet/routes/ip/{ip}:
+    get:
+      description: Fetches routes that contain the given IP address.
+      operationId: tunnel-route-get-tunnel-route-by-ip
+      parameters:
+        - in: path
+          name: ip
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_ip'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: virtual_network_id
+          schema:
+            $ref: '#/components/schemas/tunnel_virtual_network_id'
+        - description: >-
+            When the virtual_network_id parameter is not provided the request
+            filter will default search routes that are in the default virtual
+            network for the account. If this parameter is set to false, the
+            search will include routes that do not have a virtual network.
+          in: query
+          name: default_virtual_network_fallback
+          schema:
+            default: true
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_teamnet_response_single'
+          description: Get tunnel route by IP response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_teamnet_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get tunnel route by IP response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get tunnel route by IP
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare One Networks Read
+        - Cloudflare Tunnel Write
+        - Cloudflare Tunnel Read
+  /accounts/{account_id}/teamnet/routes/network/{ip_network_encoded}:
+    post:
+      deprecated: true
+      description: >-
+        Routes a private network through a Cloudflare Tunnel. The CIDR in
+        `ip_network_encoded` must be written in URL-encoded format.
+      operationId: tunnel-route-create-a-tunnel-route-with-cidr
+      parameters:
+        - in: path
+          name: ip_network_encoded
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_ip_network_encoded'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                comment:
+                  $ref: '#/components/schemas/tunnel_route_comment'
+                tunnel_id:
+                  $ref: '#/components/schemas/tunnel_tunnel_id'
+                virtual_network_id:
+                  $ref: '#/components/schemas/tunnel_virtual_network_id'
+              required:
+                - tunnel_id
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Create a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Create a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Create a tunnel route (CIDR Endpoint)
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+      x-stainless-deprecation-message: >-
+        This endpoint and its related APIs are deprecated in favor of the
+        equivalent Tunnel Route (without CIDR) APIs.
+    patch:
+      deprecated: true
+      description: >-
+        Updates an existing private network route in an account. The CIDR in
+        `ip_network_encoded` must be written in URL-encoded format.
+      operationId: tunnel-route-update-a-tunnel-route-with-cidr
+      parameters:
+        - in: path
+          name: ip_network_encoded
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_ip_network_encoded'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Update a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Update a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Update a tunnel route (CIDR Endpoint)
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+      x-stainless-deprecation-message: >-
+        This endpoint and its related APIs are deprecated in favor of the
+        equivalent Tunnel Route (without CIDR) APIs.
+    delete:
+      deprecated: true
+      description: >
+        Deletes a private network route from an account. The CIDR in
+        `ip_network_encoded` must be written in URL-encoded format. If no
+        virtual_network_id is provided it will delete the route from the default
+        vnet. If no tun_type is provided it will fetch the type from the
+        tunnel_id or if that is missing it will assume Cloudflare Tunnel as
+        default. If tunnel_id is provided it will delete the route from that
+        tunnel, otherwise it will delete the route based on the vnet and
+        tun_type.
+      operationId: tunnel-route-delete-a-tunnel-route-with-cidr
+      parameters:
+        - in: path
+          name: ip_network_encoded
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_ip_network_encoded'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: query
+          name: virtual_network_id
+          schema:
+            $ref: '#/components/schemas/tunnel_virtual_network_id'
+        - in: query
+          name: tun_type
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_type'
+        - in: query
+          name: tunnel_id
+          schema:
+            $ref: '#/components/schemas/tunnel_tunnel_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Delete a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Delete a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Delete a tunnel route (CIDR Endpoint)
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+      x-stainless-deprecation-message: >-
+        This endpoint and its related APIs are deprecated in favor of the
+        equivalent Tunnel Route (without CIDR) APIs.
+  /accounts/{account_id}/teamnet/routes/{route_id}:
+    get:
+      description: Get a private network route in an account.
+      operationId: tunnel-route-get-tunnel-route
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+        - in: path
+          name: route_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_route_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Get a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Get a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get tunnel route
+      tags:
+        - Tunnel Routing
+    patch:
+      description: >-
+        Updates an existing private network route in an account. The fields that
+        are meant to be updated should be provided in the body of the request.
+      operationId: tunnel-route-update-a-tunnel-route
+      parameters:
+        - in: path
+          name: route_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_route_id'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                comment:
+                  $ref: '#/components/schemas/tunnel_route_comment'
+                network:
+                  $ref: '#/components/schemas/tunnel_ip_network'
+                tunnel_id:
+                  $ref: '#/components/schemas/tunnel_tunnel_id'
+                virtual_network_id:
+                  $ref: >-
+                    #/components/schemas/tunnel_virtual_network_id_computed_optional
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Update a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Update a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Update a tunnel route
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+    delete:
+      description: |
+        Deletes a private network route from an account.
+      operationId: tunnel-route-delete-a-tunnel-route
+      parameters:
+        - in: path
+          name: route_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_route_id'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/tunnel_account_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tunnel_route_response_single'
+          description: Delete a tunnel route response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/tunnel_route_response_single'
+                  - $ref: '#/components/schemas/tunnel_api-response-common-failure'
+          description: Delete a tunnel route response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Delete a tunnel route
+      tags:
+        - Tunnel Routing
+      x-api-token-group:
+        - Cloudflare One Networks Write
+        - Cloudflare Tunnel Write
+components:
+  schemas:
+    tunnel_account_id:
+      description: Cloudflare account ID
+      example: 699d98642c564d2e855e9661899b7252
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    tunnel_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/tunnel_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/tunnel_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    tunnel_existed_at:
+      description: >-
+        If provided, include only resources that were created (and not deleted)
+        before this time. URL encoded.
+      example: 2019-10-12T07%3A20%3A50.52Z
+      format: url-encoded-date-time
+      type: string
+    tunnel_ip:
+      example: 10.1.0.137
+      type: string
+    tunnel_ip_network:
+      description: The private IPv4 or IPv6 range connected by the route, in CIDR notation.
+      example: 172.16.0.0/16
+      type: string
+      x-auditable: true
+    tunnel_ip_network_encoded:
+      description: IP/CIDR range in URL-encoded format
+      example: 172.16.0.0%2F16
+      type: string
+    tunnel_page_number:
+      default: 1
+      description: Page number of paginated results.
+      minimum: 1
+      type: number
+    tunnel_per_page:
+      description: Number of results to display.
+      maximum: 1000
+      minimum: 1
+      type: number
+    tunnel_route_comment:
+      description: Optional remark describing the route.
+      example: Example comment for this route.
+      maxLength: 100
+      type: string
+      x-auditable: true
+    tunnel_route_id:
+      description: UUID of the route.
+      example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+      maxLength: 36
+      readOnly: true
+      type: string
+    tunnel_route_response_single:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/tunnel_route'
+          type: object
+    tunnel_teamnet_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/tunnel_teamnet'
+              type: array
+          type: object
+    tunnel_teamnet_response_single:
+      allOf:
+        - $ref: '#/components/schemas/tunnel_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/tunnel_teamnet'
+          type: object
+    tunnel_tunnel_id:
+      description: UUID of the tunnel.
+      example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+      format: uuid
+      maxLength: 36
+      readOnly: true
+      type: string
+      x-auditable: true
+    tunnel_tunnel_type:
+      description: The type of tunnel.
+      enum:
+        - cfd_tunnel
+        - warp_connector
+        - warp
+        - magic
+        - ip_sec
+        - gre
+        - cni
+      example: cfd_tunnel
+      type: string
+      x-auditable: true
+    tunnel_tunnel_types:
+      description: The types of tunnels to filter by, separated by commas.
+      example: cfd_tunnel,warp_connector
+      items:
+        $ref: '#/components/schemas/tunnel_tunnel_type'
+      type: array
+    tunnel_virtual_network_id:
+      description: UUID of the virtual network.
+      example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+      format: uuid
+      type: string
+      x-auditable: true
+    tunnel_virtual_network_id_computed_optional:
+      description: UUID of the virtual network.
+      example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+      format: uuid
+      type: string
+      x-auditable: true
+      x-stainless-terraform-configurability: computed_optional

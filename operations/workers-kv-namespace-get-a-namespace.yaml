@@ -1,0 +1,234 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/storage/kv/namespaces/{namespace_id}:
+    get:
+      description: Get the namespace corresponding to the given ID.
+      operationId: workers-kv-namespace-get-a-namespace
+      parameters:
+        - in: path
+          name: namespace_id
+          required: true
+          schema:
+            description: Namespace identifier tag.
+            example: 0f2ac74b498b48028cb68387c421e279
+            maxLength: 32
+            readOnly: true
+            type: string
+            x-auditable: true
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Identifier.
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            readOnly: true
+            type: string
+            x-auditable: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      errors:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                        uniqueItems: true
+                      messages:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                        uniqueItems: true
+                      success:
+                        description: Whether the API call was successful.
+                        enum:
+                          - true
+                        example: true
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                    type: object
+                  - properties:
+                      result:
+                        properties:
+                          beta:
+                            description: >-
+                              True if new beta namespace, with additional
+                              preview features.
+                            example: true
+                            readOnly: true
+                            type: boolean
+                            x-auditable: true
+                          id:
+                            description: Namespace identifier tag.
+                            example: 0f2ac74b498b48028cb68387c421e279
+                            maxLength: 32
+                            readOnly: true
+                            type: string
+                            x-auditable: true
+                          supports_url_encoding:
+                            description: >-
+                              True if keys written on the URL will be
+                              URL-decoded before storing. For example, if set to
+                              "true", a key written on the URL as "%3F" will be
+                              stored as "?".
+                            example: true
+                            readOnly: true
+                            type: boolean
+                            x-auditable: true
+                          title:
+                            description: A human-readable string name for a Namespace.
+                            example: My Own Namespace
+                            maxLength: 512
+                            type: string
+                            x-auditable: true
+                        required:
+                          - id
+                          - title
+                        type: object
+                    type: object
+          description: Get a Namespace response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                        uniqueItems: true
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    minLength: 1
+                  messages:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                        uniqueItems: true
+                    example: []
+                  result:
+                    nullable: true
+                    type: object
+                    x-stainless-empty-object: true
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                      - false
+                    example: false
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - messages
+                  - result
+                type: object
+          description: Get a Namespace response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get a Namespace
+      tags:
+        - Workers KV Namespace
+      x-api-token-group:
+        - Workers KV Storage Write
+        - Workers KV Storage Read

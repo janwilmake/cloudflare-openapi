@@ -1,0 +1,1403 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/rulesets:
+    get:
+      description: Fetches all rulesets at the zone level.
+      operationId: listZoneRulesets
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+        - in: query
+          name: cursor
+          schema:
+            $ref: '#/components/schemas/rulesets_Cursor'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/rulesets_PerPage'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List zone rulesets
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: Creates a ruleset at the zone level.
+      operationId: createZoneRuleset
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_CreateRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Create a zone ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/phases/{ruleset_phase}/entrypoint:
+    get:
+      description: >-
+        Fetches the latest version of the zone entry point ruleset for a given
+        phase.
+      operationId: getZoneEntrypointRuleset
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get a zone entry point ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates a zone entry point ruleset, creating a new version.
+      operationId: updateZoneEntrypointRuleset
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_UpdateEntrypointRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update a zone entry point ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/phases/{ruleset_phase}/entrypoint/versions:
+    get:
+      description: Fetches the versions of a zone entry point ruleset.
+      operationId: listZoneEntrypointRulesetVersions
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List a zone entry point ruleset's versions
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/phases/{ruleset_phase}/entrypoint/versions/{ruleset_version}:
+    get:
+      description: Fetches a specific version of a zone entry point ruleset.
+      operationId: getZoneEntrypointRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get a zone entry point ruleset version
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}:
+    get:
+      description: Fetches the latest version of a zone ruleset.
+      operationId: getZoneRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get a zone ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates a zone ruleset, creating a new version.
+      operationId: updateZoneRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_UpdateRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update a zone ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes all versions of an existing zone ruleset.
+      operationId: deleteZoneRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '204':
+          $ref: '#/components/responses/rulesets_Empty'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete a zone ruleset
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}/rules:
+    post:
+      description: >-
+        Adds a new rule to a zone ruleset. The rule will be added to the end of
+        the existing list of rules in the ruleset by default.
+      operationId: createZoneRulesetRule
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_Rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Create a zone ruleset rule
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}/rules/{rule_id}:
+    patch:
+      description: Updates an existing rule in a zone ruleset.
+      operationId: updateZoneRulesetRule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleId'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_Rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update a zone ruleset rule
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing rule from a zone ruleset.
+      operationId: deleteZoneRulesetRule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleId'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete a zone ruleset rule
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}/versions:
+    get:
+      description: Fetches the versions of a zone ruleset.
+      operationId: listZoneRulesetVersions
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List a zone ruleset's versions
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}/versions/{ruleset_version}:
+    get:
+      description: Fetches a specific version of a zone ruleset.
+      operationId: getZoneRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get a zone ruleset version
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing version of a zone ruleset.
+      operationId: deleteZoneRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '204':
+          $ref: '#/components/responses/rulesets_Empty'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete a zone ruleset version
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/rulesets/{ruleset_id}/versions/{ruleset_version}/by_tag/{rule_tag}:
+    get:
+      description: Fetches the rules of a managed zone ruleset version for a given tag.
+      operationId: listZoneRulesetVersionRulesByTag
+      parameters:
+        - in: path
+          name: rule_tag
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleCategory'
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List a zone ruleset version's rules by tag
+      tags:
+        - Zone Rulesets
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    rulesets_Cursor:
+      description: Cursor to use for the next page.
+      example: dGhpc2lzYW5leGFtcGxlCg
+      minLength: 1
+      title: Cursor
+      type: string
+    rulesets_PerPage:
+      description: Number of rulesets to return per page.
+      example: 3
+      maximum: 50
+      minimum: 1
+      title: Per Page
+      type: integer
+    rulesets_RuleCategory:
+      description: A category of the rule.
+      example: directory-traversal
+      minLength: 1
+      title: Category
+      type: string
+    rulesets_RuleId:
+      description: The unique ID of the rule.
+      example: 3a03d665bac047339bb530ecb439a90d
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+    rulesets_RulesetId:
+      description: The unique ID of the ruleset.
+      example: 2f2feab2026849078ba485f918791bdc
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+    rulesets_RulesetPhase:
+      description: The phase of the ruleset.
+      enum:
+        - ddos_l4
+        - ddos_l7
+        - http_config_settings
+        - http_custom_errors
+        - http_log_custom_fields
+        - http_ratelimit
+        - http_request_cache_settings
+        - http_request_dynamic_redirect
+        - http_request_firewall_custom
+        - http_request_firewall_managed
+        - http_request_late_transform
+        - http_request_origin
+        - http_request_redirect
+        - http_request_sanitize
+        - http_request_sbfm
+        - http_request_transform
+        - http_response_compression
+        - http_response_firewall_managed
+        - http_response_headers_transform
+        - magic_transit
+        - magic_transit_ids_managed
+        - magic_transit_managed
+        - magic_transit_ratelimit
+      example: http_request_firewall_custom
+      title: Phase
+      type: string
+    rulesets_RulesetVersion:
+      description: The version of the ruleset.
+      example: '1'
+      pattern: ^[0-9]+$
+      readOnly: true
+      title: Version
+      type: string
+    rulesets_ZoneId:
+      description: The unique ID of the zone.
+      example: 9f1839b6152d298aca64c4e906b6d074
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+  responses:
+    rulesets_Empty:
+      description: An empty response.
+    rulesets_Failure:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  result:
+                    enum:
+                      - null
+                  success:
+                    enum:
+                      - false
+      description: A failure response.
+    rulesets_Ruleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  errors:
+                    enum:
+                      - []
+                  result:
+                    allOf:
+                      - $ref: '#/components/schemas/rulesets_Ruleset'
+                      - properties:
+                          kind:
+                            $ref: '#/components/schemas/rulesets_RulesetKind'
+                          phase:
+                            $ref: '#/components/schemas/rulesets_RulesetPhase'
+                          rules:
+                            $ref: '#/components/schemas/rulesets_ResponseRules'
+                        required:
+                          - name
+                          - kind
+                          - phase
+                          - rules
+                  success:
+                    enum:
+                      - true
+      description: A ruleset response.
+    rulesets_Rulesets:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  errors:
+                    enum:
+                      - []
+                  result:
+                    description: >-
+                      A list of rulesets. The returned information will not
+                      include the rules in each ruleset.
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/rulesets_Ruleset'
+                        - properties:
+                            kind:
+                              $ref: '#/components/schemas/rulesets_RulesetKind'
+                            phase:
+                              $ref: '#/components/schemas/rulesets_RulesetPhase'
+                          required:
+                            - name
+                            - kind
+                            - phase
+                    title: Rulesets
+                    type: array
+                  result_info:
+                    $ref: '#/components/schemas/rulesets_ResultInfo'
+                  success:
+                    enum:
+                      - true
+      description: A rulesets response.
+  requestBodies:
+    rulesets_CreateRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  kind:
+                    $ref: '#/components/schemas/rulesets_RulesetKind'
+                  phase:
+                    $ref: '#/components/schemas/rulesets_RulesetPhase'
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+                required:
+                  - name
+                  - kind
+                  - phase
+      required: true
+    rulesets_Rule:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_RequestRule'
+              - properties:
+                  position:
+                    oneOf:
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              before:
+                                description: >-
+                                  The ID of another rule to place the rule
+                                  before. An empty value causes the rule to be
+                                  placed at the top.
+                                example: da5e8e506c8e7877fe06cdf4c41add54
+                                pattern: ^(?:[0-9a-f]{32})?$
+                                title: Before
+                                type: string
+                            title: Before position
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              after:
+                                description: >-
+                                  The ID of another rule to place the rule
+                                  after. An empty value causes the rule to be
+                                  placed at the bottom.
+                                example: 5bccdbb2a5142cd25cad8591255bd209
+                                pattern: ^(?:[0-9a-f]{32})?$
+                                title: After
+                                type: string
+                            title: After position
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              index:
+                                description: >-
+                                  An index at which to place the rule, where
+                                  index 1 is the first rule.
+                                example: 1
+                                minimum: 1
+                                title: Index
+                                type: number
+                            title: Index position
+      required: true
+    rulesets_UpdateEntrypointRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+      required: true
+    rulesets_UpdateRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  kind:
+                    $ref: '#/components/schemas/rulesets_RulesetKind'
+                  phase:
+                    $ref: '#/components/schemas/rulesets_RulesetPhase'
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+      required: true

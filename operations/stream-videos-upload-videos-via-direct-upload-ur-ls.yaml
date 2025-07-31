@@ -1,0 +1,444 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/stream/direct_upload:
+    post:
+      description: Creates a direct upload that allows video uploads without an API key.
+      operationId: stream-videos-upload-videos-via-direct-upload-ur-ls
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: The account identifier tag.
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            type: string
+            x-auditable: true
+        - in: header
+          name: Upload-Creator
+          schema:
+            description: A user-defined identifier for the media creator.
+            example: creator-id_abcde12345
+            maxLength: 64
+            type: string
+            x-auditable: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                allowedOrigins:
+                  description: >-
+                    Lists the origins allowed to display the video. Enter
+                    allowed origin domains in an array and use `*` for wildcard
+                    subdomains. Empty arrays allow the video to be viewed on any
+                    origin.
+                  example:
+                    - example.com
+                  items:
+                    type: string
+                    x-auditable: true
+                  type: array
+                creator:
+                  description: A user-defined identifier for the media creator.
+                  example: creator-id_abcde12345
+                  maxLength: 64
+                  type: string
+                  x-auditable: true
+                expiry:
+                  default: Now + 30 minutes
+                  description: >-
+                    The date and time after upload when videos will not be
+                    accepted.
+                  example: '2021-01-02T02:20:00Z'
+                  format: date-time
+                  type: string
+                  x-auditable: true
+                maxDurationSeconds:
+                  description: >-
+                    The maximum duration in seconds for a video upload. Can be
+                    set for a video that is not yet uploaded to limit its
+                    duration. Uploads that exceed the specified duration will
+                    fail during processing. A value of `-1` means the value is
+                    unknown.
+                  maximum: 36000
+                  minimum: 1
+                  type: integer
+                  x-auditable: true
+                meta:
+                  description: >-
+                    A user modifiable key-value store used to reference other
+                    systems of record for managing videos.
+                  example:
+                    name: video12345.mp4
+                  type: object
+                requireSignedURLs:
+                  default: false
+                  description: >-
+                    Indicates whether the video can be a accessed using the UID.
+                    When set to `true`, a signed token must be generated with a
+                    signing key to view the video.
+                  example: true
+                  type: boolean
+                  x-auditable: true
+                scheduledDeletion:
+                  description: >-
+                    Indicates the date and time at which the video will be
+                    deleted. Omit the field to indicate no change, or include
+                    with a `null` value to remove an existing scheduled
+                    deletion. If specified, must be at least 30 days from upload
+                    time.
+                  example: '2014-01-02T02:20:00Z'
+                  format: date-time
+                  type: string
+                  x-auditable: true
+                thumbnailTimestampPct:
+                  default: 0
+                  description: >-
+                    The timestamp for a thumbnail image calculated as a
+                    percentage value of the video's duration. To convert from a
+                    second-wise timestamp to a percentage, divide the desired
+                    timestamp by the total duration of the video.  If this value
+                    is not set, the default thumbnail image is taken from 0s of
+                    the video.
+                  example: 0.529241
+                  maximum: 1
+                  minimum: 0
+                  type: number
+                  x-auditable: true
+                watermark:
+                  properties:
+                    uid:
+                      description: The unique identifier for the watermark profile.
+                      example: ea95132c15732412d22c1476fa83f27a
+                      maxLength: 32
+                      type: string
+                      x-auditable: true
+                  type: object
+              required:
+                - maxDurationSeconds
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          success:
+                            description: Whether the API call was successful.
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                        type: object
+                    type: object
+                  - properties:
+                      result:
+                        properties:
+                          scheduledDeletion:
+                            description: >-
+                              Indicates the date and time at which the video
+                              will be deleted. Omit the field to indicate no
+                              change, or include with a `null` value to remove
+                              an existing scheduled deletion. If specified, must
+                              be at least 30 days from upload time.
+                            example: '2014-01-02T02:20:00Z'
+                            format: date-time
+                            type: string
+                            x-auditable: true
+                          uid:
+                            description: >-
+                              A Cloudflare-generated unique identifier for a
+                              media item.
+                            example: ea95132c15732412d22c1476fa83f27a
+                            maxLength: 32
+                            type: string
+                            x-auditable: true
+                          uploadURL:
+                            description: >-
+                              The URL an unauthenticated upload can use for a
+                              single `HTTP POST multipart/form-data` request.
+                            example: www.example.com/samplepath
+                            type: string
+                          watermark:
+                            properties:
+                              created:
+                                description: >-
+                                  The date and a time a watermark profile was
+                                  created.
+                                example: '2014-01-02T02:20:00Z'
+                                format: date-time
+                                type: string
+                                x-auditable: true
+                              downloadedFrom:
+                                description: >-
+                                  The source URL for a downloaded image. If the
+                                  watermark profile was created via direct
+                                  upload, this field is null.
+                                example: https://company.com/logo.png
+                                type: string
+                                x-auditable: true
+                              height:
+                                description: The height of the image in pixels.
+                                type: integer
+                                x-auditable: true
+                              name:
+                                default: ''
+                                description: A short description of the watermark profile.
+                                example: Marketing Videos
+                                type: string
+                                x-auditable: true
+                              opacity:
+                                default: 1
+                                description: >-
+                                  The translucency of the image. A value of
+                                  `0.0` makes the image completely transparent,
+                                  and `1.0` makes the image completely opaque.
+                                  Note that if the image is already
+                                  semi-transparent, setting this to `1.0` will
+                                  not make the image completely opaque.
+                                example: 0.75
+                                maximum: 1
+                                minimum: 0
+                                type: number
+                                x-auditable: true
+                              padding:
+                                default: 0.05
+                                description: >-
+                                  The whitespace between the adjacent edges
+                                  (determined by position) of the video and the
+                                  image. `0.0` indicates no padding, and `1.0`
+                                  indicates a fully padded video width or
+                                  length, as determined by the algorithm.
+                                example: 0.1
+                                maximum: 1
+                                minimum: 0
+                                type: number
+                                x-auditable: true
+                              position:
+                                default: upperRight
+                                description: >-
+                                  The location of the image. Valid positions
+                                  are: `upperRight`, `upperLeft`, `lowerLeft`,
+                                  `lowerRight`, and `center`. Note that `center`
+                                  ignores the `padding` parameter.
+                                example: center
+                                type: string
+                                x-auditable: true
+                              scale:
+                                default: 0.15
+                                description: >-
+                                  The size of the image relative to the overall
+                                  size of the video. This parameter will adapt
+                                  to horizontal and vertical videos
+                                  automatically. `0.0` indicates no scaling (use
+                                  the size of the image as-is), and `1.0 `fills
+                                  the entire video.
+                                example: 0.1
+                                maximum: 1
+                                minimum: 0
+                                type: number
+                                x-auditable: true
+                              size:
+                                description: The size of the image in bytes.
+                                example: 29472
+                                type: number
+                                x-auditable: true
+                              uid:
+                                description: The unique identifier for a watermark profile.
+                                example: ea95132c15732412d22c1476fa83f27a
+                                maxLength: 32
+                                type: string
+                                x-auditable: true
+                              width:
+                                description: The width of the image in pixels.
+                                type: integer
+                                x-auditable: true
+                            type: object
+                        type: object
+                    type: object
+          description: Upload videos via direct upload URLs response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    minLength: 1
+                  messages:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example: []
+                  result:
+                    enum:
+                      - null
+                    nullable: true
+                    type: object
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                      - false
+                    example: false
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - messages
+                  - result
+                type: object
+          description: Upload videos via direct upload URLs response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Upload videos via direct upload URLs
+      tags:
+        - Stream Videos
+      x-api-token-group:
+        - Stream Write

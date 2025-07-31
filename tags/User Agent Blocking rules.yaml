@@ -1,0 +1,487 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/firewall/ua_rules:
+    get:
+      description: >-
+        Fetches User Agent Blocking rules in a zone. You can filter the results
+        using several optional parameters.
+      operationId: user-agent-blocking-rules-list-user-agent-blocking-rules
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+        - in: query
+          name: page
+          schema:
+            default: 1
+            description: Page number of paginated results.
+            minimum: 1
+            type: number
+        - in: query
+          name: description
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/firewall_description_search'
+        - in: query
+          name: per_page
+          schema:
+            default: 20
+            description: >-
+              The maximum number of results per page. You can only set the value
+              to `1` or to a multiple of 5 such as `5`, `10`, `15`, or `20`.
+            maximum: 1000
+            minimum: 1
+            type: number
+        - in: query
+          name: user_agent
+          schema:
+            description: A string to search for in the user agent values of existing rules.
+            example: Safari
+            type: string
+        - in: query
+          name: paused
+          schema:
+            description: When true, indicates that the rule is currently paused.
+            example: false
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/firewall_firewalluablock_response_collection
+          description: List User Agent Blocking rules response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/firewall_firewalluablock_response_collection
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: List User Agent Blocking rules response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List User Agent Blocking rules
+      tags:
+        - User Agent Blocking rules
+      x-api-token-group:
+        - Firewall Services Write
+        - Firewall Services Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: Creates a new User Agent Blocking rule in a zone.
+      operationId: user-agent-blocking-rules-create-a-user-agent-blocking-rule
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                configuration:
+                  $ref: '#/components/schemas/firewall_ua_configuration'
+                description:
+                  $ref: '#/components/schemas/firewall_description'
+                mode:
+                  $ref: '#/components/schemas/firewall_schemas-mode'
+                paused:
+                  $ref: '#/components/schemas/firewall_schemas-paused'
+              required:
+                - mode
+                - configuration
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_firewalluablock_response_single'
+          description: Create a User Agent Blocking rule response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/firewall_firewalluablock_response_single
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Create a User Agent Blocking rule response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a User Agent Blocking rule
+      tags:
+        - User Agent Blocking rules
+      x-api-token-group:
+        - Firewall Services Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/firewall/ua_rules/{ua_rule_id}:
+    get:
+      description: Fetches the details of a User Agent Blocking rule.
+      operationId: user-agent-blocking-rules-get-a-user-agent-blocking-rule
+      parameters:
+        - in: path
+          name: ua_rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_components-ua-rule-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_firewalluablock_response_single'
+          description: Get a User Agent Blocking rule response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/firewall_firewalluablock_response_single
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Get a User Agent Blocking rule response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a User Agent Blocking rule
+      tags:
+        - User Agent Blocking rules
+      x-api-token-group:
+        - Firewall Services Write
+        - Firewall Services Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates an existing User Agent Blocking rule.
+      operationId: user-agent-blocking-rules-update-a-user-agent-blocking-rule
+      parameters:
+        - in: path
+          name: ua_rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_components-ua-rule-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                configuration:
+                  $ref: '#/components/schemas/firewall_configuration'
+                description:
+                  $ref: '#/components/schemas/firewall_description'
+                id:
+                  $ref: '#/components/schemas/firewall_components-schemas-identifier'
+                mode:
+                  $ref: '#/components/schemas/firewall_schemas-mode'
+                paused:
+                  $ref: '#/components/schemas/firewall_schemas-paused'
+              required:
+                - id
+                - mode
+                - configuration
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_firewalluablock_response_single'
+          description: Update a User Agent Blocking rule response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/firewall_firewalluablock_response_single
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Update a User Agent Blocking rule response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a User Agent Blocking rule
+      tags:
+        - User Agent Blocking rules
+      x-api-token-group:
+        - Firewall Services Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing User Agent Blocking rule.
+      operationId: user-agent-blocking-rules-delete-a-user-agent-blocking-rule
+      parameters:
+        - in: path
+          name: ua_rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_components-ua-rule-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      result:
+                        properties:
+                          id:
+                            $ref: >-
+                              #/components/schemas/firewall_components-ua-rule-id
+                        type: object
+                    type: object
+                  - $ref: >-
+                      #/components/schemas/firewall_firewalluablock_response_single
+          description: Delete a User Agent Blocking rule response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - $ref: >-
+                          #/components/schemas/firewall_firewalluablock_response_single
+                      - properties:
+                          result:
+                            properties:
+                              id:
+                                $ref: >-
+                                  #/components/schemas/firewall_components-ua-rule-id
+                            type: object
+                        type: object
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Delete a User Agent Blocking rule response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a User Agent Blocking rule
+      tags:
+        - User Agent Blocking rules
+      x-api-token-group:
+        - Firewall Services Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    firewall_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/firewall_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/firewall_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Defines whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    firewall_components-schemas-identifier:
+      description: The unique identifier of the resource.
+      example: de677e5818985db1285d0e80225f06e5
+      maxLength: 32
+      readOnly: true
+      type: string
+    firewall_components-ua-rule-id:
+      description: The unique identifier of the User Agent Blocking rule.
+      example: 372e67954025e0ba6aaa6d586b9e0b59
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    firewall_configuration:
+      description: The rule configuration.
+      oneOf:
+        - $ref: '#/components/schemas/firewall_ip_configuration'
+        - $ref: '#/components/schemas/firewall_ipv6_configuration'
+        - $ref: '#/components/schemas/firewall_cidr_configuration'
+        - $ref: '#/components/schemas/firewall_asn_configuration'
+        - $ref: '#/components/schemas/firewall_country_configuration'
+      type: object
+    firewall_description:
+      description: >-
+        An informative summary of the rule. This value is sanitized and any tags
+        will be removed.
+      example: Prevent multiple login failures to mitigate brute force attacks
+      maxLength: 1024
+      type: string
+      x-auditable: true
+    firewall_description_search:
+      description: A string to search for in the description of existing rules.
+      example: abusive
+      type: string
+      x-auditable: true
+    firewall_firewalluablock_response_collection:
+      allOf:
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/firewall_firewalluablock'
+              type: array
+          type: object
+        - $ref: '#/components/schemas/firewall_api-response-collection'
+    firewall_firewalluablock_response_single:
+      allOf:
+        - properties:
+            result:
+              $ref: '#/components/schemas/firewall_firewalluablock'
+          type: object
+        - $ref: '#/components/schemas/firewall_api-response-single'
+    firewall_identifier:
+      description: Defines an identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+    firewall_schemas-mode:
+      description: The action to apply to a matched request.
+      enum:
+        - block
+        - challenge
+        - whitelist
+        - js_challenge
+        - managed_challenge
+      example: challenge
+      type: string
+      x-auditable: true
+    firewall_schemas-paused:
+      description: When true, indicates that the rule is currently paused.
+      example: false
+      type: boolean
+      x-auditable: true
+    firewall_ua_configuration:
+      properties:
+        target:
+          description: >-
+            The configuration target. You must set the target to `ua` when
+            specifying a user agent in the rule.
+          enum:
+            - ua
+          example: ua
+          type: string
+        value:
+          description: the user agent to exactly match
+          example: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)
+          type: string
+          x-auditable: true
+      title: A user agent configuration.
+      type: object

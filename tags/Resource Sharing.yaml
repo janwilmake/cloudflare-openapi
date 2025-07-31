@@ -1,0 +1,1097 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/shares:
+    get:
+      description: Lists all account shares.
+      operationId: shares-list
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - $ref: '#/components/parameters/resource-sharing_status'
+        - $ref: '#/components/parameters/resource-sharing_kind'
+        - $ref: '#/components/parameters/resource-sharing_target_type'
+        - $ref: '#/components/parameters/resource-sharing_order'
+        - $ref: '#/components/parameters/resource-sharing_direction'
+        - $ref: '#/components/parameters/resource-sharing_page'
+        - $ref: '#/components/parameters/resource-sharing_per_page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_response_collection
+          description: List account shares response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account shares response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account shares response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: List account shares
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    post:
+      operationId: share-create
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/resource-sharing_create_share_request'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource-sharing_share_response_single'
+          description: Share created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create a new share
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/shares/{share_id}:
+    get:
+      description: Fetches share by ID.
+      operationId: shares-get-by-id
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource-sharing_share_response_single'
+          description: Get account share response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get account share by ID
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    put:
+      description: >-
+        Updating is not immediate, an updated share object with a new status
+        will be returned.
+      operationId: share-update
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/resource-sharing_update_share_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource-sharing_share_response_single'
+          description: Share updated.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Update share failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Update share failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update a share
+      tags:
+        - Resource Sharing
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    delete:
+      description: >-
+        Deletion is not immediate, an updated share object with a new status
+        will be returned.
+      operationId: share-delete
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resource-sharing_share_response_single'
+          description: Share deleted.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete a share
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/shares/{share_id}/recipients:
+    get:
+      description: List share recipients by share ID.
+      operationId: share-recipients-list
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - $ref: '#/components/parameters/resource-sharing_page'
+        - $ref: '#/components/parameters/resource-sharing_per_page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_recipient_response_collection
+          description: List account share recipients response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account share recipients response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account share recipients response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: List share recipients by share ID
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    post:
+      operationId: share-recipient-create
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/resource-sharing_create_share_recipient_request
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_recipient_response_single
+          description: Share recipient created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share recipient failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share recipient failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create a new share recipient
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/shares/{share_id}/recipients/{recipient_id}:
+    get:
+      description: Get share recipient by ID.
+      operationId: share-recipients-get-by-id
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - in: path
+          name: recipient_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_recipient_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_recipient_response_single
+          description: Get account share recipient response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share recipient response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share recipient response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get share recipient by ID
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    delete:
+      description: >-
+        Deletion is not immediate, an updated share recipient object with a new
+        status will be returned.
+      operationId: share-recipient-delete
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - in: path
+          name: recipient_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_recipient_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_recipient_response_single
+          description: Share recipient deleted.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share recipient failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share recipient failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete a share recipient
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/shares/{share_id}/resources:
+    get:
+      description: List share resources by share ID.
+      operationId: share-resources-list
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - $ref: '#/components/parameters/resource-sharing_resource_status'
+        - $ref: '#/components/parameters/resource-sharing_resource_type'
+        - $ref: '#/components/parameters/resource-sharing_page'
+        - $ref: '#/components/parameters/resource-sharing_per_page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_resource_response_collection
+          description: List account share resources response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account share resources response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List account share resources response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: List share resources by share ID
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    post:
+      operationId: share-resource-create
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/resource-sharing_create_share_resource_request
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_resource_response_single
+          description: Share resource created.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share resource failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Create share resource failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create a new share resource
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/shares/{share_id}/resources/{resource_id}:
+    get:
+      description: Get share resource by ID.
+      operationId: share-resources-get-by-id
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - in: path
+          name: resource_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_resource_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_resource_response_single
+          description: Get account share resource response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share resource response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Get account share resource response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get share resource by ID
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    put:
+      description: >-
+        Update is not immediate, an updated share resource object with a new
+        status will be returned.
+      operationId: share-resource-update
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - in: path
+          name: resource_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_resource_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: >-
+                #/components/schemas/resource-sharing_update_share_resource_request
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_resource_response_single
+          description: Share resource updated.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Update share resource failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Update share resource failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update a share resource
+      tags:
+        - Resource Sharing
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    delete:
+      description: >-
+        Deletion is not immediate, an updated share resource object with a new
+        status will be returned.
+      operationId: share-resource-delete
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_account_id'
+        - in: path
+          name: share_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_share_id'
+        - in: path
+          name: resource_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_resource_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_resource_response_single
+          description: Share resource deleted.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share resource failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: Delete share resource failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete a share resource
+      tags:
+        - Resource Sharing
+      x-api-token-group: null
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /organizations/{organization_id}/shares:
+    get:
+      description: Lists all organization shares.
+      operationId: organization-shares-list
+      parameters:
+        - in: path
+          name: organization_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/resource-sharing_organization_id'
+        - $ref: '#/components/parameters/resource-sharing_status'
+        - $ref: '#/components/parameters/resource-sharing_kind'
+        - $ref: '#/components/parameters/resource-sharing_target_type'
+        - $ref: '#/components/parameters/resource-sharing_order'
+        - $ref: '#/components/parameters/resource-sharing_direction'
+        - $ref: '#/components/parameters/resource-sharing_page'
+        - $ref: '#/components/parameters/resource-sharing_per_page'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/resource-sharing_share_response_collection
+          description: List organization shares response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List organization shares response failure.
+        5XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/resource-sharing_api-response-common-failure
+          description: List organization shares response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: List organization shares
+      tags:
+        - Resource Sharing
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+components:
+  schemas:
+    resource-sharing_account_id:
+      description: Account identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    resource-sharing_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/resource-sharing_v4errors'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - result
+      type: object
+    resource-sharing_create_share_recipient_request:
+      description: Account or organization ID must be provided.
+      properties:
+        account_id:
+          $ref: '#/components/schemas/resource-sharing_account_id'
+        organization_id:
+          $ref: '#/components/schemas/resource-sharing_organization_id'
+      type: object
+    resource-sharing_create_share_request:
+      properties:
+        name:
+          $ref: '#/components/schemas/resource-sharing_share_name'
+        recipients:
+          items:
+            $ref: >-
+              #/components/schemas/resource-sharing_create_share_recipient_request
+          type: array
+        resources:
+          items:
+            $ref: >-
+              #/components/schemas/resource-sharing_create_share_resource_request
+          type: array
+      required:
+        - name
+        - resources
+        - recipients
+      type: object
+    resource-sharing_create_share_resource_request:
+      properties:
+        meta:
+          $ref: '#/components/schemas/resource-sharing_resource_meta'
+        resource_account_id:
+          $ref: '#/components/schemas/resource-sharing_account_id'
+        resource_id:
+          $ref: '#/components/schemas/resource-sharing_resource_resource_id'
+        resource_type:
+          $ref: '#/components/schemas/resource-sharing_resource_type'
+      required:
+        - resource_id
+        - resource_type
+        - resource_account_id
+        - meta
+      type: object
+    resource-sharing_organization_id:
+      description: Organization identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    resource-sharing_recipient_id:
+      description: Share Recipient identifier tag.
+      example: 3fd85f74b32742f1bff64a85009dda07
+      maxLength: 32
+      type: string
+    resource-sharing_resource_id:
+      description: Share Resource identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    resource-sharing_share_id:
+      description: Share identifier tag.
+      example: 3fd85f74b32742f1bff64a85009dda07
+      maxLength: 32
+      type: string
+    resource-sharing_share_recipient_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/resource-sharing_share_recipient_object'
+              type: array
+      type: object
+    resource-sharing_share_recipient_response_single:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/resource-sharing_share_recipient_object'
+      type: object
+    resource-sharing_share_resource_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/resource-sharing_share_resource_object'
+              type: array
+      type: object
+    resource-sharing_share_resource_response_single:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/resource-sharing_share_resource_object'
+      type: object
+    resource-sharing_share_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/resource-sharing_share_object'
+              type: array
+      type: object
+    resource-sharing_share_response_single:
+      allOf:
+        - $ref: '#/components/schemas/resource-sharing_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/resource-sharing_share_object'
+      type: object
+    resource-sharing_update_share_request:
+      properties:
+        name:
+          $ref: '#/components/schemas/resource-sharing_share_name'
+      required:
+        - name
+      type: object
+    resource-sharing_update_share_resource_request:
+      properties:
+        meta:
+          $ref: '#/components/schemas/resource-sharing_resource_meta'
+      required:
+        - meta
+      type: object
+  parameters:
+    resource-sharing_direction:
+      description: Direction to sort objects.
+      in: query
+      name: direction
+      schema:
+        default: asc
+        enum:
+          - asc
+          - desc
+        type: string
+    resource-sharing_kind:
+      description: Filter shares by kind.
+      in: query
+      name: kind
+      schema:
+        $ref: '#/components/schemas/resource-sharing_share_kind'
+    resource-sharing_order:
+      description: Order shares by values in the given field.
+      in: query
+      name: order
+      schema:
+        default: created
+        enum:
+          - name
+          - created
+        type: string
+    resource-sharing_page:
+      description: Page number.
+      in: query
+      name: page
+      schema:
+        example: 2
+        minimum: 0
+        multipleOf: 1
+        type: integer
+    resource-sharing_per_page:
+      description: Number of objects to return per page.
+      in: query
+      name: per_page
+      schema:
+        example: 20
+        maximum: 100
+        minimum: 0
+        multipleOf: 1
+        type: integer
+    resource-sharing_resource_status:
+      description: Filter share resources by status.
+      in: query
+      name: status
+      schema:
+        $ref: '#/components/schemas/resource-sharing_resource_status'
+    resource-sharing_resource_type:
+      description: Filter share resources by resource_type.
+      in: query
+      name: resource_type
+      schema:
+        $ref: '#/components/schemas/resource-sharing_resource_type'
+    resource-sharing_status:
+      description: Filter shares by status.
+      in: query
+      name: status
+      schema:
+        $ref: '#/components/schemas/resource-sharing_share_status'
+    resource-sharing_target_type:
+      description: Filter shares by target_type.
+      in: query
+      name: target_type
+      schema:
+        $ref: '#/components/schemas/resource-sharing_share_target_type'

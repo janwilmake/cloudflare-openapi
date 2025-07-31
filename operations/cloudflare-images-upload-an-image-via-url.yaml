@@ -1,0 +1,495 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/images/v1:
+    post:
+      description: >
+        Upload an image with up to 10 Megabytes using a single HTTP POST
+        (multipart/form-data) request.
+
+        An image can be uploaded by sending an image file or passing an
+        accessible to an API url.
+      operationId: cloudflare-images-upload-an-image-via-url
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account identifier tag.
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            readOnly: true
+            type: string
+            x-auditable: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                creator:
+                  description: Can set the creator field with an internal user ID.
+                  maxLength: 1024
+                  type: string
+                file:
+                  description: >-
+                    An image binary data. Only needed when type is uploading a
+                    file.
+                  format: binary
+                  type: string
+                  x-auditable: true
+                id:
+                  description: An optional custom unique identifier for your image.
+                  type: string
+                  x-auditable: true
+                metadata:
+                  description: >-
+                    User modifiable key-value store. Can use used for keeping
+                    references to another system of record for managing images.
+                  type: object
+                requireSignedURLs:
+                  default: false
+                  description: >-
+                    Indicates whether the image requires a signature token for
+                    the access.
+                  example: true
+                  type: boolean
+                  x-auditable: true
+                url:
+                  description: >-
+                    A URL to fetch an image from origin. Only needed when type
+                    is uploading from a URL.
+                  example: https://example.com/path/to/logo.png
+                  type: string
+                  x-auditable: true
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                  x-auditable: true
+                                message:
+                                  type: string
+                                  x-auditable: true
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                  x-auditable: true
+                                message:
+                                  type: string
+                                  x-auditable: true
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          result:
+                            anyOf:
+                              - type: object
+                              - items: {}
+                                type: array
+                              - type: string
+                          success:
+                            description: Whether the API call was successful
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                            x-auditable: true
+                        required:
+                          - success
+                          - errors
+                          - messages
+                          - result
+                        type: object
+                      - properties:
+                          result:
+                            anyOf:
+                              - type: object
+                              - type: string
+                    type: object
+                  - properties:
+                      result:
+                        properties:
+                          creator:
+                            description: >-
+                              Can set the creator field with an internal user
+                              ID.
+                            example: 107b9558-dd06-4bbd-5fef-9c2c16bb7900
+                            maxLength: 1024
+                            nullable: true
+                            type: string
+                            x-auditable: true
+                          filename:
+                            description: Image file name.
+                            example: logo.png
+                            maxLength: 255
+                            readOnly: true
+                            type: string
+                            x-auditable: true
+                          id:
+                            description: Image unique identifier.
+                            example: 107b9558-dd06-4bbd-5fef-9c2c16bb7900
+                            maxLength: 32
+                            readOnly: true
+                            type: string
+                            x-auditable: true
+                          meta:
+                            description: >-
+                              User modifiable key-value store. Can be used for
+                              keeping references to another system of record for
+                              managing images. Metadata must not exceed 1024
+                              bytes.
+                            example:
+                              key: value
+                            type: object
+                          requireSignedURLs:
+                            default: false
+                            description: >-
+                              Indicates whether the image can be a accessed only
+                              using it's UID. If set to true, a signed token
+                              needs to be generated with a signing key to view
+                              the image.
+                            example: true
+                            type: boolean
+                            x-auditable: true
+                          uploaded:
+                            description: When the media item was uploaded.
+                            example: '2014-01-02T02:20:00.123Z'
+                            format: date-time
+                            readOnly: true
+                            type: string
+                            x-auditable: true
+                          variants:
+                            description: Object specifying available variants for an image.
+                            example:
+                              - >-
+                                https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/thumbnail
+                              - >-
+                                https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/hero
+                              - >-
+                                https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/original
+                            items:
+                              anyOf:
+                                - description: URI to thumbnail variant for an image.
+                                  example: >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/thumbnail
+                                  format: uri
+                                  readOnly: true
+                                  type: string
+                                  x-auditable: true
+                                - description: URI to hero variant for an image.
+                                  example: >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/hero
+                                  format: uri
+                                  readOnly: true
+                                  type: string
+                                  x-auditable: true
+                                - description: URI to original variant for an image.
+                                  example: >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/original
+                                  format: uri
+                                  readOnly: true
+                                  type: string
+                                  x-auditable: true
+                            readOnly: true
+                            type: array
+                        type: object
+          description: Upload an image response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - allOf:
+                          - properties:
+                              errors:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                      x-auditable: true
+                                    message:
+                                      type: string
+                                      x-auditable: true
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              messages:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                      x-auditable: true
+                                    message:
+                                      type: string
+                                      x-auditable: true
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              result:
+                                anyOf:
+                                  - type: object
+                                  - items: {}
+                                    type: array
+                                  - type: string
+                              success:
+                                description: Whether the API call was successful
+                                enum:
+                                  - true
+                                example: true
+                                type: boolean
+                                x-auditable: true
+                            required:
+                              - success
+                              - errors
+                              - messages
+                              - result
+                            type: object
+                          - properties:
+                              result:
+                                anyOf:
+                                  - type: object
+                                  - type: string
+                        type: object
+                      - properties:
+                          result:
+                            properties:
+                              creator:
+                                description: >-
+                                  Can set the creator field with an internal
+                                  user ID.
+                                example: 107b9558-dd06-4bbd-5fef-9c2c16bb7900
+                                maxLength: 1024
+                                nullable: true
+                                type: string
+                                x-auditable: true
+                              filename:
+                                description: Image file name.
+                                example: logo.png
+                                maxLength: 255
+                                readOnly: true
+                                type: string
+                                x-auditable: true
+                              id:
+                                description: Image unique identifier.
+                                example: 107b9558-dd06-4bbd-5fef-9c2c16bb7900
+                                maxLength: 32
+                                readOnly: true
+                                type: string
+                                x-auditable: true
+                              meta:
+                                description: >-
+                                  User modifiable key-value store. Can be used
+                                  for keeping references to another system of
+                                  record for managing images. Metadata must not
+                                  exceed 1024 bytes.
+                                example:
+                                  key: value
+                                type: object
+                              requireSignedURLs:
+                                default: false
+                                description: >-
+                                  Indicates whether the image can be a accessed
+                                  only using it's UID. If set to true, a signed
+                                  token needs to be generated with a signing key
+                                  to view the image.
+                                example: true
+                                type: boolean
+                                x-auditable: true
+                              uploaded:
+                                description: When the media item was uploaded.
+                                example: '2014-01-02T02:20:00.123Z'
+                                format: date-time
+                                readOnly: true
+                                type: string
+                                x-auditable: true
+                              variants:
+                                description: >-
+                                  Object specifying available variants for an
+                                  image.
+                                example:
+                                  - >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/thumbnail
+                                  - >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/hero
+                                  - >-
+                                    https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/original
+                                items:
+                                  anyOf:
+                                    - description: URI to thumbnail variant for an image.
+                                      example: >-
+                                        https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/thumbnail
+                                      format: uri
+                                      readOnly: true
+                                      type: string
+                                      x-auditable: true
+                                    - description: URI to hero variant for an image.
+                                      example: >-
+                                        https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/hero
+                                      format: uri
+                                      readOnly: true
+                                      type: string
+                                      x-auditable: true
+                                    - description: URI to original variant for an image.
+                                      example: >-
+                                        https://imagedelivery.net/MTt4OTd0b0w5aj/107b9558-dd06-4bbd-5fef-9c2c16bb7900/original
+                                      format: uri
+                                      readOnly: true
+                                      type: string
+                                      x-auditable: true
+                                readOnly: true
+                                type: array
+                            type: object
+                  - properties:
+                      errors:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                  x-auditable: true
+                                message:
+                                  type: string
+                                  x-auditable: true
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example:
+                          - code: 7003
+                            message: No route for the URI
+                        minLength: 1
+                      messages:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                  x-auditable: true
+                                message:
+                                  type: string
+                                  x-auditable: true
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example: []
+                      result:
+                        enum:
+                          - null
+                        nullable: true
+                        type: object
+                      success:
+                        description: Whether the API call was successful
+                        enum:
+                          - false
+                        example: false
+                        type: boolean
+                        x-auditable: true
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+          description: Upload an image response failure
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Upload an image
+      tags:
+        - Cloudflare Images
+      x-api-token-group:
+        - Images Write

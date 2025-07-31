@@ -1,0 +1,407 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/urlscanner/v2/har/{scan_id}:
+    get:
+      description: >-
+        Get a URL scan's HAR file. See HAR spec at
+        http://www.softwareishard.com/blog/har-12-spec/.
+      operationId: urlscanner-get-scan-har-v2
+      parameters:
+        - description: Scan UUID.
+          in: path
+          name: scan_id
+          required: true
+          schema:
+            description: Scan UUID.
+            format: uuid
+            type: string
+        - description: Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account ID.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  log:
+                    properties:
+                      creator:
+                        properties:
+                          comment:
+                            example: https://github.com/sitespeedio/chrome-har
+                            type: string
+                          name:
+                            example: chrome-har
+                            type: string
+                          version:
+                            example: 0.13.1
+                            type: string
+                        required:
+                          - name
+                          - version
+                          - comment
+                        type: object
+                      entries:
+                        items:
+                          properties:
+                            _initialPriority:
+                              example: VeryHigh
+                              type: string
+                            _initiator_type:
+                              example: other
+                              type: string
+                            _priority:
+                              example: VeryHigh
+                              type: string
+                            _requestId:
+                              example: DDC779F0CB3746BAF283EC1A51B0F2F8
+                              type: string
+                            _requestTime:
+                              example: 114135.331081
+                              type: number
+                            _resourceType:
+                              example: document
+                              type: string
+                            cache:
+                              type: object
+                            connection:
+                              example: '33'
+                              type: string
+                            pageref:
+                              example: page_1
+                              type: string
+                            request:
+                              properties:
+                                bodySize:
+                                  type: number
+                                headers:
+                                  items:
+                                    properties:
+                                      name:
+                                        example: Upgrade-Insecure-Requests
+                                        type: string
+                                      value:
+                                        example: '1'
+                                        type: string
+                                    required:
+                                      - name
+                                      - value
+                                    type: object
+                                  type: array
+                                headersSize:
+                                  example: 197
+                                  type: number
+                                httpVersion:
+                                  example: http/1.1
+                                  type: string
+                                method:
+                                  example: GET
+                                  type: string
+                                url:
+                                  example: http://example.com/
+                                  type: string
+                              required:
+                                - method
+                                - url
+                                - headersSize
+                                - bodySize
+                                - headers
+                                - httpVersion
+                              type: object
+                            response:
+                              properties:
+                                _transferSize:
+                                  example: 1071
+                                  type: number
+                                bodySize:
+                                  example: 648
+                                  type: number
+                                content:
+                                  properties:
+                                    compression:
+                                      example: 608
+                                      type: integer
+                                    mimeType:
+                                      example: text/html
+                                      type: string
+                                    size:
+                                      example: 1256
+                                      type: number
+                                  required:
+                                    - mimeType
+                                    - size
+                                  type: object
+                                headers:
+                                  items:
+                                    properties:
+                                      name:
+                                        example: Content-Encoding
+                                        type: string
+                                      value:
+                                        example: gzip
+                                        type: string
+                                    required:
+                                      - name
+                                      - value
+                                    type: object
+                                  type: array
+                                headersSize:
+                                  example: 423
+                                  type: number
+                                httpVersion:
+                                  example: http/1.1
+                                  type: string
+                                redirectURL:
+                                  type: string
+                                status:
+                                  example: 200
+                                  type: number
+                                statusText:
+                                  example: OK
+                                  type: string
+                              required:
+                                - httpVersion
+                                - redirectURL
+                                - status
+                                - statusText
+                                - content
+                                - headersSize
+                                - bodySize
+                                - headers
+                                - _transferSize
+                              type: object
+                            serverIPAddress:
+                              example: 2606:2800:220:1:248:1893:25c8:1946
+                              type: string
+                            startedDateTime:
+                              example: '2023-05-03T17:05:13.196Z'
+                              type: string
+                            time:
+                              example: 268.64
+                              type: number
+                          required:
+                            - cache
+                            - startedDateTime
+                            - _requestId
+                            - _initialPriority
+                            - _priority
+                            - pageref
+                            - request
+                            - time
+                            - _initiator_type
+                            - _resourceType
+                            - response
+                            - connection
+                            - serverIPAddress
+                            - _requestTime
+                          type: object
+                        type: array
+                      pages:
+                        items:
+                          properties:
+                            id:
+                              example: page_1
+                              type: string
+                            pageTimings:
+                              properties:
+                                onContentLoad:
+                                  example: 305.408
+                                  type: number
+                                onLoad:
+                                  example: 305.169
+                                  type: number
+                              required:
+                                - onLoad
+                                - onContentLoad
+                              type: object
+                            startedDateTime:
+                              example: '2023-05-03T17:05:13.195Z'
+                              type: string
+                            title:
+                              example: http://example.com/
+                              type: string
+                          required:
+                            - id
+                            - startedDateTime
+                            - title
+                            - pageTimings
+                          type: object
+                        type: array
+                      version:
+                        example: '1.2'
+                        type: string
+                    required:
+                      - version
+                      - creator
+                      - pages
+                      - entries
+                    type: object
+                required:
+                  - log
+                type: object
+          description: Returns the scan's har.
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        detail:
+                          type: string
+                        status:
+                          description: Status code.
+                          example: 400
+                          type: integer
+                        title:
+                          example: Invalid url
+                          type: string
+                      required:
+                        - title
+                        - detail
+                        - status
+                      type: object
+                    type: array
+                  message:
+                    type: string
+                  status:
+                    description: Status code.
+                    example: 400
+                    type: integer
+                required:
+                  - message
+                  - status
+                  - errors
+                type: object
+          description: Invalid input.
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        detail:
+                          example: Queued
+                          type: string
+                        status:
+                          description: Status code.
+                          example: 404
+                          type: integer
+                        title:
+                          example: Scan is not finished yet.
+                          type: string
+                      required:
+                        - title
+                        - detail
+                        - status
+                      type: object
+                    type: array
+                  message:
+                    description: Scan not found or in progress.
+                    example: Scan is not finished yet.
+                    type: string
+                  status:
+                    description: Status code.
+                    example: 404
+                    type: integer
+                  task:
+                    properties:
+                      status:
+                        example: Queued
+                        type: string
+                      time:
+                        type: string
+                      url:
+                        type: string
+                      uuid:
+                        type: string
+                      visibility:
+                        example: public
+                        type: string
+                    required:
+                      - uuid
+                      - url
+                      - time
+                      - status
+                      - visibility
+                    type: object
+                required:
+                  - message
+                  - status
+                  - errors
+                  - task
+                type: object
+          description: Scan not found or in progress.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get URL scan's HAR
+      tags:
+        - URL Scanner
+      x-api-token-group:
+        - URL Scanner Write
+        - URL Scanner Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true

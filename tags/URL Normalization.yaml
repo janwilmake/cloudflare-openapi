@@ -1,0 +1,262 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/url_normalization:
+    get:
+      description: Fetches the current URL Normalization settings.
+      operationId: getUrlNormalization
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_UrlNormalization'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+      summary: Get URL Normalization settings
+      tags:
+        - URL Normalization
+      x-api-token-group:
+        - Response Compression Write
+        - Response Compression Read
+        - Config Settings Write
+        - Config Settings Read
+        - Dynamic URL Redirects Write
+        - Dynamic URL Redirects Read
+        - Cache Settings Write
+        - Cache Settings Read
+        - Custom Errors Write
+        - Custom Errors Read
+        - Origin Write
+        - Origin Read
+        - Managed headers Write
+        - Managed headers Read
+        - Zone Transform Rules Write
+        - Zone Transform Rules Read
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - HTTP DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Read
+        - Sanitize Write
+        - Sanitize Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Bot Management Write
+        - Bot Management Read
+        - Zone WAF Write
+        - Zone WAF Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates the URL Normalization settings.
+      operationId: updateUrlNormalization
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_UrlNormalization'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_UrlNormalization'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+      summary: Update URL Normalization settings
+      tags:
+        - URL Normalization
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes the URL Normalization settings.
+      operationId: deleteUrlNormalization
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_ZoneId'
+      responses:
+        '204':
+          $ref: '#/components/responses/rulesets_Empty'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+      summary: Delete URL Normalization settings
+      tags:
+        - URL Normalization
+      x-api-token-group:
+        - Response Compression Write
+        - Config Settings Write
+        - Dynamic URL Redirects Write
+        - Cache Settings Write
+        - Custom Errors Write
+        - Origin Write
+        - Managed headers Write
+        - Zone Transform Rules Write
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - HTTP DDoS Managed Ruleset Write
+        - Sanitize Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Bot Management Write
+        - Zone WAF Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    rulesets_ZoneId:
+      description: The unique ID of the zone.
+      example: 9f1839b6152d298aca64c4e906b6d074
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+  responses:
+    rulesets_Empty:
+      description: An empty response.
+    rulesets_Failure:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  result:
+                    enum:
+                      - null
+                  success:
+                    enum:
+                      - false
+      description: A failure response.
+    rulesets_UrlNormalization:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  errors:
+                    enum:
+                      - []
+                  result:
+                    $ref: '#/components/schemas/rulesets_UrlNormalization'
+                  success:
+                    enum:
+                      - true
+      description: A URL Normalization response.
+  requestBodies:
+    rulesets_UrlNormalization:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/rulesets_UrlNormalization'
+      required: true

@@ -1,0 +1,485 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/schema_validation/schemas:
+    get:
+      operationId: schema-validation-list-schemas-paginated
+      parameters:
+        - $ref: '#/components/parameters/api-shield_page'
+        - $ref: '#/components/parameters/api-shield_per_page'
+        - $ref: '#/components/parameters/api-shield_omit_source_query'
+        - description: Filter for enabled schemas
+          in: query
+          name: validation_enabled
+          schema:
+            description: Flag whether schema is enabled for validation.
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schemas_list_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: List all uploaded schemas
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+    post:
+      operationId: schema-validation-create-schema
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_schema_create'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schema_create_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_schema_create_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Upload a schema
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+  /zones/{zone_id}/schema_validation/schemas/hosts:
+    get:
+      operationId: schema-validation-list-schema-hosts
+      parameters:
+        - $ref: '#/components/parameters/api-shield_page'
+        - $ref: '#/components/parameters/api-shield_per_page'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schema_hosts_get_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: List hosts covered by uploaded schemas
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+  /zones/{zone_id}/schema_validation/schemas/{schema_id}:
+    get:
+      operationId: schema-validation-get-schema
+      parameters:
+        - $ref: '#/components/parameters/api-shield_omit_source_query'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schema_get_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get details of a schema
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+    patch:
+      operationId: schema-validation-edit-schema
+      requestBody:
+        $ref: '#/components/requestBodies/api-shield_schema_edit'
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schema_edit_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Edit details of a schema to enable validation
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+    delete:
+      operationId: schema-validation-delete-schema
+      responses:
+        '200':
+          $ref: '#/components/responses/api-shield_schema_delete_success'
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Delete a schema
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Domain API Gateway
+  /zones/{zone_id}/schema_validation/schemas/{schema_id}/operations:
+    get:
+      description: >-
+        Retrieves all operations from the schema. Operations that already exist
+        in API Shield Endpoint Management will be returned as full operations.
+      operationId: schema-validation-extract-operations-from-schema
+      parameters:
+        - $ref: '#/components/parameters/api-shield_operation_feature_parameter'
+        - $ref: '#/components/parameters/api-shield_host_parameter'
+        - $ref: '#/components/parameters/api-shield_method_parameter'
+        - $ref: '#/components/parameters/api-shield_endpoint_parameter'
+        - $ref: '#/components/parameters/api-shield_page'
+        - $ref: '#/components/parameters/api-shield_per_page'
+        - description: >-
+            Filter results by whether operations exist in Web Asset Management
+            or not. `new` will just return operations from the schema that do
+            not exist otherwise. `existing` will just return operations from the
+            schema that already exist.
+          in: query
+          name: operation_status
+          schema:
+            enum:
+              - new
+              - existing
+            example: new
+            type: string
+      responses:
+        '200':
+          $ref: >-
+            #/components/responses/api-shield_schemas_extract_operations_get_success
+        4XX:
+          $ref: '#/components/responses/api-shield_generic_failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Retrieve all operations from the schema.
+      tags:
+        - Schema Validation
+      x-api-token-group:
+        - Account API Gateway
+        - Account API Gateway Read
+        - Domain API Gateway
+        - Domain API Gateway Read
+components:
+  parameters:
+    api-shield_endpoint_parameter:
+      in: query
+      name: endpoint
+      schema:
+        description: Filter results to only include endpoints containing this pattern.
+        example: /api/v1
+        type: string
+    api-shield_host_parameter:
+      in: query
+      name: host
+      schema:
+        description: Filter results to only include the specified hosts.
+        items:
+          example: api.cloudflare.com
+          type: string
+        type: array
+        uniqueItems: true
+    api-shield_method_parameter:
+      in: query
+      name: method
+      schema:
+        description: Filter results to only include the specified HTTP methods.
+        items:
+          example: GET
+          type: string
+        type: array
+        uniqueItems: true
+    api-shield_omit_source_query:
+      description: Omit the source-files of schemas and only retrieve their meta-data.
+      in: query
+      name: omit_source
+      schema:
+        default: false
+        type: boolean
+    api-shield_operation_feature_parameter:
+      description: >-
+        Add feature(s) to the results. The feature name that is given here
+        corresponds to the resulting feature object. Have a look at the
+        top-level object description for more details on the specific meaning.
+      in: query
+      name: feature
+      schema:
+        example:
+          - thresholds
+        items:
+          enum:
+            - thresholds
+            - parameter_schemas
+            - schema_info
+          example: thresholds
+          type: string
+        type: array
+        uniqueItems: true
+    api-shield_page:
+      description: Page number of paginated results.
+      in: query
+      name: page
+      schema:
+        default: 1
+        minimum: 1
+        type: integer
+    api-shield_per_page:
+      description: Maximum number of results per page.
+      in: query
+      name: per_page
+      schema:
+        default: 20
+        maximum: 50
+        minimum: 5
+        type: integer
+  responses:
+    api-shield_generic_failure:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/api-shield_api-response-common-failure'
+      description: Failure
+    api-shield_schema_create_failure:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-common-failure'
+              - properties:
+                  errors:
+                    description: >-
+                      Describes errors in the schema that prohibited accepting
+                      the schema.
+                    items:
+                      $ref: >-
+                        #/components/schemas/api-shield_schema_issue_notification
+                    type: array
+                  messages:
+                    description: >-
+                      Describes issues in the schema and how they were resolved
+                      to accept the schema.
+                    items:
+                      $ref: >-
+                        #/components/schemas/api-shield_schema_issue_notification
+                    type: array
+                required:
+                  - errors
+                type: object
+            type: object
+      description: Failed uploaded the schema
+    api-shield_schema_create_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_public_schema_success_result'
+              - properties:
+                  errors:
+                    description: >-
+                      Describes errors in the schema that prohibited accepting
+                      the schema.
+                    items:
+                      $ref: >-
+                        #/components/schemas/api-shield_schema_issue_notification
+                    type: array
+                  messages:
+                    description: >-
+                      Describes issues in the schema and how they were resolved
+                      to accept the schema.
+                    items:
+                      $ref: >-
+                        #/components/schemas/api-shield_schema_issue_notification
+                    type: array
+                required:
+                  - messages
+                type: object
+            type: object
+      description: Successfully uploaded the schema
+    api-shield_schema_delete_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-single'
+              - properties:
+                  result:
+                    properties:
+                      schema_id:
+                        description: The ID of the schema that was just deleted
+                        format: uuid
+                        type: string
+                        x-auditable: true
+                    required:
+                      - schema_id
+                    type: object
+                required:
+                  - result
+                type: object
+      description: Success
+    api-shield_schema_edit_success:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/api-shield_public_schema_success_result'
+      description: Success
+    api-shield_schema_get_success:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/api-shield_public_schema_success_result'
+      description: Success
+    api-shield_schema_hosts_get_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-collection'
+              - properties:
+                  result:
+                    items:
+                      $ref: '#/components/schemas/api-shield_schema_hosts'
+                    type: array
+                required:
+                  - result
+                type: object
+            type: object
+      description: Success
+    api-shield_schemas_extract_operations_get_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-collection'
+              - properties:
+                  result:
+                    items:
+                      anyOf:
+                        - $ref: '#/components/schemas/api-shield_operation'
+                        - $ref: '#/components/schemas/api-shield_basic_operation'
+                    type: array
+                required:
+                  - result
+                type: object
+            type: object
+      description: All operations in the schema
+    api-shield_schemas_list_success:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/api-shield_api-response-collection'
+              - properties:
+                  result:
+                    items:
+                      $ref: '#/components/schemas/api-shield_schemas-public_schema'
+                    type: array
+                required:
+                  - result
+                type: object
+      description: Success
+  requestBodies:
+    api-shield_schema_create:
+      content:
+        application/json:
+          schema:
+            properties:
+              kind:
+                description: The kind of the schema
+                enum:
+                  - openapi_v3
+                example: openapi_v3
+                type: string
+              name:
+                description: A human-readable name for the schema
+                example: petstore schema
+                type: string
+              source:
+                description: >-
+                  The raw schema, e.g., the OpenAPI schema, either as JSON or
+                  YAML
+                example: <schema file contents>
+                type: string
+              validation_enabled:
+                description: An indicator if this schema is enabled
+                type: boolean
+            required:
+              - name
+              - kind
+              - source
+              - validation_enabled
+            type: object
+      required: true
+    api-shield_schema_edit:
+      content:
+        application/json:
+          schema:
+            properties:
+              validation_enabled:
+                description: Flag whether schema is enabled for validation.
+                type: boolean
+            type: object
+      required: true

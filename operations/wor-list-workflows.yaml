@@ -1,0 +1,252 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/workflows:
+    get:
+      operationId: wor-list-workflows
+      parameters:
+        - in: query
+          name: per_page
+          schema:
+            default: 10
+            maximum: 100
+            minimum: 1
+            type: number
+        - in: query
+          name: page
+          schema:
+            default: 1
+            minimum: 1
+            type: number
+        - description: Allows filtering workflows` name.
+          in: query
+          name: search
+          schema:
+            description: Allows filtering workflows` name.
+            maxLength: 64
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_][a-zA-Z0-9-_]*$
+            type: string
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        code:
+                          type: number
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      properties:
+                        code:
+                          type: number
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    items:
+                      properties:
+                        class_name:
+                          type: string
+                        created_on:
+                          format: date-time
+                          type: string
+                        id:
+                          format: uuid
+                          type: string
+                        instances:
+                          properties:
+                            complete:
+                              type: number
+                            errored:
+                              type: number
+                            paused:
+                              type: number
+                            queued:
+                              type: number
+                            running:
+                              type: number
+                            terminated:
+                              type: number
+                            waiting:
+                              type: number
+                            waitingForPause:
+                              type: number
+                          type: object
+                        modified_on:
+                          format: date-time
+                          type: string
+                        name:
+                          maxLength: 64
+                          minLength: 1
+                          pattern: ^[a-zA-Z0-9_][a-zA-Z0-9-_]*$
+                          type: string
+                        script_name:
+                          type: string
+                        triggered_on:
+                          format: date-time
+                          nullable: true
+                          type: string
+                      required:
+                        - name
+                        - id
+                        - created_on
+                        - modified_on
+                        - script_name
+                        - class_name
+                        - triggered_on
+                        - instances
+                      type: object
+                    type: array
+                  result_info:
+                    properties:
+                      count:
+                        type: number
+                      page:
+                        type: number
+                      per_page:
+                        type: number
+                      total_count:
+                        type: number
+                    required:
+                      - page
+                      - per_page
+                      - count
+                      - total_count
+                    type: object
+                  success:
+                    enum:
+                      - true
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - result
+                  - messages
+                type: object
+          description: List of all Workflows belonging to a account.
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        code:
+                          type: number
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      type: string
+                    type: array
+                  result:
+                    enum:
+                      - null
+                    nullable: true
+                    type: object
+                  success:
+                    enum:
+                      - false
+                    type: boolean
+                required:
+                  - success
+                  - messages
+                  - errors
+                  - result
+                type: object
+          description: Input Validation Error.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List all Workflows
+      tags:
+        - Workflows
+      x-api-token-group:
+        - Workers Tail Read
+        - Workers Scripts Write
+        - Workers Scripts Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.workers.write
+          - com.cloudflare.api.workers.read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true

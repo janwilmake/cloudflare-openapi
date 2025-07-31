@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "openapi-for-llms": "^0.0.11"
+  }
+}

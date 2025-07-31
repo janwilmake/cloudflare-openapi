@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/dex/warp-change-events:
+    get:
+      description: List WARP configuration and enablement toggle change events by device.
+      operationId: list-warp-change-events
+      parameters:
+        - description: unique identifier linked to an account in the API request path
+          in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: >-
+              #/components/schemas/digital-experience-monitoring_account_identifier
+        - description: Page number of paginated results
+          in: query
+          name: page
+          required: true
+          schema:
+            minimum: 1
+            type: number
+        - description: Number of items per page
+          in: query
+          name: per_page
+          required: true
+          schema:
+            maximum: 50
+            minimum: 1
+            type: number
+        - description: Start time for the query in ISO (RFC3339 - ISO 8601) format
+          in: query
+          name: from
+          required: true
+          schema:
+            example: '2023-09-20T17:00:00Z'
+            type: string
+        - description: End time for the query in ISO (RFC3339 - ISO 8601) format
+          in: query
+          name: to
+          required: true
+          schema:
+            example: '2023-09-20T17:00:00Z'
+            type: string
+        - description: Filter events by type 'config' or 'toggle'
+          in: query
+          name: type
+          schema:
+            enum:
+              - config
+              - toggle
+            type: string
+        - description: >-
+            Filter events by type toggle value. Applicable to type='toggle'
+            events only.
+          in: query
+          name: toggle
+          schema:
+            enum:
+              - 'on'
+              - 'off'
+            type: string
+        - description: >-
+            Filter events by WARP configuration name changed from or to.
+            Applicable to type='config' events only.
+          in: query
+          name: config_name
+          schema:
+            example: MASQUE
+            type: string
+        - description: Filter events by account name.
+          in: query
+          name: account_name
+          schema:
+            example: Myorg
+            type: string
+        - description: Sort response by event timestamp.
+          in: query
+          name: sort_order
+          schema:
+            default: ASC
+            enum:
+              - ASC
+              - DESC
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/digital-experience-monitoring_api-response-collection
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/digital-experience-monitoring_warp_events_response
+          description: success response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/digital-experience-monitoring_api-response-common-failure
+          description: List WARP change events failure response
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List WARP change events.
+      tags:
+        - WARP Change Events
+      x-api-token-group:
+        - Cloudflare DEX Write
+        - Cloudflare DEX Read
+        - Zero Trust Report
+        - Zero Trust Read
+components:
+  schemas:
+    digital-experience-monitoring_account_identifier:
+      example: 01a7362d577a6c3019a474fd6f485823
+      maxLength: 32
+      readOnly: true
+      type: string
+    digital-experience-monitoring_api-response-collection:
+      allOf:
+        - $ref: >-
+            #/components/schemas/digital-experience-monitoring_api-response-common
+        - properties:
+            result_info:
+              properties:
+                count:
+                  description: Total number of results for the requested service.
+                  example: 1
+                  type: number
+                page:
+                  description: Current page within paginated list of results.
+                  example: 1
+                  type: number
+                per_page:
+                  description: Number of results per page of results.
+                  example: 20
+                  type: number
+                total_count:
+                  description: Total results available without any search parameters.
+                  example: 2000
+                  type: number
+              type: object
+          type: object
+      type: object
+    digital-experience-monitoring_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/digital-experience-monitoring_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/digital-experience-monitoring_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    digital-experience-monitoring_warp_events_response:
+      items:
+        oneOf:
+          - $ref: >-
+              #/components/schemas/digital-experience-monitoring_warp_toggle_change_event
+          - $ref: >-
+              #/components/schemas/digital-experience-monitoring_warp_config_change_event
+      type: array

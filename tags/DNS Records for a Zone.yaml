@@ -1,0 +1,1065 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/dns_records:
+    get:
+      description: List, search, sort, and filter a zones' DNS records.
+      operationId: dns-records-for-a-zone-list-dns-records
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+        - in: query
+          name: name
+          schema:
+            description: >
+              Exact value of the DNS record name. This is a convenience alias
+              for `name.exact`.
+            example: www.example.com
+            type: string
+        - in: query
+          name: name.exact
+          schema:
+            description: >
+              Exact value of the DNS record name. Name filters are
+              case-insensitive.
+            example: www.example.com
+            type: string
+        - in: query
+          name: name.contains
+          schema:
+            description: >
+              Substring of the DNS record name. Name filters are
+              case-insensitive.
+            example: w.example.
+            type: string
+        - in: query
+          name: name.startswith
+          schema:
+            description: |
+              Prefix of the DNS record name. Name filters are case-insensitive.
+            example: www.example
+            type: string
+        - in: query
+          name: name.endswith
+          schema:
+            description: |
+              Suffix of the DNS record name. Name filters are case-insensitive.
+            example: .example.com
+            type: string
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/dns-records_type'
+        - in: query
+          name: content
+          schema:
+            description: >
+              Exact value of the DNS record content. This is a convenience alias
+              for `content.exact`.
+            example: 127.0.0.1
+            type: string
+        - in: query
+          name: content.exact
+          schema:
+            description: >
+              Exact value of the DNS record content. Content filters are
+              case-insensitive.
+            example: 127.0.0.1
+            type: string
+        - in: query
+          name: content.contains
+          schema:
+            description: >
+              Substring of the DNS record content. Content filters are
+              case-insensitive.
+            example: 7.0.0.
+            type: string
+        - in: query
+          name: content.startswith
+          schema:
+            description: >
+              Prefix of the DNS record content. Content filters are
+              case-insensitive.
+            example: 127.0.
+            type: string
+        - in: query
+          name: content.endswith
+          schema:
+            description: >
+              Suffix of the DNS record content. Content filters are
+              case-insensitive.
+            example: .0.1
+            type: string
+        - in: query
+          name: proxied
+          schema:
+            $ref: '#/components/schemas/dns-records_proxied'
+        - in: query
+          name: match
+          schema:
+            $ref: '#/components/schemas/dns-records_match'
+        - in: query
+          name: comment
+          schema:
+            description: >
+              Exact value of the DNS record comment. This is a convenience alias
+              for `comment.exact`.
+            example: Hello, world
+            type: string
+        - in: query
+          name: comment.present
+          schema:
+            description: >
+              If this parameter is present, only records *with* a comment are
+              returned.
+            type: string
+        - in: query
+          name: comment.absent
+          schema:
+            description: >
+              If this parameter is present, only records *without* a comment are
+              returned.
+            type: string
+        - in: query
+          name: comment.exact
+          schema:
+            description: >
+              Exact value of the DNS record comment. Comment filters are
+              case-insensitive.
+            example: Hello, world
+            type: string
+        - in: query
+          name: comment.contains
+          schema:
+            description: >
+              Substring of the DNS record comment. Comment filters are
+              case-insensitive.
+            example: ello, worl
+            type: string
+        - in: query
+          name: comment.startswith
+          schema:
+            description: >
+              Prefix of the DNS record comment. Comment filters are
+              case-insensitive.
+            example: Hello, w
+            type: string
+        - in: query
+          name: comment.endswith
+          schema:
+            description: >
+              Suffix of the DNS record comment. Comment filters are
+              case-insensitive.
+            example: o, world
+            type: string
+        - in: query
+          name: tag
+          schema:
+            description: >
+              Condition on the DNS record tag.
+
+
+              Parameter values can be of the form `<tag-name>:<tag-value>` to
+              search for an exact `name:value` pair, or just `<tag-name>` to
+              search for records with a specific tag name regardless of its
+              value.
+
+
+              This is a convenience shorthand for the more powerful
+              `tag.<predicate>` parameters.
+
+              Examples:
+
+              - `tag=important` is equivalent to `tag.present=important`
+
+              - `tag=team:DNS` is equivalent to `tag.exact=team:DNS`
+            example: team:DNS
+            type: string
+        - in: query
+          name: tag.present
+          schema:
+            description: >
+              Name of a tag which must be present on the DNS record. Tag filters
+              are case-insensitive.
+            example: important
+            type: string
+        - in: query
+          name: tag.absent
+          schema:
+            description: >
+              Name of a tag which must *not* be present on the DNS record. Tag
+              filters are case-insensitive.
+            example: important
+            type: string
+        - in: query
+          name: tag.exact
+          schema:
+            description: >
+              A tag and value, of the form `<tag-name>:<tag-value>`. The API
+              will only return DNS records that have a tag named `<tag-name>`
+              whose value is `<tag-value>`. Tag filters are case-insensitive.
+            example: greeting:Hello, world
+            type: string
+        - in: query
+          name: tag.contains
+          schema:
+            description: >
+              A tag and value, of the form `<tag-name>:<tag-value>`. The API
+              will only return DNS records that have a tag named `<tag-name>`
+              whose value contains `<tag-value>`. Tag filters are
+              case-insensitive.
+            example: greeting:ello, worl
+            type: string
+        - in: query
+          name: tag.startswith
+          schema:
+            description: >
+              A tag and value, of the form `<tag-name>:<tag-value>`. The API
+              will only return DNS records that have a tag named `<tag-name>`
+              whose value starts with `<tag-value>`. Tag filters are
+              case-insensitive.
+            example: greeting:Hello, w
+            type: string
+        - in: query
+          name: tag.endswith
+          schema:
+            description: >
+              A tag and value, of the form `<tag-name>:<tag-value>`. The API
+              will only return DNS records that have a tag named `<tag-name>`
+              whose value ends with `<tag-value>`. Tag filters are
+              case-insensitive.
+            example: greeting:o, world
+            type: string
+        - in: query
+          name: search
+          schema:
+            $ref: '#/components/schemas/dns-records_search'
+        - in: query
+          name: tag_match
+          schema:
+            $ref: '#/components/schemas/dns-records_tag_match'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/dns-records_page'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/dns-records_per_page'
+        - in: query
+          name: order
+          schema:
+            $ref: '#/components/schemas/dns-records_order'
+        - in: query
+          name: direction
+          schema:
+            $ref: '#/components/schemas/dns-records_direction'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_collection'
+          description: List DNS Records response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_collection'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: List DNS Records response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List DNS Records
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Read
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:read'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: |
+        Create a new DNS record for a zone.
+
+        Notes:
+        - A/AAAA records cannot exist on the same name as CNAME records.
+        - NS records cannot exist on the same name as any other record type.
+        - Domain names are always represented in Punycode, even if Unicode
+          characters were used when creating the record.
+      operationId: dns-records-for-a-zone-create-dns-record
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dns-records_dns-record-post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_single'
+          description: Create DNS Record response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_single'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Create DNS Record response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create DNS Record
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/dns_records/batch:
+    post:
+      description: >
+        Send a Batch of DNS Record API calls to be executed together.
+
+
+        Notes:
+
+        - Although Cloudflare will execute the batched operations in a single
+        database transaction, Cloudflare's distributed KV store must treat each
+        record change as a single key-value pair. This means that the
+        propagation of changes is not atomic. See [the
+        documentation](https://developers.cloudflare.com/dns/manage-dns-records/how-to/batch-record-changes/
+        "Batch DNS records") for more information.
+
+        - The operations you specify within the /batch request body are always
+        executed in the following order:
+
+            - Deletes
+            - Patches
+            - Puts
+            - Posts
+      operationId: dns-records-for-a-zone-batch-dns-records
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dns-records_dns-request-batch-object'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_batch'
+          description: Batch DNS Records response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Batch DNS Records response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Batch DNS Records
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:batch'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/dns_records/export:
+    get:
+      description: >-
+        You can export your [BIND
+        config](https://en.wikipedia.org/wiki/Zone_file "Zone file") through
+        this endpoint.
+
+
+        See [the
+        documentation](https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/
+        "Import and export records") for more information.
+      operationId: dns-records-for-a-zone-export-dns-records
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                description: Exported BIND zone file.
+                example: |
+                  www.example.com. 300 IN  A 127.0.0.1
+                type: string
+          description: Export DNS Records response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_api-response-common-failure'
+          description: Export DNS Records response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Export DNS Records
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Read
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:read'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/dns_records/import:
+    post:
+      description: >-
+        You can upload your [BIND
+        config](https://en.wikipedia.org/wiki/Zone_file "Zone file") through
+        this endpoint. It assumes that cURL is called from a location with
+        bind_config.txt (valid BIND config) present.
+
+
+        See [the
+        documentation](https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/
+        "Import and export records") for more information.
+      operationId: dns-records-for-a-zone-import-dns-records
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  description: >
+                    BIND config to import.
+
+
+                    **Tip:** When using cURL, a file can be uploaded using
+                    `--form 'file=@bind_config.txt'`.
+                  example: www.example.com. 300 IN  A 127.0.0.1
+                  type: string
+                proxied:
+                  default: 'false'
+                  description: >-
+                    Whether or not proxiable records should receive the
+                    performance and security benefits of Cloudflare.
+
+
+                    The value should be either `true` or `false`.
+                  example: 'true'
+                  type: string
+              required:
+                - file
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_import_scan'
+          description: Import DNS Records response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_import_scan'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Import DNS Records response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Import DNS Records
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/dns_records/scan:
+    post:
+      description: >-
+        Scan for common DNS records on your domain and automatically add them to
+        your zone. Useful if you haven't updated your nameservers yet.
+      operationId: dns-records-for-a-zone-scan-dns-records
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_import_scan'
+          description: Scan DNS Records response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_import_scan'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Scan DNS Records response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Scan DNS Records
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /zones/{zone_id}/dns_records/{dns_record_id}:
+    get:
+      operationId: dns-records-for-a-zone-dns-record-details
+      parameters:
+        - in: path
+          name: dns_record_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_single'
+          description: DNS Record Details response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_single'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: DNS Record Details response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: DNS Record Details
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Read
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:read'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: |
+        Overwrite an existing DNS record.
+
+        Notes:
+        - A/AAAA records cannot exist on the same name as CNAME records.
+        - NS records cannot exist on the same name as any other record type.
+        - Domain names are always represented in Punycode, even if Unicode
+          characters were used when creating the record.
+      operationId: dns-records-for-a-zone-update-dns-record
+      parameters:
+        - in: path
+          name: dns_record_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dns-records_dns-record-post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_single'
+          description: Update DNS Record response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_single'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Update DNS Record response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Overwrite DNS Record
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    patch:
+      description: |
+        Update an existing DNS record.
+
+        Notes:
+        - A/AAAA records cannot exist on the same name as CNAME records.
+        - NS records cannot exist on the same name as any other record type.
+        - Domain names are always represented in Punycode, even if Unicode
+          characters were used when creating the record.
+      operationId: dns-records-for-a-zone-patch-dns-record
+      parameters:
+        - in: path
+          name: dns_record_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dns-records_dns-record-patch'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dns-records_dns_response_single'
+          description: Patch DNS Record response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/dns-records_dns_response_single'
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Patch DNS Record response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update DNS Record
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      operationId: dns-records-for-a-zone-delete-dns-record
+      parameters:
+        - in: path
+          name: dns_record_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/dns-records_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/dns-records_identifier'
+                type: object
+          description: Delete DNS Record response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      result:
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/dns-records_identifier'
+                    type: object
+                  - $ref: >-
+                      #/components/schemas/dns-records_api-response-common-failure
+          description: Delete DNS Record response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete DNS Record
+      tags:
+        - DNS Records for a Zone
+      x-api-token-group:
+        - DNS Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#dns_records:edit'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    dns-records_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/dns-records_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/dns-records_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    dns-records_direction:
+      default: asc
+      description: Direction to order DNS records in.
+      enum:
+        - asc
+        - desc
+      type: string
+    dns-records_dns-record-patch:
+      anyOf:
+        - $ref: '#/components/schemas/dns-records_dns-record-without-data'
+        - $ref: '#/components/schemas/dns-records_dns-record-with-data'
+      type: object
+    dns-records_dns-record-post:
+      anyOf:
+        - $ref: '#/components/schemas/dns-records_dns-record-without-data'
+        - $ref: '#/components/schemas/dns-records_dns-record-with-data'
+      type: object
+    dns-records_dns-request-batch-object:
+      properties:
+        deletes:
+          items:
+            $ref: '#/components/schemas/dns-records_dns-record-batch-delete'
+          type: array
+        patches:
+          items:
+            $ref: '#/components/schemas/dns-records_dns-record-batch-patch'
+          type: array
+        posts:
+          items:
+            $ref: '#/components/schemas/dns-records_dns-record-batch-post'
+          type: array
+        puts:
+          items:
+            $ref: '#/components/schemas/dns-records_dns-record-batch-put'
+          type: array
+      type: object
+    dns-records_dns_response_batch:
+      allOf:
+        - $ref: '#/components/schemas/dns-records_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/dns-records_dns-response-batch-object'
+          type: object
+    dns-records_dns_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/dns-records_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/dns-records_dns-record-response'
+              type: array
+          type: object
+    dns-records_dns_response_import_scan:
+      allOf:
+        - $ref: '#/components/schemas/dns-records_api-response-single'
+        - properties:
+            result:
+              properties:
+                recs_added:
+                  description: Number of DNS records added.
+                  example: 5
+                  type: number
+                total_records_parsed:
+                  description: Total number of DNS records parsed.
+                  example: 5
+                  type: number
+              type: object
+          type: object
+    dns-records_dns_response_single:
+      allOf:
+        - $ref: '#/components/schemas/dns-records_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/dns-records_dns-record-response'
+          type: object
+    dns-records_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    dns-records_match:
+      default: all
+      description: >
+        Whether to match all search requirements or at least one (any). If set
+        to `all`, acts like a logical AND between filters. If set to `any`, acts
+        like a logical OR instead. Note that the interaction between tag filters
+        is controlled by the `tag-match` parameter instead.
+      enum:
+        - any
+        - all
+      example: any
+      type: string
+    dns-records_order:
+      default: type
+      description: Field to order DNS records by.
+      enum:
+        - type
+        - name
+        - content
+        - ttl
+        - proxied
+      type: string
+    dns-records_page:
+      default: 1
+      description: Page number of paginated results.
+      minimum: 1
+      type: number
+    dns-records_per_page:
+      default: 100
+      description: Number of DNS records per page.
+      example: 5
+      maximum: 5000000
+      minimum: 1
+      type: number
+    dns-records_proxied:
+      default: false
+      description: >-
+        Whether the record is receiving the performance and security benefits of
+        Cloudflare.
+      example: true
+      type: boolean
+    dns-records_search:
+      description: >
+        Allows searching in multiple properties of a DNS record simultaneously.
+        This parameter is intended for human users, not automation. Its exact
+        behavior is intentionally left unspecified and is subject to change in
+        the future. This parameter works independently of the `match` setting.
+        For automated searches, please use the other available parameters.
+      example: www.cloudflare.com
+      type: string
+    dns-records_tag_match:
+      default: all
+      description: >
+        Whether to match all tag search requirements or at least one (any). If
+        set to `all`, acts like a logical AND between tag filters. If set to
+        `any`, acts like a logical OR instead. Note that the regular `match`
+        parameter is still used to combine the resulting condition with other
+        filters that aren't related to tags.
+      enum:
+        - any
+        - all
+      example: any
+      type: string
+    dns-records_type:
+      description: Record type.
+      enum:
+        - A
+        - AAAA
+        - CAA
+        - CERT
+        - CNAME
+        - DNSKEY
+        - DS
+        - HTTPS
+        - LOC
+        - MX
+        - NAPTR
+        - NS
+        - OPENPGPKEY
+        - PTR
+        - SMIMEA
+        - SRV
+        - SSHFP
+        - SVCB
+        - TLSA
+        - TXT
+        - URI
+      example: A
+      type: string

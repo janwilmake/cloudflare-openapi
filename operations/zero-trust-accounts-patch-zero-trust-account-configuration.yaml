@@ -1,0 +1,1545 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/gateway/configuration:
+    patch:
+      description: >-
+        Patches the current Zero Trust account configuration. This endpoint can
+        update a single subcollection of settings such as `antivirus`,
+        `tls_decrypt`, `activity_log`, `block_page`, `browser_isolation`,
+        `fips`, `body_scanning`, or `certificate`, without updating the entire
+        configuration object. Returns an error if any collection of settings is
+        not properly configured.
+      operationId: zero-trust-accounts-patch-zero-trust-account-configuration
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            example: 699d98642c564d2e855e9661899b7252
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Account settings
+              properties:
+                settings:
+                  description: Account settings
+                  properties:
+                    activity_log:
+                      description: Activity log settings.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: Enable activity logging.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    antivirus:
+                      description: Anti-virus settings.
+                      nullable: true
+                      properties:
+                        enabled_download_phase:
+                          description: Enable anti-virus scanning on downloads.
+                          example: false
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                          x-stainless-terraform-configurability: computed_optional
+                        enabled_upload_phase:
+                          description: Enable anti-virus scanning on uploads.
+                          example: false
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                          x-stainless-terraform-configurability: computed_optional
+                        fail_closed:
+                          description: Block requests for files that cannot be scanned.
+                          example: false
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                          x-stainless-terraform-configurability: computed_optional
+                        notification_settings:
+                          description: >-
+                            Configure a message to display on the user's device
+                            when an antivirus search is performed.
+                          nullable: true
+                          properties:
+                            enabled:
+                              description: Set notification on
+                              type: boolean
+                              x-auditable: true
+                            include_context:
+                              description: >-
+                                If true, context information will be passed as
+                                query parameters
+                              type: boolean
+                              x-auditable: true
+                            msg:
+                              description: Customize the message shown in the notification.
+                              type: string
+                              x-auditable: true
+                            support_url:
+                              description: >-
+                                Optional URL to direct users to additional
+                                information. If not set, the notification will
+                                open a block page.
+                              type: string
+                              x-auditable: true
+                          type: object
+                          x-stainless-terraform-configurability: computed_optional
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    block_page:
+                      description: Block page layout settings.
+                      nullable: true
+                      properties:
+                        background_color:
+                          description: >-
+                            If mode is customized_block_page: block page
+                            background color in #rrggbb format.
+                          type: string
+                          x-auditable: true
+                        enabled:
+                          description: >-
+                            Enable only cipher suites and TLS versions compliant
+                            with FIPS 140-2.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                        footer_text:
+                          description: >-
+                            If mode is customized_block_page: block page footer
+                            text.
+                          example: '--footer--'
+                          type: string
+                          x-auditable: true
+                        header_text:
+                          description: >-
+                            If mode is customized_block_page: block page header
+                            text.
+                          example: '--header--'
+                          type: string
+                          x-auditable: true
+                        include_context:
+                          description: >-
+                            If mode is redirect_uri: when enabled, context will
+                            be appended to target_uri as query parameters.
+                          type: boolean
+                          x-auditable: true
+                        logo_path:
+                          description: >-
+                            If mode is customized_block_page: full URL to the
+                            logo file.
+                          example: https://logos.com/a.png
+                          type: string
+                          x-auditable: true
+                        mailto_address:
+                          description: >-
+                            If mode is customized_block_page: admin email for
+                            users to contact.
+                          example: admin@example.com
+                          type: string
+                          x-auditable: true
+                        mailto_subject:
+                          description: >-
+                            If mode is customized_block_page: subject line for
+                            emails created from block page.
+                          example: Blocked User Inquiry
+                          type: string
+                          x-auditable: true
+                        mode:
+                          default: ''
+                          description: >-
+                            Controls whether the user is redirected to a
+                            Cloudflare-hosted block page or to a
+                            customer-provided URI.
+                          enum:
+                            - customized_block_page
+                            - redirect_uri
+                          type: string
+                          x-auditable: true
+                        name:
+                          description: 'If mode is customized_block_page: block page title.'
+                          example: Cloudflare
+                          type: string
+                          x-auditable: true
+                        read_only:
+                          description: >-
+                            This setting was shared via the Orgs API and cannot
+                            be edited by the current account
+                          nullable: true
+                          readOnly: true
+                          type: boolean
+                          x-auditable: true
+                        source_account:
+                          description: Account tag of account that shared this setting
+                          nullable: true
+                          readOnly: true
+                          type: string
+                          x-auditable: true
+                        suppress_footer:
+                          description: >-
+                            If mode is customized_block_page: suppress detailed
+                            info at the bottom of the block page.
+                          example: false
+                          type: boolean
+                        target_uri:
+                          description: >-
+                            If mode is redirect_uri: URI to which the user
+                            should be redirected.
+                          format: uri
+                          type: string
+                          x-auditable: true
+                        version:
+                          description: Version number of the setting
+                          example: 1
+                          nullable: true
+                          readOnly: true
+                          type: integer
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    body_scanning:
+                      description: DLP body scanning settings.
+                      nullable: true
+                      properties:
+                        inspection_mode:
+                          description: >-
+                            Set the inspection mode to either `deep` or
+                            `shallow`.
+                          enum:
+                            - deep
+                            - shallow
+                          example: deep
+                          type: string
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    browser_isolation:
+                      description: Browser isolation settings.
+                      nullable: true
+                      properties:
+                        non_identity_enabled:
+                          description: >-
+                            Enable non-identity onramp support for Browser
+                            Isolation.
+                          example: true
+                          type: boolean
+                          x-auditable: true
+                        url_browser_isolation_enabled:
+                          description: Enable Clientless Browser Isolation.
+                          example: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    certificate:
+                      description: >-
+                        Certificate settings for Gateway TLS interception. If
+                        not specified, the Cloudflare Root CA will be used.
+                      nullable: true
+                      properties:
+                        id:
+                          description: >-
+                            UUID of certificate to be used for interception.
+                            Certificate must be available (previously called
+                            'active') on the edge. A nil UUID will indicate the
+                            Cloudflare Root CA should be used.
+                          example: d1b364c5-1311-466e-a194-f0e943e0799f
+                          type: string
+                          x-auditable: true
+                      required:
+                        - id
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    custom_certificate:
+                      deprecated: true
+                      description: >-
+                        Custom certificate settings for BYO-PKI. (deprecated and
+                        replaced by `certificate`)
+                      nullable: true
+                      properties:
+                        binding_status:
+                          description: Certificate status (internal).
+                          example: pending_deployment
+                          readOnly: true
+                          type: string
+                          x-auditable: true
+                        enabled:
+                          description: >-
+                            Enable use of custom certificate authority for
+                            signing Gateway traffic.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                        id:
+                          description: >-
+                            UUID of certificate (ID from MTLS certificate
+                            store).
+                          example: d1b364c5-1311-466e-a194-f0e943e0799f
+                          type: string
+                          x-auditable: true
+                        updated_at:
+                          format: date-time
+                          readOnly: true
+                          type: string
+                      required:
+                        - enabled
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    extended_email_matching:
+                      description: Extended e-mail matching settings.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: >-
+                            Enable matching all variants of user emails (with +
+                            or . modifiers) used as criteria in Firewall
+                            policies.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                        read_only:
+                          description: >-
+                            This setting was shared via the Orgs API and cannot
+                            be edited by the current account
+                          readOnly: true
+                          type: boolean
+                          x-auditable: true
+                          x-stainless-terraform-configurability: optional
+                        source_account:
+                          description: Account tag of account that shared this setting
+                          readOnly: true
+                          type: string
+                          x-auditable: true
+                          x-stainless-terraform-configurability: optional
+                        version:
+                          description: Version number of the setting
+                          example: 1
+                          readOnly: true
+                          type: integer
+                          x-auditable: true
+                          x-stainless-terraform-configurability: optional
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    fips:
+                      description: FIPS settings.
+                      nullable: true
+                      properties:
+                        tls:
+                          description: >-
+                            Enable only cipher suites and TLS versions compliant
+                            with FIPS 140-2.
+                          example: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    host_selector:
+                      description: Setting to enable host selector in egress policies.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: Enable filtering via hosts for egress policies.
+                          example: false
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: computed_optional
+                    inspection:
+                      description: Setting to define inspection settings
+                      nullable: true
+                      properties:
+                        mode:
+                          description: >
+                            Defines the mode of inspection the proxy will use.
+
+                            - static: Gateway will use static inspection to
+                            inspect HTTP on TCP(80). If TLS decryption is on,
+                            Gateway will inspect HTTPS traffic on TCP(443) &
+                            UDP(443).
+
+                            - dynamic: Gateway will use protocol detection to
+                            dynamically inspect HTTP and HTTPS traffic on any
+                            port. TLS decryption must be on to inspect HTTPS
+                            traffic.
+                          enum:
+                            - static
+                            - dynamic
+                          example: static
+                          type: string
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: computed_optional
+                    protocol_detection:
+                      description: Protocol Detection settings.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: >-
+                            Enable detecting protocol on initial bytes of client
+                            traffic.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    sandbox:
+                      description: Sandbox settings.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: Enable sandbox.
+                          example: true
+                          nullable: true
+                          type: boolean
+                          x-auditable: true
+                        fallback_action:
+                          description: Action to take when the file cannot be scanned.
+                          enum:
+                            - allow
+                            - block
+                          type: string
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                    tls_decrypt:
+                      description: TLS interception settings.
+                      nullable: true
+                      properties:
+                        enabled:
+                          description: Enable inspecting encrypted HTTP traffic.
+                          example: true
+                          type: boolean
+                          x-auditable: true
+                      type: object
+                      x-stainless-terraform-configurability: optional
+                  type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          success:
+                            description: Whether the API call was successful
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                        type: object
+                    type: object
+                  - properties:
+                      result:
+                        allOf:
+                          - description: Account settings
+                            properties:
+                              settings:
+                                description: Account settings
+                                properties:
+                                  activity_log:
+                                    description: Activity log settings.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: Enable activity logging.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  antivirus:
+                                    description: Anti-virus settings.
+                                    nullable: true
+                                    properties:
+                                      enabled_download_phase:
+                                        description: Enable anti-virus scanning on downloads.
+                                        example: false
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      enabled_upload_phase:
+                                        description: Enable anti-virus scanning on uploads.
+                                        example: false
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      fail_closed:
+                                        description: >-
+                                          Block requests for files that cannot be
+                                          scanned.
+                                        example: false
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: computed_optional
+                                      notification_settings:
+                                        description: >-
+                                          Configure a message to display on the
+                                          user's device when an antivirus search
+                                          is performed.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: Set notification on
+                                            type: boolean
+                                            x-auditable: true
+                                          include_context:
+                                            description: >-
+                                              If true, context information will be
+                                              passed as query parameters
+                                            type: boolean
+                                            x-auditable: true
+                                          msg:
+                                            description: >-
+                                              Customize the message shown in the
+                                              notification.
+                                            type: string
+                                            x-auditable: true
+                                          support_url:
+                                            description: >-
+                                              Optional URL to direct users to
+                                              additional information. If not set, the
+                                              notification will open a block page.
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: computed_optional
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  block_page:
+                                    description: Block page layout settings.
+                                    nullable: true
+                                    properties:
+                                      background_color:
+                                        description: >-
+                                          If mode is customized_block_page: block
+                                          page background color in #rrggbb format.
+                                        type: string
+                                        x-auditable: true
+                                      enabled:
+                                        description: >-
+                                          Enable only cipher suites and TLS
+                                          versions compliant with FIPS 140-2.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                      footer_text:
+                                        description: >-
+                                          If mode is customized_block_page: block
+                                          page footer text.
+                                        example: '--footer--'
+                                        type: string
+                                        x-auditable: true
+                                      header_text:
+                                        description: >-
+                                          If mode is customized_block_page: block
+                                          page header text.
+                                        example: '--header--'
+                                        type: string
+                                        x-auditable: true
+                                      include_context:
+                                        description: >-
+                                          If mode is redirect_uri: when enabled,
+                                          context will be appended to target_uri
+                                          as query parameters.
+                                        type: boolean
+                                        x-auditable: true
+                                      logo_path:
+                                        description: >-
+                                          If mode is customized_block_page: full
+                                          URL to the logo file.
+                                        example: https://logos.com/a.png
+                                        type: string
+                                        x-auditable: true
+                                      mailto_address:
+                                        description: >-
+                                          If mode is customized_block_page: admin
+                                          email for users to contact.
+                                        example: admin@example.com
+                                        type: string
+                                        x-auditable: true
+                                      mailto_subject:
+                                        description: >-
+                                          If mode is customized_block_page:
+                                          subject line for emails created from
+                                          block page.
+                                        example: Blocked User Inquiry
+                                        type: string
+                                        x-auditable: true
+                                      mode:
+                                        default: ''
+                                        description: >-
+                                          Controls whether the user is redirected
+                                          to a Cloudflare-hosted block page or to
+                                          a customer-provided URI.
+                                        enum:
+                                          - customized_block_page
+                                          - redirect_uri
+                                        type: string
+                                        x-auditable: true
+                                      name:
+                                        description: >-
+                                          If mode is customized_block_page: block
+                                          page title.
+                                        example: Cloudflare
+                                        type: string
+                                        x-auditable: true
+                                      read_only:
+                                        description: >-
+                                          This setting was shared via the Orgs API
+                                          and cannot be edited by the current
+                                          account
+                                        nullable: true
+                                        readOnly: true
+                                        type: boolean
+                                        x-auditable: true
+                                      source_account:
+                                        description: >-
+                                          Account tag of account that shared this
+                                          setting
+                                        nullable: true
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      suppress_footer:
+                                        description: >-
+                                          If mode is customized_block_page:
+                                          suppress detailed info at the bottom of
+                                          the block page.
+                                        example: false
+                                        type: boolean
+                                      target_uri:
+                                        description: >-
+                                          If mode is redirect_uri: URI to which
+                                          the user should be redirected.
+                                        format: uri
+                                        type: string
+                                        x-auditable: true
+                                      version:
+                                        description: Version number of the setting
+                                        example: 1
+                                        nullable: true
+                                        readOnly: true
+                                        type: integer
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  body_scanning:
+                                    description: DLP body scanning settings.
+                                    nullable: true
+                                    properties:
+                                      inspection_mode:
+                                        description: >-
+                                          Set the inspection mode to either `deep`
+                                          or `shallow`.
+                                        enum:
+                                          - deep
+                                          - shallow
+                                        example: deep
+                                        type: string
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  browser_isolation:
+                                    description: Browser isolation settings.
+                                    nullable: true
+                                    properties:
+                                      non_identity_enabled:
+                                        description: >-
+                                          Enable non-identity onramp support for
+                                          Browser Isolation.
+                                        example: true
+                                        type: boolean
+                                        x-auditable: true
+                                      url_browser_isolation_enabled:
+                                        description: Enable Clientless Browser Isolation.
+                                        example: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  certificate:
+                                    description: >-
+                                      Certificate settings for Gateway TLS
+                                      interception. If not specified, the
+                                      Cloudflare Root CA will be used.
+                                    nullable: true
+                                    properties:
+                                      id:
+                                        description: >-
+                                          UUID of certificate to be used for
+                                          interception. Certificate must be
+                                          available (previously called 'active')
+                                          on the edge. A nil UUID will indicate
+                                          the Cloudflare Root CA should be used.
+                                        example: d1b364c5-1311-466e-a194-f0e943e0799f
+                                        type: string
+                                        x-auditable: true
+                                    required:
+                                      - id
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  custom_certificate:
+                                    deprecated: true
+                                    description: >-
+                                      Custom certificate settings for BYO-PKI.
+                                      (deprecated and replaced by `certificate`)
+                                    nullable: true
+                                    properties:
+                                      binding_status:
+                                        description: Certificate status (internal).
+                                        example: pending_deployment
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                      enabled:
+                                        description: >-
+                                          Enable use of custom certificate
+                                          authority for signing Gateway traffic.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                      id:
+                                        description: >-
+                                          UUID of certificate (ID from MTLS
+                                          certificate store).
+                                        example: d1b364c5-1311-466e-a194-f0e943e0799f
+                                        type: string
+                                        x-auditable: true
+                                      updated_at:
+                                        format: date-time
+                                        readOnly: true
+                                        type: string
+                                    required:
+                                      - enabled
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  extended_email_matching:
+                                    description: Extended e-mail matching settings.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: >-
+                                          Enable matching all variants of user
+                                          emails (with + or . modifiers) used as
+                                          criteria in Firewall policies.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                      read_only:
+                                        description: >-
+                                          This setting was shared via the Orgs API
+                                          and cannot be edited by the current
+                                          account
+                                        readOnly: true
+                                        type: boolean
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: optional
+                                      source_account:
+                                        description: >-
+                                          Account tag of account that shared this
+                                          setting
+                                        readOnly: true
+                                        type: string
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: optional
+                                      version:
+                                        description: Version number of the setting
+                                        example: 1
+                                        readOnly: true
+                                        type: integer
+                                        x-auditable: true
+                                        x-stainless-terraform-configurability: optional
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  fips:
+                                    description: FIPS settings.
+                                    nullable: true
+                                    properties:
+                                      tls:
+                                        description: >-
+                                          Enable only cipher suites and TLS
+                                          versions compliant with FIPS 140-2.
+                                        example: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  host_selector:
+                                    description: >-
+                                      Setting to enable host selector in egress
+                                      policies.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: >-
+                                          Enable filtering via hosts for egress
+                                          policies.
+                                        example: false
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: computed_optional
+                                  inspection:
+                                    description: Setting to define inspection settings
+                                    nullable: true
+                                    properties:
+                                      mode:
+                                        description: >
+                                          Defines the mode of inspection the proxy
+                                          will use.
+
+                                          - static: Gateway will use static
+                                          inspection to inspect HTTP on TCP(80).
+                                          If TLS decryption is on, Gateway will
+                                          inspect HTTPS traffic on TCP(443) &
+                                          UDP(443).
+
+                                          - dynamic: Gateway will use protocol
+                                          detection to dynamically inspect HTTP
+                                          and HTTPS traffic on any port. TLS
+                                          decryption must be on to inspect HTTPS
+                                          traffic.
+                                        enum:
+                                          - static
+                                          - dynamic
+                                        example: static
+                                        type: string
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: computed_optional
+                                  protocol_detection:
+                                    description: Protocol Detection settings.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: >-
+                                          Enable detecting protocol on initial
+                                          bytes of client traffic.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  sandbox:
+                                    description: Sandbox settings.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: Enable sandbox.
+                                        example: true
+                                        nullable: true
+                                        type: boolean
+                                        x-auditable: true
+                                      fallback_action:
+                                        description: >-
+                                          Action to take when the file cannot be
+                                          scanned.
+                                        enum:
+                                          - allow
+                                          - block
+                                        type: string
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                  tls_decrypt:
+                                    description: TLS interception settings.
+                                    nullable: true
+                                    properties:
+                                      enabled:
+                                        description: >-
+                                          Enable inspecting encrypted HTTP
+                                          traffic.
+                                        example: true
+                                        type: boolean
+                                        x-auditable: true
+                                    type: object
+                                    x-stainless-terraform-configurability: optional
+                                type: object
+                          - properties:
+                              created_at:
+                                example: '2014-01-01T05:20:00.12345Z'
+                                format: date-time
+                                readOnly: true
+                                type: string
+                              updated_at:
+                                example: '2014-01-01T05:20:00.12345Z'
+                                format: date-time
+                                readOnly: true
+                                type: string
+                        type: object
+                type: object
+          description: Update Zero Trust account configuration response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - allOf:
+                          - properties:
+                              errors:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    message:
+                                      type: string
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              messages:
+                                example: []
+                                items:
+                                  properties:
+                                    code:
+                                      minimum: 1000
+                                      type: integer
+                                    message:
+                                      type: string
+                                  required:
+                                    - code
+                                    - message
+                                  type: object
+                                  uniqueItems: true
+                                type: array
+                              success:
+                                description: Whether the API call was successful
+                                enum:
+                                  - true
+                                example: true
+                                type: boolean
+                            required:
+                              - success
+                              - errors
+                              - messages
+                            type: object
+                        type: object
+                      - properties:
+                          result:
+                            allOf:
+                              - description: Account settings
+                                properties:
+                                  settings:
+                                    description: Account settings
+                                    properties:
+                                      activity_log:
+                                        description: Activity log settings.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: Enable activity logging.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      antivirus:
+                                        description: Anti-virus settings.
+                                        nullable: true
+                                        properties:
+                                          enabled_download_phase:
+                                            description: Enable anti-virus scanning on downloads.
+                                            example: false
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: computed_optional
+                                          enabled_upload_phase:
+                                            description: Enable anti-virus scanning on uploads.
+                                            example: false
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: computed_optional
+                                          fail_closed:
+                                            description: >-
+                                              Block requests for files that cannot be
+                                              scanned.
+                                            example: false
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: computed_optional
+                                          notification_settings:
+                                            description: >-
+                                              Configure a message to display on the
+                                              user's device when an antivirus search
+                                              is performed.
+                                            nullable: true
+                                            properties:
+                                              enabled:
+                                                description: Set notification on
+                                                type: boolean
+                                                x-auditable: true
+                                              include_context:
+                                                description: >-
+                                                  If true, context information will be
+                                                  passed as query parameters
+                                                type: boolean
+                                                x-auditable: true
+                                              msg:
+                                                description: >-
+                                                  Customize the message shown in the
+                                                  notification.
+                                                type: string
+                                                x-auditable: true
+                                              support_url:
+                                                description: >-
+                                                  Optional URL to direct users to
+                                                  additional information. If not set, the
+                                                  notification will open a block page.
+                                                type: string
+                                                x-auditable: true
+                                            type: object
+                                            x-stainless-terraform-configurability: computed_optional
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      block_page:
+                                        description: Block page layout settings.
+                                        nullable: true
+                                        properties:
+                                          background_color:
+                                            description: >-
+                                              If mode is customized_block_page: block
+                                              page background color in #rrggbb format.
+                                            type: string
+                                            x-auditable: true
+                                          enabled:
+                                            description: >-
+                                              Enable only cipher suites and TLS
+                                              versions compliant with FIPS 140-2.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                          footer_text:
+                                            description: >-
+                                              If mode is customized_block_page: block
+                                              page footer text.
+                                            example: '--footer--'
+                                            type: string
+                                            x-auditable: true
+                                          header_text:
+                                            description: >-
+                                              If mode is customized_block_page: block
+                                              page header text.
+                                            example: '--header--'
+                                            type: string
+                                            x-auditable: true
+                                          include_context:
+                                            description: >-
+                                              If mode is redirect_uri: when enabled,
+                                              context will be appended to target_uri
+                                              as query parameters.
+                                            type: boolean
+                                            x-auditable: true
+                                          logo_path:
+                                            description: >-
+                                              If mode is customized_block_page: full
+                                              URL to the logo file.
+                                            example: https://logos.com/a.png
+                                            type: string
+                                            x-auditable: true
+                                          mailto_address:
+                                            description: >-
+                                              If mode is customized_block_page: admin
+                                              email for users to contact.
+                                            example: admin@example.com
+                                            type: string
+                                            x-auditable: true
+                                          mailto_subject:
+                                            description: >-
+                                              If mode is customized_block_page:
+                                              subject line for emails created from
+                                              block page.
+                                            example: Blocked User Inquiry
+                                            type: string
+                                            x-auditable: true
+                                          mode:
+                                            default: ''
+                                            description: >-
+                                              Controls whether the user is redirected
+                                              to a Cloudflare-hosted block page or to
+                                              a customer-provided URI.
+                                            enum:
+                                              - customized_block_page
+                                              - redirect_uri
+                                            type: string
+                                            x-auditable: true
+                                          name:
+                                            description: >-
+                                              If mode is customized_block_page: block
+                                              page title.
+                                            example: Cloudflare
+                                            type: string
+                                            x-auditable: true
+                                          read_only:
+                                            description: >-
+                                              This setting was shared via the Orgs API
+                                              and cannot be edited by the current
+                                              account
+                                            nullable: true
+                                            readOnly: true
+                                            type: boolean
+                                            x-auditable: true
+                                          source_account:
+                                            description: >-
+                                              Account tag of account that shared this
+                                              setting
+                                            nullable: true
+                                            readOnly: true
+                                            type: string
+                                            x-auditable: true
+                                          suppress_footer:
+                                            description: >-
+                                              If mode is customized_block_page:
+                                              suppress detailed info at the bottom of
+                                              the block page.
+                                            example: false
+                                            type: boolean
+                                          target_uri:
+                                            description: >-
+                                              If mode is redirect_uri: URI to which
+                                              the user should be redirected.
+                                            format: uri
+                                            type: string
+                                            x-auditable: true
+                                          version:
+                                            description: Version number of the setting
+                                            example: 1
+                                            nullable: true
+                                            readOnly: true
+                                            type: integer
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      body_scanning:
+                                        description: DLP body scanning settings.
+                                        nullable: true
+                                        properties:
+                                          inspection_mode:
+                                            description: >-
+                                              Set the inspection mode to either `deep`
+                                              or `shallow`.
+                                            enum:
+                                              - deep
+                                              - shallow
+                                            example: deep
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      browser_isolation:
+                                        description: Browser isolation settings.
+                                        nullable: true
+                                        properties:
+                                          non_identity_enabled:
+                                            description: >-
+                                              Enable non-identity onramp support for
+                                              Browser Isolation.
+                                            example: true
+                                            type: boolean
+                                            x-auditable: true
+                                          url_browser_isolation_enabled:
+                                            description: Enable Clientless Browser Isolation.
+                                            example: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      certificate:
+                                        description: >-
+                                          Certificate settings for Gateway TLS
+                                          interception. If not specified, the
+                                          Cloudflare Root CA will be used.
+                                        nullable: true
+                                        properties:
+                                          id:
+                                            description: >-
+                                              UUID of certificate to be used for
+                                              interception. Certificate must be
+                                              available (previously called 'active')
+                                              on the edge. A nil UUID will indicate
+                                              the Cloudflare Root CA should be used.
+                                            example: d1b364c5-1311-466e-a194-f0e943e0799f
+                                            type: string
+                                            x-auditable: true
+                                        required:
+                                          - id
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      custom_certificate:
+                                        deprecated: true
+                                        description: >-
+                                          Custom certificate settings for BYO-PKI.
+                                          (deprecated and replaced by
+                                          `certificate`)
+                                        nullable: true
+                                        properties:
+                                          binding_status:
+                                            description: Certificate status (internal).
+                                            example: pending_deployment
+                                            readOnly: true
+                                            type: string
+                                            x-auditable: true
+                                          enabled:
+                                            description: >-
+                                              Enable use of custom certificate
+                                              authority for signing Gateway traffic.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                          id:
+                                            description: >-
+                                              UUID of certificate (ID from MTLS
+                                              certificate store).
+                                            example: d1b364c5-1311-466e-a194-f0e943e0799f
+                                            type: string
+                                            x-auditable: true
+                                          updated_at:
+                                            format: date-time
+                                            readOnly: true
+                                            type: string
+                                        required:
+                                          - enabled
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      extended_email_matching:
+                                        description: Extended e-mail matching settings.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: >-
+                                              Enable matching all variants of user
+                                              emails (with + or . modifiers) used as
+                                              criteria in Firewall policies.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                          read_only:
+                                            description: >-
+                                              This setting was shared via the Orgs API
+                                              and cannot be edited by the current
+                                              account
+                                            readOnly: true
+                                            type: boolean
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: optional
+                                          source_account:
+                                            description: >-
+                                              Account tag of account that shared this
+                                              setting
+                                            readOnly: true
+                                            type: string
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: optional
+                                          version:
+                                            description: Version number of the setting
+                                            example: 1
+                                            readOnly: true
+                                            type: integer
+                                            x-auditable: true
+                                            x-stainless-terraform-configurability: optional
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      fips:
+                                        description: FIPS settings.
+                                        nullable: true
+                                        properties:
+                                          tls:
+                                            description: >-
+                                              Enable only cipher suites and TLS
+                                              versions compliant with FIPS 140-2.
+                                            example: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      host_selector:
+                                        description: >-
+                                          Setting to enable host selector in
+                                          egress policies.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: >-
+                                              Enable filtering via hosts for egress
+                                              policies.
+                                            example: false
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: computed_optional
+                                      inspection:
+                                        description: Setting to define inspection settings
+                                        nullable: true
+                                        properties:
+                                          mode:
+                                            description: >
+                                              Defines the mode of inspection the proxy
+                                              will use.
+
+                                              - static: Gateway will use static
+                                              inspection to inspect HTTP on TCP(80).
+                                              If TLS decryption is on, Gateway will
+                                              inspect HTTPS traffic on TCP(443) &
+                                              UDP(443).
+
+                                              - dynamic: Gateway will use protocol
+                                              detection to dynamically inspect HTTP
+                                              and HTTPS traffic on any port. TLS
+                                              decryption must be on to inspect HTTPS
+                                              traffic.
+                                            enum:
+                                              - static
+                                              - dynamic
+                                            example: static
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: computed_optional
+                                      protocol_detection:
+                                        description: Protocol Detection settings.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: >-
+                                              Enable detecting protocol on initial
+                                              bytes of client traffic.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      sandbox:
+                                        description: Sandbox settings.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: Enable sandbox.
+                                            example: true
+                                            nullable: true
+                                            type: boolean
+                                            x-auditable: true
+                                          fallback_action:
+                                            description: >-
+                                              Action to take when the file cannot be
+                                              scanned.
+                                            enum:
+                                              - allow
+                                              - block
+                                            type: string
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                      tls_decrypt:
+                                        description: TLS interception settings.
+                                        nullable: true
+                                        properties:
+                                          enabled:
+                                            description: >-
+                                              Enable inspecting encrypted HTTP
+                                              traffic.
+                                            example: true
+                                            type: boolean
+                                            x-auditable: true
+                                        type: object
+                                        x-stainless-terraform-configurability: optional
+                                    type: object
+                              - properties:
+                                  created_at:
+                                    example: '2014-01-01T05:20:00.12345Z'
+                                    format: date-time
+                                    readOnly: true
+                                    type: string
+                                  updated_at:
+                                    example: '2014-01-01T05:20:00.12345Z'
+                                    format: date-time
+                                    readOnly: true
+                                    type: string
+                            type: object
+                    type: object
+                  - properties:
+                      errors:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example:
+                          - code: 7003
+                            message: No route for the URI
+                        minLength: 1
+                        type: object
+                      messages:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example: []
+                        type: object
+                      result:
+                        enum:
+                          - null
+                        nullable: true
+                        type: object
+                      success:
+                        description: Whether the API call was successful
+                        enum:
+                          - false
+                        example: false
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+          description: Update Zero Trust account configuration response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Patch Zero Trust account configuration
+      tags:
+        - Zero Trust accounts
+      x-api-token-group:
+        - Zero Trust Write

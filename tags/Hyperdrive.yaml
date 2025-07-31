@@ -1,0 +1,476 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/hyperdrive/configs:
+    get:
+      description: Returns a list of Hyperdrives.
+      operationId: list-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-collection'
+                  - properties:
+                      result:
+                        items:
+                          $ref: >-
+                            #/components/schemas/hyperdrive_hyperdrive-config-response
+                        type: array
+                    type: object
+          description: List Hyperdrives Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: List Hyperdrives Failure Response.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: List Hyperdrives
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+        - Hyperdrive Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.list
+    post:
+      description: Creates and returns a new Hyperdrive configuration.
+      operationId: create-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/hyperdrive_hyperdrive-config'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-single'
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/hyperdrive_hyperdrive-config-response
+                    type: object
+          description: Create Hyperdrive Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: Create Hyperdrive Failure Response.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Create Hyperdrive
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.create
+  /accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}:
+    get:
+      description: Returns the specified Hyperdrive configuration.
+      operationId: get-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+        - in: path
+          name: hyperdrive_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-single'
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/hyperdrive_hyperdrive-config-response
+                    type: object
+          description: Get Hyperdrive Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: Get Hyperdrive Failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get Hyperdrive
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+        - Hyperdrive Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.read
+    put:
+      description: Updates and returns the specified Hyperdrive configuration.
+      operationId: update-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+        - in: path
+          name: hyperdrive_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/hyperdrive_hyperdrive-config'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-single'
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/hyperdrive_hyperdrive-config-response
+                    type: object
+          description: Update Hyperdrive Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: Update Hyperdrive Failure Response.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Update Hyperdrive
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.update
+    patch:
+      description: >-
+        Patches and returns the specified Hyperdrive configuration. Custom
+        caching settings are not kept if caching is disabled.
+      operationId: patch-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+        - in: path
+          name: hyperdrive_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/hyperdrive_hyperdrive-config-patch'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-common'
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/hyperdrive_hyperdrive-config-response
+                    type: object
+          description: Patch Hyperdrive Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: Patch Hyperdrive Failure Response.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Patch Hyperdrive
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.update
+    delete:
+      description: Deletes the specified Hyperdrive.
+      operationId: delete-hyperdrive
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+        - in: path
+          name: hyperdrive_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/hyperdrive_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/hyperdrive_api-response-single'
+                  - properties:
+                      result:
+                        nullable: true
+                        type: object
+                    type: object
+          description: Delete Hyperdrive Response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hyperdrive_api-response-common-failure'
+          description: Delete Hyperdrive Failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Delete Hyperdrive
+      tags:
+        - Hyperdrive
+      x-api-token-group:
+        - Hyperdrive Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.edge.hyperdrive.database.delete
+components:
+  schemas:
+    hyperdrive_api-response-collection:
+      allOf:
+        - $ref: '#/components/schemas/hyperdrive_api-response-common'
+        - properties:
+            result_info:
+              $ref: '#/components/schemas/hyperdrive_result_info'
+          type: object
+      type: object
+    hyperdrive_api-response-common:
+      properties:
+        errors:
+          $ref: '#/components/schemas/hyperdrive_messages'
+        messages:
+          $ref: '#/components/schemas/hyperdrive_messages'
+        result:
+          type: object
+        success:
+          description: Return the status of the API call success.
+          enum:
+            - true
+          example: true
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    hyperdrive_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/hyperdrive_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/hyperdrive_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Return the status of the API call success.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    hyperdrive_api-response-single:
+      allOf:
+        - $ref: '#/components/schemas/hyperdrive_api-response-common'
+      type: object
+    hyperdrive_hyperdrive-config:
+      properties:
+        caching:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-caching'
+        created_on:
+          description: Defines the creation time of the Hyperdrive configuration.
+          example: '2017-01-01T00:00:00Z'
+          format: date-time
+          readOnly: true
+          type: string
+          x-auditable: true
+        id:
+          $ref: '#/components/schemas/hyperdrive_identifier'
+        modified_on:
+          description: Defines the last modified time of the Hyperdrive configuration.
+          example: '2017-01-01T00:00:00Z'
+          format: date-time
+          readOnly: true
+          type: string
+          x-auditable: true
+        mtls:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-mtls'
+        name:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-name'
+        origin:
+          oneOf:
+            - allOf:
+                - $ref: '#/components/schemas/hyperdrive_hyperdrive-database-full'
+                - $ref: '#/components/schemas/hyperdrive_internet-origin'
+              title: Public Database
+            - allOf:
+                - $ref: '#/components/schemas/hyperdrive_hyperdrive-database-full'
+                - $ref: '#/components/schemas/hyperdrive_over-access-origin'
+              title: Access-protected Database behind Cloudflare Tunnel
+          type: object
+        origin_connection_limit:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-origin-connection-limit'
+      required:
+        - id
+        - name
+        - origin
+      type: object
+    hyperdrive_hyperdrive-config-patch:
+      properties:
+        caching:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-caching'
+        mtls:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-mtls'
+        name:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-name'
+        origin:
+          anyOf:
+            - $ref: '#/components/schemas/hyperdrive_hyperdrive-database'
+            - oneOf:
+                - $ref: '#/components/schemas/hyperdrive_internet-origin'
+                - $ref: '#/components/schemas/hyperdrive_over-access-origin'
+              title: Origin Database
+          type: object
+        origin_connection_limit:
+          $ref: '#/components/schemas/hyperdrive_hyperdrive-origin-connection-limit'
+      type: object
+    hyperdrive_hyperdrive-config-response:
+      allOf:
+        - $ref: '#/components/schemas/hyperdrive_hyperdrive-config'
+      required:
+        - caching
+      type: object
+    hyperdrive_identifier:
+      description: Define configurations using a unique string identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true

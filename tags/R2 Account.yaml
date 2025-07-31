@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/r2/metrics:
+    get:
+      description: >-
+        Get Storage/Object Count Metrics across all buckets in your account.
+        Note that Account-Level Metrics may not immediately reflect the latest
+        data.
+      operationId: r2-get-account-level-metrics
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/r2_account_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/r2_v4_response'
+                  - properties:
+                      result:
+                        $ref: '#/components/schemas/r2_account_level_metrics'
+                    type: object
+          description: Get Account-Level Metrics response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Account-Level Metrics response failure.
+      security:
+        - api_token: []
+      summary: Get Account-Level Metrics
+      tags:
+        - R2 Account
+      x-cfPermissionsRequired: null
+components:
+  schemas:
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_account_level_metrics:
+      description: Metrics based on the class they belong to.
+      properties:
+        infrequentAccess:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+        standard:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+      type: object
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - true
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object

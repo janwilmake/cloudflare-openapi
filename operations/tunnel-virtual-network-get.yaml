@@ -1,0 +1,382 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/teamnet/virtual_networks/{virtual_network_id}:
+    get:
+      description: Get a virtual network.
+      operationId: tunnel-virtual-network-get
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Cloudflare account ID
+            example: 699d98642c564d2e855e9661899b7252
+            maxLength: 32
+            readOnly: true
+            type: string
+            x-auditable: true
+        - in: path
+          name: virtual_network_id
+          required: true
+          schema:
+            description: UUID of the virtual network.
+            example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+            format: uuid
+            type: string
+            x-auditable: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                comment:
+                  description: Optional remark describing the virtual network.
+                  example: Staging VPC for data science
+                  maxLength: 256
+                  type: string
+                  x-auditable: true
+                is_default_network:
+                  description: >-
+                    If `true`, this virtual network is the default for the
+                    account.
+                  example: true
+                  type: boolean
+                  x-auditable: true
+                  x-stainless-terraform-configurability: computed_optional
+                name:
+                  description: A user-friendly name for the virtual network.
+                  example: us-east-1-vpc
+                  maxLength: 256
+                  type: string
+                  x-auditable: true
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      errors:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                      messages:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                      result:
+                        anyOf:
+                          - type: object
+                          - items: {}
+                            type: array
+                          - type: string
+                      success:
+                        description: Whether the API call was successful
+                        enum:
+                          - true
+                        example: true
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+                  - properties:
+                      result:
+                        properties:
+                          comment:
+                            description: Optional remark describing the virtual network.
+                            example: Staging VPC for data science
+                            maxLength: 256
+                            type: string
+                            x-auditable: true
+                          created_at:
+                            description: Timestamp of when the resource was created.
+                            example: '2021-01-25T18:22:34.317854Z'
+                            format: date-time
+                            readOnly: true
+                            type: string
+                          deleted_at:
+                            description: >-
+                              Timestamp of when the resource was deleted. If
+                              `null`, the resource has not been deleted.
+                            example: '2009-11-10T23:00:00.000000Z'
+                            format: date-time
+                            readOnly: true
+                            type: string
+                          id:
+                            description: UUID of the virtual network.
+                            example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+                            format: uuid
+                            type: string
+                            x-auditable: true
+                          is_default_network:
+                            description: >-
+                              If `true`, this virtual network is the default for
+                              the account.
+                            example: true
+                            type: boolean
+                            x-auditable: true
+                            x-stainless-terraform-configurability: computed_optional
+                          name:
+                            description: A user-friendly name for the virtual network.
+                            example: us-east-1-vpc
+                            maxLength: 256
+                            type: string
+                            x-auditable: true
+                        required:
+                          - id
+                          - name
+                          - is_default_network
+                          - comment
+                          - created_at
+                        type: object
+                    type: object
+          description: A virtual network response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          result:
+                            anyOf:
+                              - type: object
+                              - items: {}
+                                type: array
+                              - type: string
+                          success:
+                            description: Whether the API call was successful
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                          - result
+                        type: object
+                      - properties:
+                          result:
+                            properties:
+                              comment:
+                                description: >-
+                                  Optional remark describing the virtual
+                                  network.
+                                example: Staging VPC for data science
+                                maxLength: 256
+                                type: string
+                                x-auditable: true
+                              created_at:
+                                description: Timestamp of when the resource was created.
+                                example: '2021-01-25T18:22:34.317854Z'
+                                format: date-time
+                                readOnly: true
+                                type: string
+                              deleted_at:
+                                description: >-
+                                  Timestamp of when the resource was deleted. If
+                                  `null`, the resource has not been deleted.
+                                example: '2009-11-10T23:00:00.000000Z'
+                                format: date-time
+                                readOnly: true
+                                type: string
+                              id:
+                                description: UUID of the virtual network.
+                                example: f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+                                format: uuid
+                                type: string
+                                x-auditable: true
+                              is_default_network:
+                                description: >-
+                                  If `true`, this virtual network is the default
+                                  for the account.
+                                example: true
+                                type: boolean
+                                x-auditable: true
+                                x-stainless-terraform-configurability: computed_optional
+                              name:
+                                description: A user-friendly name for the virtual network.
+                                example: us-east-1-vpc
+                                maxLength: 256
+                                type: string
+                                x-auditable: true
+                            required:
+                              - id
+                              - name
+                              - is_default_network
+                              - comment
+                              - created_at
+                            type: object
+                        type: object
+                  - properties:
+                      errors:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example:
+                          - code: 7003
+                            message: No route for the URI
+                        minLength: 1
+                      messages:
+                        allOf:
+                          - example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                message:
+                                  type: string
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                        example: []
+                      result:
+                        enum:
+                          - null
+                        nullable: true
+                        type: object
+                      success:
+                        description: Whether the API call was successful
+                        enum:
+                          - false
+                        example: false
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                      - result
+                    type: object
+          description: A virtual network response failure
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: Get a virtual network
+      tags:
+        - Tunnel Virtual Network

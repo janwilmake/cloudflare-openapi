@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/diagnostics/traceroute:
+    post:
+      description: Run traceroutes from Cloudflare colos.
+      operationId: diagnostics-traceroute
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic-transit_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                colos:
+                  $ref: '#/components/schemas/magic-transit_colos'
+                options:
+                  $ref: '#/components/schemas/magic-transit_options'
+                targets:
+                  $ref: '#/components/schemas/magic-transit_targets'
+              required:
+                - targets
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/magic-transit_traceroute_response_collection
+          description: Traceroute response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/magic-transit_traceroute_response_collection
+                  - $ref: >-
+                      #/components/schemas/magic-transit_api-response-common-failure
+          description: Traceroute response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Traceroute
+      tags:
+        - Diagnostics
+      x-api-token-group:
+        - Magic Transit Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+components:
+  schemas:
+    magic-transit_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/magic-transit_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/magic-transit_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    magic-transit_colos:
+      description: >-
+        If no source colo names specified, all colos will be used. China colos
+        are unavailable for traceroutes.
+      example:
+        - den
+        - sin
+      items:
+        description: Source colo name.
+        type: string
+      type: array
+    magic-transit_identifier:
+      description: Identifier
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+    magic-transit_options:
+      example:
+        max_ttl: 15
+        packet_type: icmp
+      properties:
+        max_ttl:
+          $ref: '#/components/schemas/magic-transit_max_ttl'
+        packet_type:
+          $ref: '#/components/schemas/magic-transit_packet_type'
+        packets_per_ttl:
+          $ref: '#/components/schemas/magic-transit_packets_per_ttl'
+        port:
+          $ref: '#/components/schemas/magic-transit_port'
+        wait_time:
+          $ref: '#/components/schemas/magic-transit_wait_time'
+      type: object
+    magic-transit_targets:
+      example:
+        - 203.0.113.1
+        - cloudflare.com
+      items:
+        description: Hosts as a hostname or IPv4/IPv6 address represented by strings.
+        example: 203.0.113.1
+        type: string
+      maxLength: 10
+      type: array
+    magic-transit_traceroute_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/magic-transit_api-response-common'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/magic-transit_target_result'
+              type: array

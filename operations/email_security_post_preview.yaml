@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/email-security/investigate/preview:
+    post:
+      operationId: email_security_post_preview
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account Identifier
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            minLength: 32
+            readOnly: true
+            title: account_id
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                postfix_id:
+                  description: The identifier of the message.
+                  example: 4Njp3P0STMz2c02Q
+                  title: postfix_id
+                  type: string
+              required:
+                - postfix_id
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      errors:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      messages:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      success:
+                        example: true
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                    type: object
+                  - properties:
+                      result:
+                        example:
+                          screenshot: >-
+                            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
+                        properties:
+                          screenshot:
+                            description: A base64 encoded PNG image of the email.
+                            type: string
+                        required:
+                          - screenshot
+                        type: object
+                    required:
+                      - result
+                    type: object
+          description: ''
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    example: []
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    nullable: true
+                    type: object
+                  success:
+                    example: false
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Client Error
+      security:
+        - api_email: []
+          api_key: []
+      summary: Preview for non-detection messages
+      tags:
+        - Email Security
+      x-api-token-group:
+        - 'Cloud Email Security: Write'
