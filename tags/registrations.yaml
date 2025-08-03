@@ -1,0 +1,595 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/devices/registrations:
+    get:
+      description: Lists WARP registrations.
+      operationId: list-registrations
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_user_id
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_seen_after
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_seen_before
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_status
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_per_page
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_search
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_sort_by
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_sort_order
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_cursor
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_id
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_device_id
+        - $ref: >-
+            #/components/parameters/teams-devices_devices_list_registrations_param_include
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  - created_at: '2025-02-14T13:17:00Z'
+                    deleted_at: null
+                    device:
+                      client_version: 1.0.0
+                      id: 32aa0404-78f1-49a4-99e0-97f575081356
+                      name: My Device
+                    id: 11ffb86f-3f0c-4306-b4a2-e62f872b166a
+                    key: >-
+                      U+QTP50RsWfeLGHF4tlGDnmGeuwtsz46KCHr5OyhWq00Rsdfl45mgnQAuEJ6CO0YrkyTl9FUf5iB0bwYR3g4EEFEHhtu6jFaqfMrBMBSz6itv9HQXkaR9OieKQ==
+                    key_type: secp256r1
+                    last_seen_at: '2025-02-14T13:17:00Z'
+                    revoked_at: null
+                    tunnel_type: masque
+                    updated_at: '2025-02-14T13:17:00Z'
+                    user:
+                      email: alice@example.org
+                      id: 30323c1f-318d-4ec9-92c7-5a8c4d25c4fc
+                      name: Alice
+                  - created_at: '2025-02-15T10:20:00Z'
+                    deleted_at: null
+                    device:
+                      client_version: 1.0.1
+                      id: 43bb1515-8902-50b5-aa01-a88686192467
+                      name: Bob's Laptop
+                    id: 22eedc7a-4a1d-5417-c5b3-f73a983c277b
+                    key: >-
+                      V/RSP61StXgfmLHJG5umHEonHfvxtz57LDIs6PziXr11Stegm56nhrRBvFK7DP1ZsLzUm0GVg6jC1cxZS4h5FFGFJiju7kGbrgNsCNCT77juw0IRYlS0QpjgLR==
+                    key_type: secp256r1
+                    last_seen_at: '2025-02-15T10:25:00Z'
+                    revoked_at: null
+                    tunnel_type: masque
+                    updated_at: '2025-02-15T10:25:00Z'
+                    user:
+                      email: bob@example.com
+                      id: 41434d2a-429e-5fd0-a3d8-6b9d5e36d5ad
+                      name: Bob
+                result_info:
+                  count: 2
+                  cursor: ais86dftf.asdf7ba8
+                  page: null
+                  per_page: 10
+                  total_count: null
+                success: true
+              schema:
+                properties:
+                  errors:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  result:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_registration'
+                    type: array
+                  result_info:
+                    $ref: '#/components/schemas/teams-devices_cursor_result_info'
+                  success:
+                    description: Whether the API call was successful.
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: List of registrations response.
+      security:
+        - api_token: []
+      summary: List registrations
+      tags:
+        - Registrations
+      x-api-token-group:
+        - Zero Trust Read
+        - Zero Trust Write
+  /accounts/{account_id}/devices/registrations/revoke:
+    post:
+      description: Revokes a list of WARP registrations.
+      operationId: revoke-registrations
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+        - description: A list of registration IDs to revoke.
+          in: query
+          name: id
+          required: true
+          schema:
+            items:
+              type: string
+            type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  result:
+                    $ref: '#/components/schemas/teams-devices_empty_body'
+                  result_info:
+                    $ref: '#/components/schemas/teams-devices_cursor_result_info'
+                  success:
+                    description: Whether the API call was successful.
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Revoke registrations response.
+      security:
+        - api_token: []
+      summary: Revoke registrations
+      tags:
+        - Registrations
+      x-api-token-group:
+        - Zero Trust Write
+  /accounts/{account_id}/devices/registrations/unrevoke:
+    post:
+      description: Unrevokes a list of WARP registrations.
+      operationId: unrevoke-registrations
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+        - description: A list of registration IDs to unrevoke.
+          in: query
+          name: id
+          required: true
+          schema:
+            items:
+              type: string
+            type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  result:
+                    $ref: '#/components/schemas/teams-devices_empty_body'
+                  result_info:
+                    $ref: '#/components/schemas/teams-devices_cursor_result_info'
+                  success:
+                    description: Whether the API call was successful.
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Unrevoke registrations response.
+      security:
+        - api_token: []
+      summary: Unrevoke registrations
+      tags:
+        - Registrations
+      x-api-token-group:
+        - Zero Trust Write
+  /accounts/{account_id}/devices/registrations/{registration_id}:
+    get:
+      description: Fetches a single WARP registration.
+      operationId: get-registration
+      parameters:
+        - in: path
+          name: registration_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  result:
+                    $ref: '#/components/schemas/teams-devices_registration'
+                  success:
+                    description: Whether the API call was successful.
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Returns a Registration.
+      security:
+        - api_token: []
+      summary: Get registration
+      tags:
+        - Registrations
+      x-api-token-group:
+        - Zero Trust Read
+        - Zero Trust Write
+    delete:
+      description: Deletes a WARP registration.
+      operationId: delete-registration
+      parameters:
+        - in: path
+          name: registration_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/teams-devices_v4_response_message'
+                    type: array
+                  result:
+                    $ref: '#/components/schemas/teams-devices_empty_body'
+                  success:
+                    description: Whether the API call was successful.
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Registration deleted response.
+      security:
+        - api_token: []
+      summary: Delete registration
+      tags:
+        - Registrations
+      x-api-token-group:
+        - Zero Trust Write
+components:
+  schemas:
+    teams-devices_cursor_result_info:
+      description: V4 public API Pagination/Cursor info.
+      example:
+        count: 1
+        cursor: ais86dftf.asdf7ba8
+        page: null
+        per_page: 10
+        total_count: null
+      properties:
+        count:
+          description: Number of records in the response.
+          type: integer
+        cursor:
+          description: Opaque token to request the next set of records.
+          type: string
+        per_page:
+          description: The limit for the number of records in the response.
+          type: integer
+        total_count:
+          description: Total number of records available.
+          nullable: true
+          type: integer
+      required:
+        - per_page
+        - count
+        - cursor
+      type: object
+    teams-devices_empty_body:
+      nullable: true
+      type: object
+    teams-devices_registration:
+      description: >-
+        A WARP configuration tied to a single user. Multiple registrations can
+        be created from a single WARP device.
+      properties:
+        created_at:
+          description: The RFC3339 timestamp when the registration was created.
+          example: '2025-02-14T13:17:00Z'
+          type: string
+          x-auditable: true
+        deleted_at:
+          description: The RFC3339 timestamp when the registration was deleted.
+          example: '2025-02-14T13:17:00Z'
+          nullable: true
+          type: string
+          x-auditable: true
+        device:
+          $ref: '#/components/schemas/teams-devices_registration_device_details'
+        id:
+          description: The ID of the registration.
+          example: 11ffb86f-3f0c-4306-b4a2-e62f872b166a
+          type: string
+          x-auditable: true
+        key:
+          description: The public key used to connect to the Cloudflare network.
+          example: >-
+            U+QTP50RsWfeLGHF4tlGDnmGeuwtsz46KCHr5OyhWq00Rsdfl45mgnQAuEJ6CO0YrkyTl9FUf5iB0bwYR3g4EEFEHhtu6jFaqfMrBMBSz6itv9HQXkaR9OieKQ==
+          type: string
+          x-auditable: true
+        key_type:
+          description: >-
+            The type of encryption key used by the WARP client for the active
+            key. Currently 'curve25519' for WireGuard and 'secp256r1' for
+            MASQUE.
+          example: secp256r1
+          nullable: true
+          type: string
+          x-auditable: true
+        last_seen_at:
+          description: The RFC3339 timestamp when the registration was last seen.
+          example: '2025-02-14T13:17:00Z'
+          type: string
+          x-auditable: true
+        revoked_at:
+          description: The RFC3339 timestamp when the registration was revoked.
+          example: '2025-02-14T13:17:00Z'
+          nullable: true
+          type: string
+          x-auditable: true
+        tunnel_type:
+          description: Type of the tunnel - wireguard or masque.
+          example: masque
+          nullable: true
+          type: string
+          x-auditable: true
+        updated_at:
+          description: The RFC3339 timestamp when the registration was last updated.
+          example: '2025-02-14T13:17:00Z'
+          type: string
+          x-auditable: true
+        user:
+          $ref: '#/components/schemas/teams-devices_user'
+      required:
+        - id
+        - key
+        - device
+        - created_at
+        - updated_at
+        - last_seen_at
+      type: object
+    teams-devices_v4_response_message:
+      description: >-
+        A message which can be returned in either the 'errors' or 'messages'
+        fields in a v4 API response.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+      type: object
+  parameters:
+    teams-devices_devices_list_registrations_param_cursor:
+      description: >-
+        Opaque token indicating the starting position when requesting the next
+        set of records. A cursor value can be obtained from the
+        result_info.cursor field in the response.
+      explode: false
+      in: query
+      name: cursor
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_device_id:
+      description: Filter by WARP device ID.
+      explode: false
+      in: query
+      name: device.id
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_id:
+      description: Filter by registration ID.
+      explode: true
+      in: query
+      name: id
+      schema:
+        items:
+          type: string
+        type: array
+    teams-devices_devices_list_registrations_param_include:
+      in: query
+      name: include
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_per_page:
+      description: The maximum number of devices to return in a single response.
+      explode: false
+      in: query
+      name: per_page
+      schema:
+        format: uint64
+        type: integer
+    teams-devices_devices_list_registrations_param_search:
+      description: Filter by registration details.
+      explode: false
+      in: query
+      name: search
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_seen_after:
+      description: >-
+        Filter by the last_seen timestamp - returns only registrations last seen
+        after this timestamp.
+      explode: false
+      in: query
+      name: seen_after
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_seen_before:
+      description: >-
+        Filter by the last_seen timestamp - returns only registrations last seen
+        before this timestamp.
+      explode: false
+      in: query
+      name: seen_before
+      schema:
+        type: string
+    teams-devices_devices_list_registrations_param_sort_by:
+      description: The registration field to order results by.
+      explode: false
+      in: query
+      name: sort_by
+      schema:
+        enum:
+          - id
+          - user.name
+          - user.email
+          - last_seen_at
+          - created_at
+        type: string
+    teams-devices_devices_list_registrations_param_sort_order:
+      description: Sort direction.
+      explode: false
+      in: query
+      name: sort_order
+      schema:
+        enum:
+          - asc
+          - desc
+        type: string
+    teams-devices_devices_list_registrations_param_status:
+      description: Filter by registration status. Defaults to 'active'.
+      explode: false
+      in: query
+      name: status
+      schema:
+        enum:
+          - active
+          - all
+          - revoked
+        type: string
+    teams-devices_devices_list_registrations_param_user_id:
+      description: Filter by user ID.
+      explode: true
+      in: query
+      name: user.id
+      schema:
+        items:
+          type: string
+        type: array

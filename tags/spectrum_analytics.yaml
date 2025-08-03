@@ -1,0 +1,488 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/spectrum/analytics/aggregate/current:
+    get:
+      description: >-
+        Retrieves analytics aggregated from the last minute of usage on Spectrum
+        applications underneath a given zone.
+      operationId: spectrum-aggregate-analytics-get-current-aggregated-analytics
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_identifier'
+        - in: query
+          name: appID
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_app_id_param'
+        - in: query
+          name: colo_name
+          schema:
+            description: Co-location identifier.
+            example: PDX
+            maxLength: 3
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/spectrum-analytics_query-response-aggregate
+          description: Get current aggregated analytics response
+        4xx:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/spectrum-analytics_api-response-common-failure
+          description: Get current aggregated analytics response failure
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get current aggregated analytics
+      tags:
+        - Spectrum Analytics
+      x-api-token-group:
+        - Analytics Read
+  /zones/{zone_id}/spectrum/analytics/events/bytime:
+    get:
+      description: Retrieves a list of aggregate metrics grouped by time interval.
+      operationId: spectrum-analytics-(-by-time)-get-analytics-by-time
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_identifier'
+        - in: query
+          name: dimensions
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_dimensions'
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_sort'
+        - in: query
+          name: until
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_until'
+        - in: query
+          name: metrics
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_metrics'
+        - in: query
+          name: filters
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_filters'
+        - in: query
+          name: since
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_since'
+        - in: query
+          name: time_delta
+          required: true
+          schema:
+            description: Used to select time series resolution.
+            enum:
+              - year
+              - quarter
+              - month
+              - week
+              - day
+              - hour
+              - dekaminute
+              - minute
+            example: minute
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/spectrum-analytics_query-response-single'
+          description: Get analytics by time response
+        4xx:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/spectrum-analytics_api-response-common-failure
+          description: Get analytics by time response failure
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get analytics by time
+      tags:
+        - Spectrum Analytics
+      x-api-token-group:
+        - Analytics Read
+  /zones/{zone_id}/spectrum/analytics/events/summary:
+    get:
+      description: >-
+        Retrieves a list of summarised aggregate metrics over a given time
+        period.
+      operationId: spectrum-analytics-(-summary)-get-analytics-summary
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_identifier'
+        - in: query
+          name: dimensions
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_dimensions'
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_sort'
+        - in: query
+          name: until
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_until'
+        - in: query
+          name: metrics
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_metrics'
+        - in: query
+          name: filters
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_filters'
+        - in: query
+          name: since
+          schema:
+            $ref: '#/components/schemas/spectrum-analytics_since'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/spectrum-analytics_query-response-single'
+          description: Get analytics summary response
+        4xx:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/spectrum-analytics_api-response-common-failure
+          description: Get analytics summary response failure
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get analytics summary
+      tags:
+        - Spectrum Analytics
+      x-api-token-group:
+        - Analytics Read
+components:
+  schemas:
+    spectrum-analytics_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/spectrum-analytics_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/spectrum-analytics_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    spectrum-analytics_app_id_param:
+      description: >-
+        Comma-delimited list of Spectrum Application Id(s). If provided, the
+        response will be limited to Spectrum Application Id(s) that match.
+      example: ea95132c15732412d22c1476fa83f27a,d122c5f4bb71e25cc9e86ab43b142e2f
+      type: string
+    spectrum-analytics_dimensions:
+      description: >-
+        Can be used to break down the data by given attributes. Options are: 
+
+
+        Dimension                 | Name                            | Example
+
+        --------------------------|---------------------------------|--------------------------
+
+        event                     | Connection Event                | connect,
+        progress, disconnect, originError, clientFiltered
+
+        appID                     | Application ID                  |
+        40d67c87c6cd4b889a4fd57805225e85
+
+        coloName                  | Colo Name                       | SFO
+
+        ipVersion                 | IP version used by the client   | 4, 6.
+      example:
+        - event
+        - appID
+      items:
+        enum:
+          - event
+          - appID
+          - coloName
+          - ipVersion
+        type: string
+      type: array
+    spectrum-analytics_filters:
+      description: >-
+        Used to filter rows by one or more dimensions. Filters can be combined
+        using OR and AND boolean logic. AND takes precedence over OR in all the
+        expressions. The OR operator is defined using a comma (,) or OR keyword
+        surrounded by whitespace. The AND operator is defined using a semicolon
+        (;) or AND keyword surrounded by whitespace. Note that the semicolon is
+        a reserved character in URLs (rfc1738) and needs to be percent-encoded
+        as %3B. Comparison options are:
+
+
+        Operator                  | Name                            | URL
+        Encoded
+
+        --------------------------|---------------------------------|--------------------------
+
+        ==                        | Equals                          | %3D%3D
+
+        !=                        | Does not equals                 | !%3D
+
+        \>                        | Greater Than                    | %3E
+
+        \<                        | Less Than                       | %3C
+
+        \>=                       | Greater than or equal to        | %3E%3D
+
+        \<=                       | Less than or equal to           | %3C%3D
+      example: event==disconnect%20AND%20coloName!=SFO
+      type: string
+    spectrum-analytics_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    spectrum-analytics_metrics:
+      description: >-
+        One or more metrics to compute. Options are: 
+
+
+        Metric                    | Name                                |
+        Example                  | Unit
+
+        --------------------------|-------------------------------------|--------------------------|--------------------------
+
+        count                     | Count of total events               |
+        1000                     | Count
+
+        bytesIngress              | Sum of ingress bytes                |
+        1000                     | Sum
+
+        bytesEgress               | Sum of egress bytes                 |
+        1000                     | Sum
+
+        durationAvg               | Average connection duration         |
+        1.0                      | Time in milliseconds
+
+        durationMedian            | Median connection duration          |
+        1.0                      | Time in milliseconds
+
+        duration90th              | 90th percentile connection duration |
+        1.0                      | Time in milliseconds
+
+        duration99th              | 99th percentile connection duration |
+        1.0                      | Time in milliseconds.
+      example:
+        - count
+        - bytesIngress
+      items:
+        enum:
+          - count
+          - bytesIngress
+          - bytesEgress
+          - durationAvg
+          - durationMedian
+          - duration90th
+          - duration99th
+        type: string
+      type: array
+    spectrum-analytics_query-response-aggregate:
+      allOf:
+        - $ref: '#/components/schemas/spectrum-analytics_api-response-single'
+        - properties:
+            result:
+              items:
+                properties:
+                  appID:
+                    allOf:
+                      - description: Application identifier.
+                      - $ref: '#/components/schemas/spectrum-analytics_identifier'
+                  bytesEgress:
+                    description: Number of bytes sent
+                    type: number
+                  bytesIngress:
+                    description: Number of bytes received
+                    type: number
+                  connections:
+                    description: Number of connections
+                    type: number
+                  durationAvg:
+                    description: Average duration of connections
+                    type: number
+                required:
+                  - appID
+                  - bytesIngress
+                  - bytesEgress
+                  - connections
+                  - durationAvg
+                type: object
+              type: array
+    spectrum-analytics_query-response-single:
+      allOf:
+        - $ref: '#/components/schemas/spectrum-analytics_api-response-single'
+        - properties:
+            result:
+              properties:
+                data:
+                  description: List of columns returned by the analytics query.
+                  items:
+                    $ref: '#/components/schemas/spectrum-analytics_column'
+                  type: array
+                data_lag:
+                  description: >-
+                    Number of seconds between current time and last processed
+                    event, i.e. how many seconds of data could be missing.
+                  example: 3
+                  minimum: 0
+                  type: number
+                max:
+                  allOf:
+                    - description: >-
+                        Maximum result for each selected metrics across all
+                        data.
+                    - $ref: '#/components/schemas/spectrum-analytics_stat'
+                min:
+                  allOf:
+                    - description: >-
+                        Minimum result for each selected metrics across all
+                        data.
+                    - $ref: '#/components/schemas/spectrum-analytics_stat'
+                query:
+                  $ref: '#/components/schemas/spectrum-analytics_query'
+                rows:
+                  description: Total number of rows in the result.
+                  example: 5
+                  minimum: 0
+                  type: number
+                time_intervals:
+                  description: 'List of time interval buckets: [start, end]'
+                  items:
+                    items:
+                      $ref: '#/components/schemas/spectrum-analytics_timestamp'
+                    type: array
+                  type: array
+                totals:
+                  allOf:
+                    - description: Total result for each selected metrics across all data.
+                    - $ref: '#/components/schemas/spectrum-analytics_stat'
+              required:
+                - rows
+                - data
+                - data_lag
+                - min
+                - max
+                - totals
+                - query
+              type: object
+    spectrum-analytics_since:
+      allOf:
+        - description: >-
+            Start of time interval to query, defaults to `until` - 6 hours.
+            Timestamp must be in RFC3339 format and uses UTC unless otherwise
+            specified.
+        - $ref: '#/components/schemas/spectrum-analytics_timestamp'
+    spectrum-analytics_sort:
+      description: >-
+        The sort order for the result set; sort fields must be included in
+        `metrics` or `dimensions`.
+      example:
+        - +count
+        - '-bytesIngress'
+      items:
+        type: string
+      type: array
+    spectrum-analytics_until:
+      allOf:
+        - description: >-
+            End of time interval to query, defaults to current time. Timestamp
+            must be in RFC3339 format and uses UTC unless otherwise specified.
+        - $ref: '#/components/schemas/spectrum-analytics_timestamp'

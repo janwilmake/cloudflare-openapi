@@ -1,0 +1,673 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/dex/tests/overview:
+    get:
+      description: List DEX tests with overview metrics
+      operationId: dex-endpoints-list-tests-overview
+      parameters:
+        - description: unique identifier linked to an account in the API request path.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            example: 01a7362d577a6c3019a474fd6f485823
+            maxLength: 32
+            readOnly: true
+            type: string
+        - description: >-
+            Optionally filter result stats to a Cloudflare colo. Cannot be used
+            in combination with deviceId param.
+          in: query
+          name: colo
+          schema:
+            type: string
+        - description: Optionally filter results by test name
+          in: query
+          name: testName
+          schema:
+            type: string
+        - description: >-
+            Optionally filter result stats to a specific device(s). Cannot be
+            used in combination with colo param.
+          in: query
+          name: deviceId
+          schema:
+            items:
+              type: string
+            type: array
+        - description: Page number of paginated results
+          in: query
+          name: page
+          schema:
+            default: 1
+            minimum: 1
+            type: number
+        - description: Number of items per page
+          in: query
+          name: per_page
+          schema:
+            default: 10
+            maximum: 50
+            minimum: 1
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - allOf:
+                      - properties:
+                          errors:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          messages:
+                            example: []
+                            items:
+                              properties:
+                                code:
+                                  minimum: 1000
+                                  type: integer
+                                documentation_url:
+                                  type: string
+                                message:
+                                  type: string
+                                source:
+                                  properties:
+                                    pointer:
+                                      type: string
+                                  type: object
+                              required:
+                                - code
+                                - message
+                              type: object
+                              uniqueItems: true
+                            type: array
+                          success:
+                            description: Whether the API call was successful.
+                            enum:
+                              - true
+                            example: true
+                            type: boolean
+                        required:
+                          - success
+                          - errors
+                          - messages
+                        type: object
+                    type: object
+                  - properties:
+                      result:
+                        properties:
+                          overviewMetrics:
+                            properties:
+                              avgHttpAvailabilityPct:
+                                description: >-
+                                  percentage availability for all HTTP test
+                                  results in response
+                                format: float
+                                nullable: true
+                                type: number
+                              avgTracerouteAvailabilityPct:
+                                description: >-
+                                  percentage availability for all traceroutes
+                                  results in response
+                                format: float
+                                nullable: true
+                                type: number
+                              testsTotal:
+                                description: number of  tests.
+                                type: integer
+                            required:
+                              - testsTotal
+                            type: object
+                          tests:
+                            description: array of test results objects.
+                            items:
+                              properties:
+                                created:
+                                  description: date the test was created.
+                                  type: string
+                                description:
+                                  description: >-
+                                    the test description defined during
+                                    configuration
+                                  type: string
+                                enabled:
+                                  description: >-
+                                    if true, then the test will run on targeted
+                                    devices. Else, the test will not run.
+                                  type: boolean
+                                host:
+                                  type: string
+                                httpResults:
+                                  nullable: true
+                                  properties:
+                                    resourceFetchTime:
+                                      properties:
+                                        avgMs:
+                                          nullable: true
+                                          type: integer
+                                        history:
+                                          items:
+                                            properties:
+                                              avgMs:
+                                                nullable: true
+                                                type: integer
+                                              deltaPct:
+                                                format: float
+                                                nullable: true
+                                                type: number
+                                              timePeriod:
+                                                properties:
+                                                  units:
+                                                    enum:
+                                                      - hours
+                                                      - days
+                                                      - testRuns
+                                                    type: string
+                                                  value:
+                                                    type: integer
+                                                required:
+                                                  - value
+                                                  - units
+                                                type: object
+                                            required:
+                                              - timePeriod
+                                            type: object
+                                          type: array
+                                        overTime:
+                                          nullable: true
+                                          properties:
+                                            timePeriod:
+                                              properties:
+                                                units:
+                                                  enum:
+                                                    - hours
+                                                    - days
+                                                    - testRuns
+                                                  type: string
+                                                value:
+                                                  type: integer
+                                              required:
+                                                - value
+                                                - units
+                                              type: object
+                                            values:
+                                              items:
+                                                properties:
+                                                  avgMs:
+                                                    type: integer
+                                                  timestamp:
+                                                    type: string
+                                                required:
+                                                  - timestamp
+                                                  - avgMs
+                                                type: object
+                                              type: array
+                                          required:
+                                            - values
+                                            - timePeriod
+                                          type: object
+                                      required:
+                                        - history
+                                      type: object
+                                  required:
+                                    - resourceFetchTime
+                                  type: object
+                                httpResultsByColo:
+                                  items:
+                                    properties:
+                                      colo:
+                                        description: Cloudflare colo
+                                        example: SJC
+                                        type: string
+                                      resourceFetchTime:
+                                        properties:
+                                          avgMs:
+                                            nullable: true
+                                            type: integer
+                                          history:
+                                            items:
+                                              properties:
+                                                avgMs:
+                                                  nullable: true
+                                                  type: integer
+                                                deltaPct:
+                                                  format: float
+                                                  nullable: true
+                                                  type: number
+                                                timePeriod:
+                                                  properties:
+                                                    units:
+                                                      enum:
+                                                        - hours
+                                                        - days
+                                                        - testRuns
+                                                      type: string
+                                                    value:
+                                                      type: integer
+                                                  required:
+                                                    - value
+                                                    - units
+                                                  type: object
+                                              required:
+                                                - timePeriod
+                                              type: object
+                                            type: array
+                                          overTime:
+                                            nullable: true
+                                            properties:
+                                              timePeriod:
+                                                properties:
+                                                  units:
+                                                    enum:
+                                                      - hours
+                                                      - days
+                                                      - testRuns
+                                                    type: string
+                                                  value:
+                                                    type: integer
+                                                required:
+                                                  - value
+                                                  - units
+                                                type: object
+                                              values:
+                                                items:
+                                                  properties:
+                                                    avgMs:
+                                                      type: integer
+                                                    timestamp:
+                                                      type: string
+                                                  required:
+                                                    - timestamp
+                                                    - avgMs
+                                                  type: object
+                                                type: array
+                                            required:
+                                              - values
+                                              - timePeriod
+                                            type: object
+                                        required:
+                                          - history
+                                        type: object
+                                    required:
+                                      - colo
+                                      - resourceFetchTime
+                                    type: object
+                                  type: array
+                                id:
+                                  description: API Resource UUID tag.
+                                  example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+                                  maxLength: 36
+                                  type: string
+                                interval:
+                                  description: >-
+                                    The interval at which the synthetic
+                                    application test is set to run.
+                                  type: string
+                                kind:
+                                  description: test type, http or traceroute
+                                  enum:
+                                    - http
+                                    - traceroute
+                                  type: string
+                                method:
+                                  description: >-
+                                    for HTTP, the method to use when running the
+                                    test
+                                  type: string
+                                name:
+                                  description: name given to this test
+                                  type: string
+                                target_policies:
+                                  items:
+                                    properties:
+                                      default:
+                                        description: >-
+                                          Whether the policy is the default for
+                                          the account
+                                        type: boolean
+                                      id:
+                                        type: string
+                                      name:
+                                        type: string
+                                    required:
+                                      - id
+                                      - name
+                                      - default
+                                    type: object
+                                  nullable: true
+                                  type: array
+                                targeted:
+                                  type: boolean
+                                tracerouteResults:
+                                  nullable: true
+                                  properties:
+                                    roundTripTime:
+                                      properties:
+                                        avgMs:
+                                          nullable: true
+                                          type: integer
+                                        history:
+                                          items:
+                                            properties:
+                                              avgMs:
+                                                nullable: true
+                                                type: integer
+                                              deltaPct:
+                                                format: float
+                                                nullable: true
+                                                type: number
+                                              timePeriod:
+                                                properties:
+                                                  units:
+                                                    enum:
+                                                      - hours
+                                                      - days
+                                                      - testRuns
+                                                    type: string
+                                                  value:
+                                                    type: integer
+                                                required:
+                                                  - value
+                                                  - units
+                                                type: object
+                                            required:
+                                              - timePeriod
+                                            type: object
+                                          type: array
+                                        overTime:
+                                          nullable: true
+                                          properties:
+                                            timePeriod:
+                                              properties:
+                                                units:
+                                                  enum:
+                                                    - hours
+                                                    - days
+                                                    - testRuns
+                                                  type: string
+                                                value:
+                                                  type: integer
+                                              required:
+                                                - value
+                                                - units
+                                              type: object
+                                            values:
+                                              items:
+                                                properties:
+                                                  avgMs:
+                                                    type: integer
+                                                  timestamp:
+                                                    type: string
+                                                required:
+                                                  - timestamp
+                                                  - avgMs
+                                                type: object
+                                              type: array
+                                          required:
+                                            - values
+                                            - timePeriod
+                                          type: object
+                                      required:
+                                        - history
+                                      type: object
+                                  required:
+                                    - roundTripTime
+                                  type: object
+                                tracerouteResultsByColo:
+                                  items:
+                                    properties:
+                                      colo:
+                                        description: Cloudflare colo
+                                        example: SJC
+                                        type: string
+                                      roundTripTime:
+                                        properties:
+                                          avgMs:
+                                            nullable: true
+                                            type: integer
+                                          history:
+                                            items:
+                                              properties:
+                                                avgMs:
+                                                  nullable: true
+                                                  type: integer
+                                                deltaPct:
+                                                  format: float
+                                                  nullable: true
+                                                  type: number
+                                                timePeriod:
+                                                  properties:
+                                                    units:
+                                                      enum:
+                                                        - hours
+                                                        - days
+                                                        - testRuns
+                                                      type: string
+                                                    value:
+                                                      type: integer
+                                                  required:
+                                                    - value
+                                                    - units
+                                                  type: object
+                                              required:
+                                                - timePeriod
+                                              type: object
+                                            type: array
+                                          overTime:
+                                            nullable: true
+                                            properties:
+                                              timePeriod:
+                                                properties:
+                                                  units:
+                                                    enum:
+                                                      - hours
+                                                      - days
+                                                      - testRuns
+                                                    type: string
+                                                  value:
+                                                    type: integer
+                                                required:
+                                                  - value
+                                                  - units
+                                                type: object
+                                              values:
+                                                items:
+                                                  properties:
+                                                    avgMs:
+                                                      type: integer
+                                                    timestamp:
+                                                      type: string
+                                                  required:
+                                                    - timestamp
+                                                    - avgMs
+                                                  type: object
+                                                type: array
+                                            required:
+                                              - values
+                                              - timePeriod
+                                            type: object
+                                        required:
+                                          - history
+                                        type: object
+                                    required:
+                                      - colo
+                                      - roundTripTime
+                                    type: object
+                                  type: array
+                                updated:
+                                  type: string
+                              required:
+                                - id
+                                - name
+                                - kind
+                                - interval
+                                - enabled
+                                - description
+                                - updated
+                                - created
+                                - host
+                              type: object
+                            type: array
+                        required:
+                          - overviewMetrics
+                          - tests
+                        type: object
+          description: success response
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    minLength: 1
+                  messages:
+                    allOf:
+                      - example: []
+                        items:
+                          properties:
+                            code:
+                              minimum: 1000
+                              type: integer
+                            documentation_url:
+                              type: string
+                            message:
+                              type: string
+                            source:
+                              properties:
+                                pointer:
+                                  type: string
+                              type: object
+                          required:
+                            - code
+                            - message
+                          type: object
+                          uniqueItems: true
+                        type: array
+                    example: []
+                  result:
+                    enum:
+                      - null
+                    nullable: true
+                    type: object
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                      - false
+                    example: false
+                    type: boolean
+                required:
+                  - success
+                  - errors
+                  - messages
+                  - result
+                type: object
+          description: failure response
+      security:
+        - api_email: []
+          api_key: []
+        - api_token: []
+        - user_service_key: []
+      summary: List DEX test analytics
+      tags:
+        - DEX Synthetic Application Monitoring
+      x-api-token-group:
+        - Cloudflare DEX Write
+        - Cloudflare DEX Read
+        - Zero Trust Report
+        - Zero Trust Read

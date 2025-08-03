@@ -1,0 +1,1278 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/page_shield:
+    get:
+      description: Fetches the Page Shield settings.
+      operationId: page-shield-get-settings
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/page-shield_api-get-response-collection
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/page-shield_get-zone-settings-response
+          description: Get Page Shield settings response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Get Page Shield settings response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get Page Shield settings
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    put:
+      description: Updates Page Shield settings.
+      operationId: page-shield-update-settings
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                enabled:
+                  $ref: '#/components/schemas/page-shield_enabled'
+                use_cloudflare_reporting_endpoint:
+                  $ref: >-
+                    #/components/schemas/page-shield_use_cloudflare_reporting_endpoint
+                use_connection_url_path:
+                  $ref: '#/components/schemas/page-shield_use_connection_url_path'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/page-shield_zone_settings_response_single
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/page-shield_update-zone-settings-response
+          description: Update Page Shield settings response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Update Page Shield settings response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update Page Shield settings
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/page_shield/connections:
+    get:
+      description: Lists all connections detected by Page Shield.
+      operationId: page-shield-list-connections
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: query
+          name: exclude_urls
+          schema:
+            description: >
+              Excludes connections whose URL contains one of the URL-encoded
+              URLs separated by commas.
+            example: blog.cloudflare.com,www.example
+            type: string
+        - in: query
+          name: urls
+          schema:
+            description: >
+              Includes connections whose URL contain one or more URL-encoded
+              URLs separated by commas.
+            example: blog.cloudflare.com,www.example
+            type: string
+        - in: query
+          name: hosts
+          schema:
+            description: >
+              Includes connections that match one or more URL-encoded hostnames
+              separated by commas.
+
+
+              Wildcards are supported at the start and end of each hostname to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: blog.cloudflare.com,www.example*,*cloudflare.com
+            type: string
+        - in: query
+          name: page
+          schema:
+            description: >
+              The current page number of the paginated results.
+
+
+              We additionally support a special value "all". When "all" is used,
+              the API will return all the connections
+
+              with the applied filters in a single page. This feature is
+              best-effort and it may only work for zones with
+
+              a low number of connections
+            example: 2
+            type: string
+        - in: query
+          name: per_page
+          schema:
+            description: The number of results per page.
+            example: 100
+            maximum: 100
+            minimum: 1
+            type: number
+        - in: query
+          name: order_by
+          schema:
+            description: The field used to sort returned connections.
+            enum:
+              - first_seen_at
+              - last_seen_at
+            example: first_seen_at
+            type: string
+        - in: query
+          name: direction
+          schema:
+            description: The direction used to sort returned connections.
+            enum:
+              - asc
+              - desc
+            example: asc
+            type: string
+        - in: query
+          name: prioritize_malicious
+          schema:
+            description: >-
+              When true, malicious connections appear first in the returned
+              connections.
+            example: true
+            type: boolean
+        - in: query
+          name: exclude_cdn_cgi
+          schema:
+            description: >-
+              When true, excludes connections seen in a `/cdn-cgi` path from the
+              returned connections. The default value is true.
+            example: true
+            type: boolean
+        - in: query
+          name: status
+          schema:
+            description: >-
+              Filters the returned connections using a comma-separated list of
+              connection statuses. Accepted values: `active`, `infrequent`, and
+              `inactive`. The default value is `active`.
+            example: active,inactive
+            type: string
+        - in: query
+          name: page_url
+          schema:
+            description: >
+              Includes connections that match one or more page URLs (separated
+              by commas) where they were last seen
+
+
+              Wildcards are supported at the start and end of each page URL to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: example.com/page,*/checkout,example.com/*,*checkout*
+            type: string
+        - in: query
+          name: export
+          schema:
+            description: Export the list of connections as a file.
+            enum:
+              - csv
+            example: csv
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/page-shield_list-zone-connections-response
+          description: List Page Shield connections response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: List Page Shield connections response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List Page Shield connections
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_id}/page_shield/connections/{connection_id}:
+    get:
+      description: Fetches a connection detected by Page Shield by connection ID.
+      operationId: page-shield-get-connection
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: connection_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-connection-response'
+          description: Get a Page Shield connection response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Get a Page Shield connection response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get a Page Shield connection
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_id}/page_shield/cookies:
+    get:
+      description: Lists all cookies collected by Page Shield.
+      operationId: page-shield-list-cookies
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: query
+          name: hosts
+          schema:
+            description: >
+              Includes cookies that match one or more URL-encoded hostnames
+              separated by commas.
+
+
+              Wildcards are supported at the start and end of each hostname to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: blog.cloudflare.com,www.example*,*cloudflare.com
+            type: string
+        - in: query
+          name: page
+          schema:
+            description: >
+              The current page number of the paginated results.
+
+
+              We additionally support a special value "all". When "all" is used,
+              the API will return all the cookies
+
+              with the applied filters in a single page. This feature is
+              best-effort and it may only work for zones with 
+
+              a low number of cookies
+            example: 2
+            type: string
+        - in: query
+          name: per_page
+          schema:
+            description: The number of results per page.
+            example: 100
+            maximum: 100
+            minimum: 1
+            type: number
+        - in: query
+          name: order_by
+          schema:
+            description: The field used to sort returned cookies.
+            enum:
+              - first_seen_at
+              - last_seen_at
+            example: first_seen_at
+            type: string
+        - in: query
+          name: direction
+          schema:
+            description: The direction used to sort returned cookies.'
+            enum:
+              - asc
+              - desc
+            example: asc
+            type: string
+        - in: query
+          name: page_url
+          schema:
+            description: >
+              Includes connections that match one or more page URLs (separated
+              by commas) where they were last seen
+
+
+              Wildcards are supported at the start and end of each page URL to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: example.com/page,*/checkout,example.com/*,*checkout*
+            type: string
+        - in: query
+          name: export
+          schema:
+            description: Export the list of cookies as a file.
+            enum:
+              - csv
+            example: csv
+            type: string
+        - in: query
+          name: name
+          schema:
+            description: >
+              Filters the returned cookies that match the specified name.
+
+              Wildcards are supported at the start and end to support starts
+              with, ends with
+
+              and contains. e.g. session*
+            example: session_id
+            maxLength: 1024
+            type: string
+        - in: query
+          name: secure
+          schema:
+            description: Filters the returned cookies that are set with Secure
+            example: true
+            type: boolean
+        - in: query
+          name: http_only
+          schema:
+            description: Filters the returned cookies that are set with HttpOnly
+            example: true
+            type: boolean
+        - in: query
+          name: same_site
+          schema:
+            description: >-
+              Filters the returned cookies that match the specified same_site
+              attribute
+            enum:
+              - lax
+              - strict
+              - none
+            example: strict
+            type: string
+        - in: query
+          name: type
+          schema:
+            description: >-
+              Filters the returned cookies that match the specified type
+              attribute
+            enum:
+              - first_party
+              - unknown
+            example: first_party
+            type: string
+        - in: query
+          name: path
+          schema:
+            description: >-
+              Filters the returned cookies that match the specified path
+              attribute
+            example: /
+            maxLength: 1024
+            type: string
+        - in: query
+          name: domain
+          schema:
+            description: >-
+              Filters the returned cookies that match the specified domain
+              attribute
+            example: example.com
+            maxLength: 1024
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_list-zone-cookies-response'
+          description: List Page Shield cookies response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: List Page Shield cookies response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List Page Shield Cookies
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_id}/page_shield/cookies/{cookie_id}:
+    get:
+      description: Fetches a cookie collected by Page Shield by cookie ID.
+      operationId: page-shield-get-cookie
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: cookie_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-cookie-response'
+          description: Get a Page Shield cookie response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Get a Page Shield cookie response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get a Page Shield cookie
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_id}/page_shield/policies:
+    get:
+      description: Lists all Page Shield policies.
+      operationId: page-shield-list-policies
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_list-zone-policies-response'
+          description: List Page Shield policies response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: List Page Shield policies response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List Page Shield policies
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    post:
+      description: Create a Page Shield policy.
+      operationId: page-shield-create-policy
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/page-shield_policy'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-policy-response'
+          description: Create a Page Shield policy response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Create a Page Shield policy response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create a Page Shield policy
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/page_shield/policies/{policy_id}:
+    get:
+      description: Fetches a Page Shield policy by ID.
+      operationId: page-shield-get-policy
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-policy-response'
+          description: Get a Page Shield policy response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Get a Page Shield policy response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get a Page Shield policy
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    put:
+      description: Update a Page Shield policy by ID.
+      operationId: page-shield-update-policy
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                action:
+                  $ref: '#/components/schemas/page-shield_policy-action'
+                description:
+                  $ref: '#/components/schemas/page-shield_policy-description'
+                enabled:
+                  $ref: '#/components/schemas/page-shield_policy-enabled'
+                expression:
+                  $ref: '#/components/schemas/page-shield_policy-expression'
+                value:
+                  $ref: '#/components/schemas/page-shield_policy-value'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-policy-response'
+          description: Update a Page Shield policy response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Update a Page Shield policy response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update a Page Shield policy
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    delete:
+      description: Delete a Page Shield policy by ID.
+      operationId: page-shield-delete-policy
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '204':
+          description: Delete a Page Shield policy response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: Delete a Page Shield policy response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete a Page Shield policy
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/page_shield/scripts:
+    get:
+      description: Lists all scripts detected by Page Shield.
+      operationId: page-shield-list-scripts
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: query
+          name: exclude_urls
+          schema:
+            description: >
+              Excludes scripts whose URL contains one of the URL-encoded URLs
+              separated by commas.
+            example: blog.cloudflare.com,www.example
+            type: string
+        - in: query
+          name: urls
+          schema:
+            description: >
+              Includes scripts whose URL contain one or more URL-encoded URLs
+              separated by commas.
+            example: blog.cloudflare.com,www.example
+            type: string
+        - in: query
+          name: hosts
+          schema:
+            description: >
+              Includes scripts that match one or more URL-encoded hostnames
+              separated by commas.
+
+
+              Wildcards are supported at the start and end of each hostname to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: blog.cloudflare.com,www.example*,*cloudflare.com
+            type: string
+        - in: query
+          name: page
+          schema:
+            description: >
+              The current page number of the paginated results.
+
+
+              We additionally support a special value "all". When "all" is used,
+              the API will return all the scripts
+
+              with the applied filters in a single page. This feature is
+              best-effort and it may only work for zones with 
+
+              a low number of scripts
+            example: 2
+            type: string
+        - in: query
+          name: per_page
+          schema:
+            description: The number of results per page.
+            example: 100
+            maximum: 100
+            minimum: 1
+            type: number
+        - in: query
+          name: order_by
+          schema:
+            description: The field used to sort returned scripts.
+            enum:
+              - first_seen_at
+              - last_seen_at
+            example: first_seen_at
+            type: string
+        - in: query
+          name: direction
+          schema:
+            description: The direction used to sort returned scripts.
+            enum:
+              - asc
+              - desc
+            example: asc
+            type: string
+        - in: query
+          name: prioritize_malicious
+          schema:
+            description: When true, malicious scripts appear first in the returned scripts.
+            example: true
+            type: boolean
+        - in: query
+          name: exclude_cdn_cgi
+          schema:
+            default: true
+            description: >-
+              When true, excludes scripts seen in a `/cdn-cgi` path from the
+              returned scripts. The default value is true.
+            example: true
+            type: boolean
+        - in: query
+          name: exclude_duplicates
+          schema:
+            default: true
+            description: >
+              When true, excludes duplicate scripts. We consider a script
+              duplicate of another if their javascript
+
+              content matches and they share the same url host and zone
+              hostname. In such case, we return the most
+
+              recent script for the URL host and zone hostname combination.
+            example: true
+            type: boolean
+        - in: query
+          name: status
+          schema:
+            description: >-
+              Filters the returned scripts using a comma-separated list of
+              scripts statuses. Accepted values: `active`, `infrequent`, and
+              `inactive`. The default value is `active`.
+            example: active,inactive
+            type: string
+        - in: query
+          name: page_url
+          schema:
+            description: >
+              Includes scripts that match one or more page URLs (separated by
+              commas) where they were last seen
+
+
+              Wildcards are supported at the start and end of each page URL to
+              support starts with, ends with
+
+              and contains. If no wildcards are used, results will be filtered
+              by exact match
+            example: example.com/page,*/checkout,example.com/*,*checkout*
+            type: string
+        - in: query
+          name: export
+          schema:
+            description: Export the list of scripts as a file.
+            enum:
+              - csv
+            example: csv
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_list-zone-scripts-response'
+          description: List Page Shield scripts response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_api-response-common-failure'
+          description: List Page Shield scripts response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: List Page Shield scripts
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/page_shield/scripts/{script_id}:
+    get:
+      description: Fetches a script detected by Page Shield by script ID.
+      operationId: page-shield-get-script
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+        - in: path
+          name: script_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/page-shield_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page-shield_get-zone-script-response'
+          description: Get a Page Shield script response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/page-shield_api-response-common-failure
+          description: Get a Page Shield script response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get a Page Shield script
+      tags:
+        - Page Shield
+      x-api-token-group:
+        - Page Shield
+        - Domain Page Shield Read
+        - Domain Page Shield
+        - Page Shield Read
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+components:
+  schemas:
+    page-shield_api-get-response-collection:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-response-common'
+        - properties:
+            result:
+              nullable: true
+              type: object
+      type: object
+    page-shield_api-response-common-failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/page-shield_messages'
+        messages:
+          $ref: '#/components/schemas/page-shield_messages'
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+      type: object
+    page-shield_enabled:
+      description: When true, indicates that Page Shield is enabled.
+      example: true
+      type: boolean
+      x-auditable: true
+    page-shield_get-zone-connection-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-get-response-collection'
+        - properties:
+            result:
+              $ref: '#/components/schemas/page-shield_connection'
+          required:
+            - result
+    page-shield_get-zone-cookie-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-get-response-collection'
+        - properties:
+            result:
+              $ref: '#/components/schemas/page-shield_cookie'
+          required:
+            - result
+    page-shield_get-zone-policy-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-get-response-collection'
+        - properties:
+            result:
+              $ref: '#/components/schemas/page-shield_policy-with-id'
+          required:
+            - result
+    page-shield_get-zone-script-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-get-response-collection'
+        - properties:
+            result:
+              allOf:
+                - $ref: '#/components/schemas/page-shield_script'
+                - properties:
+                    versions:
+                      example:
+                        - cryptomining_score: 20
+                          dataflow_score: 2
+                          fetched_at: '2021-08-18T10:51:08Z'
+                          hash: >-
+                            e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b423
+                          js_integrity_score: 2
+                          magecart_score: 10
+                          malware_score: 5
+                          obfuscation_score: 10
+                      items:
+                        $ref: '#/components/schemas/page-shield_version'
+                      nullable: true
+                      type: array
+          required:
+            - result
+    page-shield_get-zone-settings-response:
+      properties:
+        enabled:
+          $ref: '#/components/schemas/page-shield_enabled'
+        updated_at:
+          $ref: '#/components/schemas/page-shield_updated_at'
+        use_cloudflare_reporting_endpoint:
+          $ref: '#/components/schemas/page-shield_use_cloudflare_reporting_endpoint'
+        use_connection_url_path:
+          $ref: '#/components/schemas/page-shield_use_connection_url_path'
+      required:
+        - enabled
+        - updated_at
+        - use_cloudflare_reporting_endpoint
+        - use_connection_url_path
+    page-shield_id:
+      description: Identifier
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    page-shield_list-zone-connections-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-list-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/page-shield_connection'
+              type: array
+          type: object
+    page-shield_list-zone-cookies-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-list-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/page-shield_cookie'
+              type: array
+          required:
+            - result
+          type: object
+    page-shield_list-zone-policies-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-list-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/page-shield_policy-with-id'
+              type: array
+          required:
+            - result
+          type: object
+    page-shield_list-zone-scripts-response:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-list-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/page-shield_script'
+              type: array
+          required:
+            - result
+          type: object
+    page-shield_policy:
+      properties:
+        action:
+          $ref: '#/components/schemas/page-shield_policy-action'
+        description:
+          $ref: '#/components/schemas/page-shield_policy-description'
+        enabled:
+          $ref: '#/components/schemas/page-shield_policy-enabled'
+        expression:
+          $ref: '#/components/schemas/page-shield_policy-expression'
+        value:
+          $ref: '#/components/schemas/page-shield_policy-value'
+      required:
+        - description
+        - action
+        - expression
+        - enabled
+        - value
+    page-shield_policy-action:
+      description: The action to take if the expression matches
+      enum:
+        - allow
+        - log
+      example: allow
+      type: string
+      x-auditable: true
+    page-shield_policy-description:
+      description: A description for the policy
+      example: Checkout page CSP policy
+      type: string
+      x-auditable: true
+    page-shield_policy-enabled:
+      description: Whether the policy is enabled
+      example: true
+      type: boolean
+      x-auditable: true
+    page-shield_policy-expression:
+      description: >-
+        The expression which must match for the policy to be applied, using the
+        Cloudflare Firewall rule expression syntax
+      example: ends_with(http.request.uri.path, "/checkout")
+      type: string
+      x-auditable: true
+    page-shield_policy-value:
+      description: The policy which will be applied
+      example: script-src 'none';
+      type: string
+      x-auditable: true
+    page-shield_update-zone-settings-response:
+      properties:
+        enabled:
+          $ref: '#/components/schemas/page-shield_enabled'
+        updated_at:
+          $ref: '#/components/schemas/page-shield_updated_at'
+        use_cloudflare_reporting_endpoint:
+          $ref: '#/components/schemas/page-shield_use_cloudflare_reporting_endpoint'
+        use_connection_url_path:
+          $ref: '#/components/schemas/page-shield_use_connection_url_path'
+      required:
+        - enabled
+        - updated_at
+        - use_cloudflare_reporting_endpoint
+        - use_connection_url_path
+    page-shield_use_cloudflare_reporting_endpoint:
+      description: >-
+        When true, CSP reports will be sent to
+        https://csp-reporting.cloudflare.com/cdn-cgi/script_monitor/report
+      example: true
+      type: boolean
+      x-auditable: true
+    page-shield_use_connection_url_path:
+      description: >-
+        When true, the paths associated with connections URLs will also be
+        analyzed.
+      example: true
+      type: boolean
+      x-auditable: true
+    page-shield_zone_settings_response_single:
+      allOf:
+        - $ref: '#/components/schemas/page-shield_api-response-single'
+        - properties:
+            result:
+              type: object

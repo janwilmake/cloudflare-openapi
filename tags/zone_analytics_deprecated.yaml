@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_identifier}/analytics/colos:
+    get:
+      deprecated: true
+      description: >-
+        This view provides a breakdown of analytics data by datacenter. Note:
+        This is available to Enterprise customers only.
+      operationId: zone-analytics-(-deprecated)-get-analytics-by-co-locations
+      parameters:
+        - in: path
+          name: zone_identifier
+          required: true
+          schema:
+            $ref: '#/components/schemas/zone-analytics-api_identifier'
+        - in: query
+          name: until
+          schema:
+            $ref: '#/components/schemas/zone-analytics-api_until'
+        - in: query
+          name: since
+          schema:
+            anyOf:
+              - type: string
+              - type: integer
+            default: -10080
+            description: >-
+              The (inclusive) beginning of the requested time frame. This value
+              can be a negative integer representing the number of minutes in
+              the past relative to time the request is made, or can be an
+              absolute timestamp that conforms to RFC 3339. At this point in
+              time, it cannot exceed a time in the past greater than one year.
+
+
+              Ranges that the Cloudflare web application provides will provide
+              the following period length for each point:
+
+              - Last 60 minutes (from -59 to -1): 1 minute resolution
+
+              - Last 7 hours (from -419 to -60): 15 minutes resolution
+
+              - Last 15 hours (from -899 to -420): 30 minutes resolution
+
+              - Last 72 hours (from -4320 to -900): 1 hour resolution
+
+              - Older than 3 days (-525600 to -4320): 1 day resolution.
+            example: '2015-01-01T12:23:00Z'
+        - in: query
+          name: continuous
+          schema:
+            default: true
+            description: >-
+              When set to true, the API will move the requested time window
+              backward, until it finds a region with completely aggregated data.
+
+
+              The API response _may not represent the requested time window_.
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zone-analytics-api_colo_response'
+          description: Get analytics by Co-locations response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/zone-analytics-api_colo_response'
+                  - $ref: >-
+                      #/components/schemas/zone-analytics-api_api-response-common-failure
+          description: Get analytics by Co-locations response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get analytics by Co-locations
+      tags:
+        - Zone Analytics (Deprecated)
+      x-api-token-group:
+        - Analytics Read
+      x-cfDeprecation:
+        description: >-
+          Please use the new GraphQL Analytics API instead:
+          https://developers.cloudflare.com/analytics/graphql-api/. It provides
+          equivalent data and more features, including the ability to select
+          only the metrics you need. Migration guide:
+          https://developers.cloudflare.com/analytics/migration-guides/zone-analytics/.
+        display: true
+        eol: '2021-03-01'
+        id: zone_analytics_deprecation
+      x-cfPermissionsRequired:
+        enum:
+          - '#analytics:read'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_identifier}/analytics/dashboard:
+    get:
+      deprecated: true
+      description: >-
+        The dashboard view provides both totals and timeseries data for the
+        given zone and time period across the entire Cloudflare network.
+      operationId: zone-analytics-(-deprecated)-get-dashboard
+      parameters:
+        - in: path
+          name: zone_identifier
+          required: true
+          schema:
+            $ref: '#/components/schemas/zone-analytics-api_identifier'
+        - in: query
+          name: until
+          schema:
+            $ref: '#/components/schemas/zone-analytics-api_until'
+        - in: query
+          name: since
+          schema:
+            anyOf:
+              - type: string
+              - type: integer
+            default: -10080
+            description: >-
+              The (inclusive) beginning of the requested time frame. This value
+              can be a negative integer representing the number of minutes in
+              the past relative to time the request is made, or can be an
+              absolute timestamp that conforms to RFC 3339. At this point in
+              time, it cannot exceed a time in the past greater than one year.
+
+
+              Ranges that the Cloudflare web application provides will provide
+              the following period length for each point:
+
+              - Last 60 minutes (from -59 to -1): 1 minute resolution
+
+              - Last 7 hours (from -419 to -60): 15 minutes resolution
+
+              - Last 15 hours (from -899 to -420): 30 minutes resolution
+
+              - Last 72 hours (from -4320 to -900): 1 hour resolution
+
+              - Older than 3 days (-525600 to -4320): 1 day resolution.
+            example: '2015-01-01T12:23:00Z'
+        - in: query
+          name: continuous
+          schema:
+            default: true
+            description: >-
+              When set to true, the API will move the requested time window
+              backward, until it finds a region with completely aggregated data.
+
+
+              The API response _may not represent the requested time window_.
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zone-analytics-api_dashboard_response'
+          description: Get dashboard response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/zone-analytics-api_dashboard_response'
+                  - $ref: >-
+                      #/components/schemas/zone-analytics-api_api-response-common-failure
+          description: Get dashboard response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get dashboard
+      tags:
+        - Zone Analytics (Deprecated)
+      x-api-token-group:
+        - Analytics Read
+      x-cfDeprecation:
+        description: >-
+          Please use the new GraphQL Analytics API instead:
+          https://developers.cloudflare.com/analytics/graphql-api/. It provides
+          equivalent data and more features, including the ability to select
+          only the metrics you need. Migration guide:
+          https://developers.cloudflare.com/analytics/migration-guides/zone-analytics/.
+        display: true
+        eol: '2021-03-01'
+        id: zone_analytics_deprecation
+      x-cfPermissionsRequired:
+        enum:
+          - '#analytics:read'
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    zone-analytics-api_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/zone-analytics-api_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/zone-analytics-api_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    zone-analytics-api_colo_response:
+      allOf:
+        - $ref: '#/components/schemas/zone-analytics-api_api-response-single'
+        - properties:
+            query:
+              $ref: '#/components/schemas/zone-analytics-api_query_response'
+            result:
+              $ref: '#/components/schemas/zone-analytics-api_datacenters'
+    zone-analytics-api_dashboard_response:
+      allOf:
+        - $ref: '#/components/schemas/zone-analytics-api_api-response-single'
+        - properties:
+            query:
+              $ref: '#/components/schemas/zone-analytics-api_query_response'
+            result:
+              $ref: '#/components/schemas/zone-analytics-api_dashboard'
+    zone-analytics-api_identifier:
+      description: Identifier
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+    zone-analytics-api_until:
+      anyOf:
+        - type: string
+        - type: integer
+      default: 0
+      description: >-
+        The (exclusive) end of the requested time frame. This value can be a
+        negative integer representing the number of minutes in the past relative
+        to time the request is made, or can be an absolute timestamp that
+        conforms to RFC 3339. If omitted, the time of the request is used.
+      example: '2015-01-02T12:23:00Z'

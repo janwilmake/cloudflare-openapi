@@ -1,0 +1,501 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/cloudforce-one/requests/priority:
+    post:
+      operationId: cloudforce-one-priority-list
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloudforce-one-requests_priority-list'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-requests_api-response-common
+                  - properties:
+                      result:
+                        items:
+                          $ref: >-
+                            #/components/schemas/cloudforce-one-requests_priority-item
+                        type: array
+                    type: object
+          description: List priorities response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: List priorities response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: List Priority Intelligence Requirements
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+  /accounts/{account_id}/cloudforce-one/requests/priority/new:
+    post:
+      operationId: cloudforce-one-priority-new
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloudforce-one-requests_priority-edit'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-requests_api-response-common
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/cloudforce-one-requests_priority-item
+                    type: object
+          description: Create priority response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: Create priority response  failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Create a New Priority Intelligence Requirement
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+  /accounts/{account_id}/cloudforce-one/requests/priority/quota:
+    get:
+      operationId: cloudforce-one-priority-quota
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-requests_api-response-common
+                  - properties:
+                      result:
+                        allOf:
+                          - $ref: '#/components/schemas/cloudforce-one-requests_quota'
+                    type: object
+          description: Get priority quota response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: Get priority quota response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get Priority Intelligence Requirement Quota
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+        - Cloudforce One Read
+  /accounts/{account_id}/cloudforce-one/requests/priority/{priority_id}:
+    get:
+      operationId: cloudforce-one-priority-get
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+        - in: path
+          name: priority_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_uuid'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-requests_api-response-common
+                  - properties:
+                      result:
+                        allOf:
+                          - $ref: >-
+                              #/components/schemas/cloudforce-one-requests_request-item
+                    type: object
+          description: Get priority response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: Get priority response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get a Priority Intelligence Requirement
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+        - Cloudforce One Read
+    put:
+      operationId: cloudforce-one-priority-update
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+        - in: path
+          name: priority_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_uuid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloudforce-one-requests_priority-edit'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-requests_api-response-common
+                  - properties:
+                      result:
+                        allOf:
+                          - $ref: >-
+                              #/components/schemas/cloudforce-one-requests_request-item
+                    type: object
+          description: Update priority response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: Update priority response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Update a Priority Intelligence Requirement
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+    delete:
+      operationId: cloudforce-one-priority-delete
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_identifier'
+        - in: path
+          name: priority_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/cloudforce-one-requests_uuid'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common
+          description: Delete priority response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-requests_api-response-common-failure
+          description: Delete priority response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Delete a Priority Intelligence Requirement
+      tags:
+        - Priority Intelligence Requirements (PIR)
+      x-api-token-group:
+        - Cloudforce One Write
+components:
+  schemas:
+    cloudforce-one-requests_api-response-common:
+      properties:
+        errors:
+          $ref: '#/components/schemas/cloudforce-one-requests_messages'
+        messages:
+          $ref: '#/components/schemas/cloudforce-one-requests_messages'
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - true
+          example: true
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+      type: object
+    cloudforce-one-requests_api-response-common-failure:
+      allOf:
+        - $ref: '#/components/schemas/cloudforce-one-requests_api-response-common'
+        - properties:
+            errors:
+              properties:
+                code:
+                  example: 10433
+                  type: integer
+                message:
+                  example: request error
+                  type: string
+              type: object
+            success:
+              example: false
+              type: boolean
+          type: object
+    cloudforce-one-requests_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    cloudforce-one-requests_priority-edit:
+      properties:
+        labels:
+          $ref: '#/components/schemas/cloudforce-one-requests_labels'
+        priority:
+          description: Priority.
+          example: 1
+          type: integer
+          x-auditable: true
+        requirement:
+          description: Requirement.
+          example: DoS attacks carried out by CVEs
+          type: string
+          x-auditable: true
+        tlp:
+          $ref: '#/components/schemas/cloudforce-one-requests_tlp'
+      required:
+        - labels
+        - priority
+        - requirement
+        - tlp
+      title: Priority Editable Attributes
+      type: object
+    cloudforce-one-requests_priority-item:
+      properties:
+        created:
+          allOf:
+            - $ref: '#/components/schemas/cloudforce-one-requests_time'
+          description: Priority creation time.
+        id:
+          $ref: '#/components/schemas/cloudforce-one-requests_uuid'
+        labels:
+          $ref: '#/components/schemas/cloudforce-one-requests_labels'
+        priority:
+          description: Priority.
+          example: 1
+          type: integer
+          x-auditable: true
+        requirement:
+          description: Requirement.
+          example: DoS attacks carried out by CVEs
+          type: string
+          x-auditable: true
+        tlp:
+          $ref: '#/components/schemas/cloudforce-one-requests_tlp'
+        updated:
+          allOf:
+            - $ref: '#/components/schemas/cloudforce-one-requests_time'
+          description: Priority last updated time.
+      required:
+        - id
+        - created
+        - updated
+        - labels
+        - priority
+        - requirement
+        - tlp
+      title: Priority Item
+      type: object
+    cloudforce-one-requests_priority-list:
+      properties:
+        page:
+          description: Page number of results.
+          type: integer
+        per_page:
+          description: Number of results per page.
+          example: 10
+          type: integer
+      required:
+        - page
+        - per_page
+      title: Priority List Parameters
+      type: object
+    cloudforce-one-requests_quota:
+      properties:
+        anniversary_date:
+          allOf:
+            - $ref: '#/components/schemas/cloudforce-one-requests_time'
+          description: Anniversary date is when annual quota limit is refreshed.
+          example: '2022-04-01T00:00:00Z'
+        quarter_anniversary_date:
+          allOf:
+            - $ref: '#/components/schemas/cloudforce-one-requests_time'
+          description: >-
+            Quarter anniversary date is when quota limit is refreshed each
+            quarter.
+          example: '2022-04-01T00:00:00Z'
+        quota:
+          description: Tokens for the quarter.
+          example: 120
+          type: integer
+          x-auditable: true
+        remaining:
+          description: Tokens remaining for the quarter.
+          example: 64
+          type: integer
+          x-auditable: true
+      title: Quota
+      type: object
+    cloudforce-one-requests_request-item:
+      properties:
+        completed:
+          $ref: '#/components/schemas/cloudforce-one-requests_time'
+        content:
+          $ref: '#/components/schemas/cloudforce-one-requests_request-content'
+        created:
+          $ref: '#/components/schemas/cloudforce-one-requests_time'
+        id:
+          $ref: '#/components/schemas/cloudforce-one-requests_uuid'
+        message_tokens:
+          description: Tokens for the request messages.
+          example: 1
+          type: integer
+          x-auditable: true
+        priority:
+          $ref: '#/components/schemas/cloudforce-one-requests_time'
+        readable_id:
+          $ref: '#/components/schemas/cloudforce-one-requests_request-readable-id'
+        request:
+          $ref: '#/components/schemas/cloudforce-one-requests_request-type'
+        status:
+          $ref: '#/components/schemas/cloudforce-one-requests_request-status'
+        summary:
+          $ref: '#/components/schemas/cloudforce-one-requests_request-summary'
+        tlp:
+          $ref: '#/components/schemas/cloudforce-one-requests_tlp'
+        tokens:
+          description: Tokens for the request.
+          example: 16
+          type: integer
+          x-auditable: true
+        updated:
+          $ref: '#/components/schemas/cloudforce-one-requests_time'
+      required:
+        - id
+        - created
+        - updated
+        - content
+        - priority
+        - request
+        - summary
+        - tlp
+      title: Request Item
+      type: object
+    cloudforce-one-requests_uuid:
+      description: UUID.
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      maxLength: 36
+      type: string

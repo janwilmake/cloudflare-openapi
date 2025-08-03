@@ -1,0 +1,459 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/firewall/waf/overrides:
+    get:
+      deprecated: true
+      description: >-
+        Fetches the URI-based WAF overrides in a zone.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-overrides-list-waf-overrides
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+        - in: query
+          name: page
+          schema:
+            default: 1
+            description: The page number of paginated results.
+            minimum: 1
+            type: number
+        - in: query
+          name: per_page
+          schema:
+            default: 50
+            description: The number of WAF overrides per page.
+            maximum: 100
+            minimum: 5
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_override_response_collection'
+          description: List WAF overrides response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/firewall_override_response_collection'
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: List WAF overrides response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List WAF overrides
+      tags:
+        - WAF overrides
+      x-api-token-group:
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    post:
+      deprecated: true
+      description: >-
+        Creates a URI-based WAF override for a zone.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-overrides-create-a-waf-override
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                urls:
+                  $ref: '#/components/schemas/firewall_urls'
+              required:
+                - urls
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_override_response_single'
+          description: Create a WAF override response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/firewall_override_response_single'
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Create a WAF override response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a WAF override
+      tags:
+        - WAF overrides
+      x-api-token-group:
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /zones/{zone_id}/firewall/waf/overrides/{overrides_id}:
+    get:
+      deprecated: true
+      description: >-
+        Fetches the details of a URI-based WAF override.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-overrides-get-a-waf-override
+      parameters:
+        - in: path
+          name: overrides_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_overrides-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_override_response_single'
+          description: Get a WAF override response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/firewall_override_response_single'
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Get a WAF override response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a WAF override
+      tags:
+        - WAF overrides
+      x-api-token-group:
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    put:
+      deprecated: true
+      description: >-
+        Updates an existing URI-based WAF override.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-overrides-update-waf-override
+      parameters:
+        - in: path
+          name: overrides_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_overrides-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  $ref: '#/components/schemas/firewall_identifier'
+                rewrite_action:
+                  $ref: '#/components/schemas/firewall_rewrite_action'
+                rules:
+                  $ref: '#/components/schemas/firewall_rules'
+                urls:
+                  $ref: '#/components/schemas/firewall_urls'
+              required:
+                - id
+                - urls
+                - rules
+                - rewrite_action
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/firewall_override_response_single'
+          description: Update WAF override response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/firewall_override_response_single'
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Update WAF override response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update WAF override
+      tags:
+        - WAF overrides
+      x-api-token-group:
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    delete:
+      deprecated: true
+      description: >-
+        Deletes an existing URI-based WAF override.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-overrides-delete-a-waf-override
+      parameters:
+        - in: path
+          name: overrides_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_overrides-id'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/firewall_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/firewall_overrides-id'
+                    type: object
+                type: object
+          description: Delete a WAF override response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      result:
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/firewall_overrides-id'
+                        type: object
+                    type: object
+                  - $ref: '#/components/schemas/firewall_api-response-common-failure'
+          description: Delete a WAF override response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a WAF override
+      tags:
+        - WAF overrides
+      x-api-token-group:
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+components:
+  schemas:
+    firewall_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/firewall_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/firewall_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Defines whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    firewall_identifier:
+      description: Defines an identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+    firewall_override_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/firewall_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/firewall_override'
+              type: array
+          required:
+            - result
+          type: object
+    firewall_override_response_single:
+      allOf:
+        - $ref: '#/components/schemas/firewall_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/firewall_override'
+          required:
+            - result
+          type: object
+    firewall_overrides-id:
+      description: The unique identifier of the WAF override.
+      example: de677e5818985db1285d0e80225f06e5
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    firewall_rewrite_action:
+      description: >-
+        Specifies that, when a WAF rule matches, its configured action will be
+        replaced by the action configured in this object.
+      properties:
+        block:
+          $ref: '#/components/schemas/firewall_waf_rewrite_action'
+        challenge:
+          $ref: '#/components/schemas/firewall_waf_rewrite_action'
+        default:
+          $ref: '#/components/schemas/firewall_waf_rewrite_action'
+        disable:
+          $ref: '#/components/schemas/firewall_waf_rewrite_action'
+        simulate:
+          $ref: '#/components/schemas/firewall_waf_rewrite_action'
+      type: object
+    firewall_rules:
+      additionalProperties:
+        allOf:
+          - $ref: '#/components/schemas/firewall_waf_action'
+        example: default
+      description: >-
+        An object that allows you to override the action of specific WAF rules.
+        Each key of this object must be the ID of a WAF rule, and each value
+        must be a valid WAF action. Unless you are disabling a rule, ensure that
+        you also enable the rule group that this WAF rule belongs to. When
+        creating a new URI-based WAF override, you must provide a `groups`
+        object or a `rules` object.
+      example:
+        '100015': disable
+      type: object
+    firewall_urls:
+      description: >-
+        The URLs to include in the current WAF override. You can use wildcards.
+        Each entered URL will be escaped before use, which means you can only
+        use simple wildcard patterns.
+      items:
+        example: shop.example.com/*
+        type: string
+        x-auditable: true
+      type: array

@@ -1,0 +1,231 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/urlscanner/v2/search:
+    get:
+      description: >-
+        Use a subset of ElasticSearch Query syntax to filter scans. Some example
+        queries:<br/> <br/>- 'path:"/bundles/jquery.js"': Searches for scans who
+        requested resources with the given path.<br/>- 'page.asn:AS24940 AND
+        hash:xxx': Websites hosted in AS24940 where a resource with the given
+        hash was downloaded.<br/>- 'page.domain:microsoft* AND
+        verdicts.malicious:true AND NOT page.domain:microsoft.com': malicious
+        scans whose hostname starts with "microsoft".<br/>- 'apikey:me AND
+        date:[2025-01 TO 2025-02]': my scans from 2025 January to 2025 February.
+      operationId: urlscanner-search-scans-v2
+      parameters:
+        - description: Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account ID.
+            type: string
+        - description: Limit the number of objects in the response.
+          in: query
+          name: size
+          schema:
+            description: Limit the number of objects in the response.
+            example: 100
+            type: integer
+        - description: Filter scans
+          in: query
+          name: q
+          schema:
+            description: Filter scans
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    items:
+                      properties:
+                        _id:
+                          example: 9626f773-9ffb-4cfb-89d3-30b120fc8011
+                          type: string
+                        page:
+                          properties:
+                            asn:
+                              example: AS15133
+                              type: string
+                            country:
+                              example: US
+                              type: string
+                            ip:
+                              example: 93.184.215.14
+                              type: string
+                            url:
+                              example: https://example.com
+                              type: string
+                          required:
+                            - country
+                            - ip
+                            - url
+                            - asn
+                          type: object
+                        result:
+                          example: >-
+                            https://radar.clouflare.com/scan/9626f773-9ffb-4cfb-89d3-30b120fc8011
+                          type: string
+                        stats:
+                          properties:
+                            dataLength:
+                              example: 2512
+                              type: number
+                            requests:
+                              example: 2
+                              type: number
+                            uniqCountries:
+                              example: 1
+                              type: number
+                            uniqIPs:
+                              example: 1
+                              type: number
+                          required:
+                            - uniqIPs
+                            - uniqCountries
+                            - dataLength
+                            - requests
+                          type: object
+                        task:
+                          properties:
+                            time:
+                              example: '2024-09-30T23:54:02.881000+00:00'
+                              type: string
+                            url:
+                              example: https://example.com
+                              type: string
+                            uuid:
+                              example: 9626f773-9ffb-4cfb-89d3-30b120fc8011
+                              type: string
+                            visibility:
+                              example: public
+                              type: string
+                          required:
+                            - visibility
+                            - time
+                            - uuid
+                            - url
+                          type: object
+                        verdicts:
+                          properties:
+                            malicious:
+                              type: boolean
+                          required:
+                            - malicious
+                          type: object
+                      required:
+                        - task
+                        - stats
+                        - page
+                        - verdicts
+                        - _id
+                        - result
+                      type: object
+                    type: array
+                required:
+                  - results
+                type: object
+          description: Search results
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        detail:
+                          type: string
+                        status:
+                          description: Status code.
+                          example: 400
+                          type: integer
+                        title:
+                          example: Invalid url
+                          type: string
+                      required:
+                        - title
+                        - detail
+                        - status
+                      type: object
+                    type: array
+                  message:
+                    type: string
+                  status:
+                    description: Status code.
+                    example: 400
+                    type: integer
+                required:
+                  - message
+                  - status
+                  - errors
+                type: object
+          description: Invalid input.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Search URL scans
+      tags:
+        - URL Scanner
+      x-api-token-group:
+        - URL Scanner Write
+        - URL Scanner Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true

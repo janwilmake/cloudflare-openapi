@@ -1,0 +1,1091 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/rulesets:
+    get:
+      description: Fetches all rulesets at the account level.
+      operationId: listAccountRulesets
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+        - in: query
+          name: cursor
+          schema:
+            $ref: '#/components/schemas/rulesets_Cursor'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/rulesets_PerPage'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List account rulesets
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: Creates a ruleset at the account level.
+      operationId: createAccountRuleset
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_CreateRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Create an account ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/phases/{ruleset_phase}/entrypoint:
+    get:
+      description: >-
+        Fetches the latest version of the account entry point ruleset for a
+        given phase.
+      operationId: getAccountEntrypointRuleset
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get an account entry point ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates an account entry point ruleset, creating a new version.
+      operationId: updateAccountEntrypointRuleset
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_UpdateEntrypointRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update an account entry point ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/phases/{ruleset_phase}/entrypoint/versions:
+    get:
+      description: Fetches the versions of an account entry point ruleset.
+      operationId: listAccountEntrypointRulesetVersions
+      parameters:
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List an account entry point ruleset's versions
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/phases/{ruleset_phase}/entrypoint/versions/{ruleset_version}:
+    get:
+      description: Fetches a specific version of an account entry point ruleset.
+      operationId: getAccountEntrypointRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_phase
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetPhase'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get an account entry point ruleset version
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}:
+    get:
+      description: Fetches the latest version of an account ruleset.
+      operationId: getAccountRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get an account ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates an account ruleset, creating a new version.
+      operationId: updateAccountRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_UpdateRuleset'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update an account ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes all versions of an existing account ruleset.
+      operationId: deleteAccountRuleset
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '204':
+          $ref: '#/components/responses/rulesets_Empty'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete an account ruleset
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}/rules:
+    post:
+      description: >-
+        Adds a new rule to an account ruleset. The rule will be added to the end
+        of the existing list of rules in the ruleset by default.
+      operationId: createAccountRulesetRule
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_Rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Create an account ruleset rule
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}/rules/{rule_id}:
+    patch:
+      description: Updates an existing rule in an account ruleset.
+      operationId: updateAccountRulesetRule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleId'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      requestBody:
+        $ref: '#/components/requestBodies/rulesets_Rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Update an account ruleset rule
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing rule from an account ruleset.
+      operationId: deleteAccountRulesetRule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleId'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete an account ruleset rule
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}/versions:
+    get:
+      description: Fetches the versions of an account ruleset.
+      operationId: listAccountRulesetVersions
+      parameters:
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Rulesets'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List an account ruleset's versions
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}/versions/{ruleset_version}:
+    get:
+      description: Fetches a specific version of an account ruleset.
+      operationId: getAccountRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Get an account ruleset version
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing version of an account ruleset.
+      operationId: deleteAccountRulesetVersion
+      parameters:
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '204':
+          $ref: '#/components/responses/rulesets_Empty'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: Delete an account ruleset version
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Magic Firewall Write
+        - L4 DDoS Managed Ruleset Write
+        - Transform Rules Write
+        - Select Configuration Write
+        - Account WAF Write
+        - Account Rulesets Write
+        - Logs Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rulesets/{ruleset_id}/versions/{ruleset_version}/by_tag/{rule_tag}:
+    get:
+      description: Fetches the rules of a managed account ruleset version for a given tag.
+      operationId: listAccountRulesetVersionRulesByTag
+      parameters:
+        - in: path
+          name: rule_tag
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RuleCategory'
+        - in: path
+          name: ruleset_version
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetVersion'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_RulesetId'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rulesets_AccountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/rulesets_Ruleset'
+        4XX:
+          $ref: '#/components/responses/rulesets_Failure'
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+        - api_email: []
+          api_key: []
+      summary: List an account ruleset version's rules by tag
+      tags:
+        - Account Rulesets
+      x-api-token-group:
+        - Mass URL Redirects Write
+        - Mass URL Redirects Read
+        - Magic Firewall Write
+        - Magic Firewall Read
+        - L4 DDoS Managed Ruleset Write
+        - L4 DDoS Managed Ruleset Read
+        - Transform Rules Write
+        - Transform Rules Read
+        - Select Configuration Write
+        - Select Configuration Read
+        - Account WAF Write
+        - Account WAF Read
+        - Account Rulesets Read
+        - Account Rulesets Write
+        - Logs Write
+        - Logs Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    rulesets_AccountId:
+      description: The unique ID of the account.
+      example: abf9b32d38c5f572afde3336ec0ce302
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+    rulesets_Cursor:
+      description: Cursor to use for the next page.
+      example: dGhpc2lzYW5leGFtcGxlCg
+      minLength: 1
+      title: Cursor
+      type: string
+    rulesets_PerPage:
+      description: Number of rulesets to return per page.
+      example: 3
+      maximum: 50
+      minimum: 1
+      title: Per Page
+      type: integer
+    rulesets_RuleCategory:
+      description: A category of the rule.
+      example: directory-traversal
+      minLength: 1
+      title: Category
+      type: string
+    rulesets_RuleId:
+      description: The unique ID of the rule.
+      example: 3a03d665bac047339bb530ecb439a90d
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+    rulesets_RulesetId:
+      description: The unique ID of the ruleset.
+      example: 2f2feab2026849078ba485f918791bdc
+      pattern: ^[0-9a-f]{32}$
+      title: ID
+      type: string
+    rulesets_RulesetPhase:
+      description: The phase of the ruleset.
+      enum:
+        - ddos_l4
+        - ddos_l7
+        - http_config_settings
+        - http_custom_errors
+        - http_log_custom_fields
+        - http_ratelimit
+        - http_request_cache_settings
+        - http_request_dynamic_redirect
+        - http_request_firewall_custom
+        - http_request_firewall_managed
+        - http_request_late_transform
+        - http_request_origin
+        - http_request_redirect
+        - http_request_sanitize
+        - http_request_sbfm
+        - http_request_transform
+        - http_response_compression
+        - http_response_firewall_managed
+        - http_response_headers_transform
+        - magic_transit
+        - magic_transit_ids_managed
+        - magic_transit_managed
+        - magic_transit_ratelimit
+      example: http_request_firewall_custom
+      title: Phase
+      type: string
+    rulesets_RulesetVersion:
+      description: The version of the ruleset.
+      example: '1'
+      pattern: ^[0-9]+$
+      readOnly: true
+      title: Version
+      type: string
+  responses:
+    rulesets_Empty:
+      description: An empty response.
+    rulesets_Failure:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  result:
+                    enum:
+                      - null
+                  success:
+                    enum:
+                      - false
+      description: A failure response.
+    rulesets_Ruleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  errors:
+                    enum:
+                      - []
+                  result:
+                    allOf:
+                      - $ref: '#/components/schemas/rulesets_Ruleset'
+                      - properties:
+                          kind:
+                            $ref: '#/components/schemas/rulesets_RulesetKind'
+                          phase:
+                            $ref: '#/components/schemas/rulesets_RulesetPhase'
+                          rules:
+                            $ref: '#/components/schemas/rulesets_ResponseRules'
+                        required:
+                          - name
+                          - kind
+                          - phase
+                          - rules
+                  success:
+                    enum:
+                      - true
+      description: A ruleset response.
+    rulesets_Rulesets:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Response'
+              - properties:
+                  errors:
+                    enum:
+                      - []
+                  result:
+                    description: >-
+                      A list of rulesets. The returned information will not
+                      include the rules in each ruleset.
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/rulesets_Ruleset'
+                        - properties:
+                            kind:
+                              $ref: '#/components/schemas/rulesets_RulesetKind'
+                            phase:
+                              $ref: '#/components/schemas/rulesets_RulesetPhase'
+                          required:
+                            - name
+                            - kind
+                            - phase
+                    title: Rulesets
+                    type: array
+                  result_info:
+                    $ref: '#/components/schemas/rulesets_ResultInfo'
+                  success:
+                    enum:
+                      - true
+      description: A rulesets response.
+  requestBodies:
+    rulesets_CreateRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  kind:
+                    $ref: '#/components/schemas/rulesets_RulesetKind'
+                  phase:
+                    $ref: '#/components/schemas/rulesets_RulesetPhase'
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+                required:
+                  - name
+                  - kind
+                  - phase
+      required: true
+    rulesets_Rule:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_RequestRule'
+              - properties:
+                  position:
+                    oneOf:
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              before:
+                                description: >-
+                                  The ID of another rule to place the rule
+                                  before. An empty value causes the rule to be
+                                  placed at the top.
+                                example: da5e8e506c8e7877fe06cdf4c41add54
+                                pattern: ^(?:[0-9a-f]{32})?$
+                                title: Before
+                                type: string
+                            title: Before position
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              after:
+                                description: >-
+                                  The ID of another rule to place the rule
+                                  after. An empty value causes the rule to be
+                                  placed at the bottom.
+                                example: 5bccdbb2a5142cd25cad8591255bd209
+                                pattern: ^(?:[0-9a-f]{32})?$
+                                title: After
+                                type: string
+                            title: After position
+                      - allOf:
+                          - $ref: '#/components/schemas/rulesets_RulePosition'
+                          - properties:
+                              index:
+                                description: >-
+                                  An index at which to place the rule, where
+                                  index 1 is the first rule.
+                                example: 1
+                                minimum: 1
+                                title: Index
+                                type: number
+                            title: Index position
+      required: true
+    rulesets_UpdateEntrypointRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+      required: true
+    rulesets_UpdateRuleset:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/rulesets_Ruleset'
+              - properties:
+                  kind:
+                    $ref: '#/components/schemas/rulesets_RulesetKind'
+                  phase:
+                    $ref: '#/components/schemas/rulesets_RulesetPhase'
+                  rules:
+                    $ref: '#/components/schemas/rulesets_RequestRules'
+      required: true

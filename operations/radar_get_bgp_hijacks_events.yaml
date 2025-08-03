@@ -1,0 +1,359 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /radar/bgp/hijacks/events:
+    get:
+      description: Retrieves the BGP hijack events.
+      operationId: radar-get-bgp-hijacks-events
+      parameters:
+        - description: Current page number, starting from 1.
+          in: query
+          name: page
+          schema:
+            description: Current page number, starting from 1.
+            type: integer
+        - description: Number of entries per page.
+          in: query
+          name: per_page
+          schema:
+            description: Number of entries per page.
+            type: integer
+        - description: The unique identifier of a event.
+          in: query
+          name: eventId
+          schema:
+            description: The unique identifier of a event.
+            type: integer
+        - description: The potential hijacker AS of a BGP hijack event.
+          in: query
+          name: hijackerAsn
+          schema:
+            description: The potential hijacker AS of a BGP hijack event.
+            type: integer
+        - description: The potential victim AS of a BGP hijack event.
+          in: query
+          name: victimAsn
+          schema:
+            description: The potential victim AS of a BGP hijack event.
+            type: integer
+        - description: The potential hijacker or victim AS of a BGP hijack event.
+          in: query
+          name: involvedAsn
+          schema:
+            description: The potential hijacker or victim AS of a BGP hijack event.
+            type: integer
+        - description: >-
+            The country code of the potential hijacker or victim AS of a BGP
+            hijack event.
+          in: query
+          name: involvedCountry
+          schema:
+            description: >-
+              The country code of the potential hijacker or victim AS of a BGP
+              hijack event.
+            type: string
+        - description: Network prefix, IPv4 or IPv6.
+          in: query
+          name: prefix
+          schema:
+            description: Network prefix, IPv4 or IPv6.
+            example: 1.1.1.0/24
+            type: string
+        - description: >-
+            Filters events by minimum confidence score (1-4 low, 5-7 mid, 8+
+            high).
+          in: query
+          name: minConfidence
+          schema:
+            description: >-
+              Filters events by minimum confidence score (1-4 low, 5-7 mid, 8+
+              high).
+            type: integer
+        - description: >-
+            Filters events by maximum confidence score (1-4 low, 5-7 mid, 8+
+            high).
+          in: query
+          name: maxConfidence
+          schema:
+            description: >-
+              Filters events by maximum confidence score (1-4 low, 5-7 mid, 8+
+              high).
+            type: integer
+        - description: Filters results by date range.
+          in: query
+          name: dateRange
+          schema:
+            description: Filters results by date range.
+            example: 7d
+            pattern: >-
+              ^((([1-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-5][0-9]|36[0-4])[d](control)?)|(([1-9]|[1-4][0-9]|5[0-2])[w](control)?))$
+            type: string
+        - description: Start of the date range (inclusive).
+          in: query
+          name: dateStart
+          schema:
+            description: Start of the date range (inclusive).
+            example: '2023-09-01T11:41:33.782Z'
+            format: date-time
+            type: string
+        - description: End of the date range (inclusive).
+          in: query
+          name: dateEnd
+          schema:
+            description: End of the date range (inclusive).
+            example: '2023-09-01T11:41:33.782Z'
+            format: date-time
+            type: string
+        - description: Sorts results by the specified field.
+          in: query
+          name: sortBy
+          schema:
+            description: Sorts results by the specified field.
+            enum:
+              - ID
+              - TIME
+              - CONFIDENCE
+            example: TIME
+            type: string
+        - description: Sort order.
+          in: query
+          name: sortOrder
+          schema:
+            description: Sort order.
+            enum:
+              - ASC
+              - DESC
+            example: desc
+            type: string
+        - description: Format in which results will be returned.
+          in: query
+          name: format
+          schema:
+            description: Format in which results will be returned.
+            enum:
+              - JSON
+              - CSV
+            example: json
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    properties:
+                      asn_info:
+                        items:
+                          properties:
+                            asn:
+                              type: integer
+                            country_code:
+                              type: string
+                            org_name:
+                              type: string
+                          required:
+                            - asn
+                            - org_name
+                            - country_code
+                          type: object
+                        type: array
+                      events:
+                        items:
+                          properties:
+                            confidence_score:
+                              type: integer
+                            duration:
+                              type: integer
+                            event_type:
+                              type: integer
+                            hijack_msgs_count:
+                              type: integer
+                            hijacker_asn:
+                              type: integer
+                            hijacker_country:
+                              type: string
+                            id:
+                              type: integer
+                            is_stale:
+                              type: boolean
+                            max_hijack_ts:
+                              type: string
+                            max_msg_ts:
+                              type: string
+                            min_hijack_ts:
+                              type: string
+                            on_going_count:
+                              type: integer
+                            peer_asns:
+                              items:
+                                type: integer
+                              type: array
+                            peer_ip_count:
+                              type: integer
+                            prefixes:
+                              items:
+                                type: string
+                              type: array
+                            tags:
+                              items:
+                                properties:
+                                  name:
+                                    type: string
+                                  score:
+                                    type: integer
+                                required:
+                                  - name
+                                  - score
+                                type: object
+                              type: array
+                            victim_asns:
+                              items:
+                                type: integer
+                              type: array
+                            victim_countries:
+                              items:
+                                type: string
+                              type: array
+                          required:
+                            - duration
+                            - event_type
+                            - hijack_msgs_count
+                            - hijacker_asn
+                            - hijacker_country
+                            - victim_asns
+                            - victim_countries
+                            - id
+                            - is_stale
+                            - max_hijack_ts
+                            - min_hijack_ts
+                            - max_msg_ts
+                            - on_going_count
+                            - peer_asns
+                            - peer_ip_count
+                            - prefixes
+                            - confidence_score
+                            - tags
+                          type: object
+                        type: array
+                      total_monitors:
+                        type: integer
+                    required:
+                      - asn_info
+                      - events
+                      - total_monitors
+                    type: object
+                  result_info:
+                    properties:
+                      count:
+                        type: integer
+                      page:
+                        type: integer
+                      per_page:
+                        type: integer
+                      total_count:
+                        type: integer
+                    required:
+                      - count
+                      - total_count
+                      - page
+                      - per_page
+                    type: object
+                  success:
+                    example: true
+                    type: boolean
+                required:
+                  - result
+                  - result_info
+                  - success
+                type: object
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        message:
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    type: object
+                  success:
+                    example: false
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                type: object
+          description: Bad request.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get BGP hijack events
+      tags:
+        - Radar BGP
+      x-api-token-group:
+        - User Details Write
+        - User Details Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true

@@ -1,0 +1,439 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/cloudforce-one/scans/config:
+    get:
+      operationId: get_ConfigFetch
+      parameters:
+        - description: Defines the Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Defines the Account ID.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-port-scan-api_api-response-common
+                  - properties:
+                      result:
+                        items:
+                          $ref: >-
+                            #/components/schemas/cloudforce-one-port-scan-api_scan-config
+                        type: array
+          description: Returns all Scan Configs.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-port-scan-api_api-response-common-failure
+          description: List Scan Configs failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: List Scan Configs
+      tags:
+        - Scans
+      x-api-token-group:
+        - Cloudforce One Write
+        - Cloudforce One Read
+    post:
+      operationId: post_ConfigCreate
+      parameters:
+        - description: Defines the Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Defines the Account ID.
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                frequency:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_frequency'
+                ips:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_ips'
+                ports:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_ports'
+              required:
+                - ips
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-port-scan-api_api-response-common
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/cloudforce-one-port-scan-api_scan-config
+          description: Returns the created config.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-port-scan-api_api-response-common-failure
+          description: Create a new Scan Config failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Create a new Scan Config
+      tags:
+        - Scans
+      x-api-token-group:
+        - Cloudforce One Write
+  /accounts/{account_id}/cloudforce-one/scans/config/{config_id}:
+    patch:
+      operationId: post_ConfigUpdate
+      parameters:
+        - description: Defines the Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Defines the Account ID.
+            type: string
+        - description: Defines the Config ID.
+          in: path
+          name: config_id
+          required: true
+          schema:
+            description: Defines the Config ID.
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                frequency:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_frequency'
+                ips:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_ips'
+                ports:
+                  $ref: '#/components/schemas/cloudforce-one-port-scan-api_ports'
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/cloudforce-one-port-scan-api_api-response-common
+                  - properties:
+                      result:
+                        $ref: >-
+                          #/components/schemas/cloudforce-one-port-scan-api_scan-config
+          description: Returns the updated config.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-port-scan-api_api-response-common-failure
+          description: Update an Existing Scan Config failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Update an existing Scan Config
+      tags:
+        - Scans
+      x-api-token-group:
+        - Cloudforce One Write
+    delete:
+      operationId: delete_DeleteScans
+      parameters:
+        - description: Defines the Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Defines the Account ID.
+            type: string
+        - description: Defines the Config ID.
+          in: path
+          name: config_id
+          required: true
+          schema:
+            description: Defines the Config ID.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      type: string
+                    type: array
+                  messages:
+                    items:
+                      type: string
+                    type: array
+                  result:
+                    type: object
+                  success:
+                    type: boolean
+                required:
+                  - success
+                  - result
+                  - messages
+                  - errors
+                type: object
+          description: Delete a Scan Config.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-port-scan-api_api-response-common-failure
+          description: Delete a Scan Config failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Delete a Scan Config
+      tags:
+        - Scans
+      x-api-token-group:
+        - Cloudforce One Write
+  /accounts/{account_id}/cloudforce-one/scans/results/{config_id}:
+    get:
+      operationId: get_GetOpenPorts
+      parameters:
+        - description: Defines the Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Defines the Account ID.
+            type: string
+        - description: Defines the Config ID.
+          in: path
+          name: config_id
+          required: true
+          schema:
+            description: Defines the Config ID.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      type: string
+                    type: array
+                  messages:
+                    items:
+                      type: string
+                    type: array
+                  result:
+                    properties:
+                      1.1.1.1:
+                        items:
+                          $ref: >-
+                            #/components/schemas/cloudforce-one-port-scan-api_port
+                        type: array
+                    required:
+                      - 1.1.1.1
+                    type: object
+                  success:
+                    type: boolean
+                required:
+                  - success
+                  - result
+                  - messages
+                  - errors
+                type: object
+          description: Returns Current Open Ports.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/cloudforce-one-port-scan-api_api-response-common-failure
+          description: Get the Latest Scan Result failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get the Latest Scan Result
+      tags:
+        - Scans
+      x-api-token-group:
+        - Cloudforce One Write
+        - Cloudforce One Read
+components:
+  schemas:
+    cloudforce-one-port-scan-api_api-response-common:
+      properties:
+        errors:
+          $ref: '#/components/schemas/cloudforce-one-port-scan-api_messages'
+        messages:
+          $ref: '#/components/schemas/cloudforce-one-port-scan-api_messages'
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - true
+          example: true
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+      type: object
+    cloudforce-one-port-scan-api_api-response-common-failure:
+      allOf:
+        - $ref: >-
+            #/components/schemas/cloudforce-one-port-scan-api_api-response-common
+        - properties:
+            errors:
+              example:
+                code: 10433
+                message: request error
+              type: object
+            success:
+              example: false
+              type: boolean
+    cloudforce-one-port-scan-api_frequency:
+      description: Defines the number of days between each scan (0 = One-off scan).
+      example: 7
+      title: Frequency
+      type: number
+    cloudforce-one-port-scan-api_ips:
+      description: >-
+        Defines a list of IP addresses or CIDR blocks to scan. The maximum
+        number of total IP addresses allowed is 5000.
+      example:
+        - 1.1.1.1
+        - 2606:4700:4700::1111
+      items:
+        description: >-
+          Defines a list of IP addresses or CIDR blocks to scan. The maximum
+          number of total IP addresses allowed is 5000.
+        type: string
+      title: IP List
+      type: array
+    cloudforce-one-port-scan-api_port:
+      properties:
+        number:
+          example: 8080
+          type: number
+        proto:
+          example: tcp
+          type: string
+        status:
+          example: open
+          type: string
+      required:
+        - account_id
+        - ips
+        - frequency
+      title: Port
+      type: object
+    cloudforce-one-port-scan-api_ports:
+      description: >-
+        Defines a list of ports to scan. Valid values are:"default", "all", or a
+        comma-separated list of ports or range of ports (e.g. ["1-80", "443"]).
+        "default" scans the 100 most commonly open ports.
+      example:
+        - default
+      items:
+        description: >-
+          Defines a list of ports to scan. Valid values are:"default", "all", or
+          a comma-separated list of ports or range of ports (e.g. ["1-80",
+          "443"]). "default" scans the 100 most commonly open ports.
+        type: string
+      title: Port List
+      type: array
+    cloudforce-one-port-scan-api_scan-config:
+      properties:
+        account_id:
+          example: abcd1234abcd1234abcd1234abcd1234
+          type: string
+        frequency:
+          $ref: '#/components/schemas/cloudforce-one-port-scan-api_frequency'
+        id:
+          description: Defines the Config ID.
+          example: uuid
+          type: string
+        ips:
+          $ref: '#/components/schemas/cloudforce-one-port-scan-api_ips'
+        ports:
+          $ref: '#/components/schemas/cloudforce-one-port-scan-api_ports'
+      required:
+        - id
+        - account_id
+        - ips
+        - frequency
+        - ports
+      title: Config
+      type: object

@@ -1,0 +1,601 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/email-security/investigate:
+    get:
+      description: Returns information for each email that matches the search parameter(s).
+      operationId: email_security_investigate
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account Identifier
+            example: 023e105f4ecef8ad9ca31a8372d0c353
+            maxLength: 32
+            minLength: 32
+            readOnly: true
+            title: account_id
+            type: string
+        - description: |-
+            The beginning of the search date range.
+            Defaults to `now - 30 days`.
+          example: '2022-06-25T14:30:00Z'
+          in: query
+          name: start
+          schema:
+            format: date-time
+            type: string
+        - description: |-
+            The end of the search date range.
+            Defaults to `now`.
+          example: '2022-07-25T14:30:00Z'
+          in: query
+          name: end
+          schema:
+            format: date-time
+            type: string
+        - description: >-
+            The space-delimited term used in the query. The search is
+            case-insensitive.
+
+
+            The content of the following email metadata fields are searched:
+
+            * alert_id
+
+            * CC
+
+            * From (envelope_from)
+
+            * From Name
+
+            * final_disposition
+
+            * md5 hash (of any attachment)
+
+            * sha1 hash (of any attachment)
+
+            * sha256 hash (of any attachment)
+
+            * name (of any attachment)
+
+            * Reason
+
+            * Received DateTime (yyyy-mm-ddThh:mm:ss)
+
+            * Sent DateTime (yyyy-mm-ddThh:mm:ss)
+
+            * ReplyTo
+
+            * To (envelope_to)
+
+            * To Name
+
+            * Message-ID
+
+            * smtp_helo_server_ip
+
+            * smtp_previous_hop_ip
+
+            * x_originating_ip
+
+            * Subject
+          example: bob jones
+          in: query
+          name: query
+          schema:
+            type: string
+        - description: Determines if the search results will include detections or not.
+          in: query
+          name: detections_only
+          schema:
+            default: true
+            type: boolean
+        - description: Determines if the message action log is included in the response.
+          in: query
+          name: action_log
+          schema:
+            default: true
+            type: boolean
+        - description: The dispositions the search filters by.
+          in: query
+          name: final_disposition
+          schema:
+            allOf:
+              - enum:
+                  - MALICIOUS
+                  - SUSPICIOUS
+                  - SPOOF
+                  - SPAM
+                  - BULK
+                  - NONE
+                type: string
+        - in: query
+          name: metric
+          schema:
+            type: string
+        - description: The message actions the search filters by.
+          in: query
+          name: message_action
+          schema:
+            allOf:
+              - enum:
+                  - PREVIEW
+                  - QUARANTINE_RELEASED
+                  - MOVED
+                type: string
+        - example: me@example.com
+          in: query
+          name: recipient
+          schema:
+            type: string
+        - example: noreply@example.com
+          in: query
+          name: sender
+          schema:
+            type: string
+        - example: 4Njp3P0STMz2c02Q-2022-12-30T02:44:49
+          in: query
+          name: alert_id
+          schema:
+            type: string
+        - description: The sender domains the search filters by.
+          example: example.com
+          in: query
+          name: domain
+          schema:
+            type: string
+        - example: >-
+            <4VAZPrAdg7IGNxdt1DWRNu0gvOeL_iZiwP4BQfo4DaE.Yw-woXuugQbeFhBpzwFQtqq_v2v1HOKznoMBqbciQpE@example.com>
+          in: query
+          name: message_id
+          schema:
+            type: string
+        - in: query
+          name: subject
+          schema:
+            type: string
+        - description: The page number of paginated results.
+          in: query
+          name: page
+          schema:
+            default: 1
+            format: int32
+            minimum: 1
+            type: integer
+        - description: The number of results per page.
+          in: query
+          name: per_page
+          schema:
+            default: 20
+            format: int32
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      errors:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      messages:
+                        example: []
+                        items:
+                          properties:
+                            code:
+                              format: int32
+                              minimum: 1000
+                              type: integer
+                            message:
+                              type: string
+                          required:
+                            - code
+                            - message
+                          type: object
+                        type: array
+                      success:
+                        example: true
+                        type: boolean
+                    required:
+                      - success
+                      - errors
+                      - messages
+                    type: object
+                  - properties:
+                      result:
+                        items:
+                          allOf:
+                            - properties:
+                                action_log: {}
+                                alert_id:
+                                  nullable: true
+                                  type: string
+                                client_recipients:
+                                  items:
+                                    type: string
+                                  type: array
+                                delivery_mode:
+                                  allOf:
+                                    - enum:
+                                        - DIRECT
+                                        - BCC
+                                        - JOURNAL
+                                        - REVIEW_SUBMISSION
+                                        - DMARC_UNVERIFIED
+                                        - DMARC_FAILURE_REPORT
+                                        - DMARC_AGGREGATE_REPORT
+                                        - THREAT_INTEL_SUBMISSION
+                                        - SIMULATION_SUBMISSION
+                                        - API
+                                        - RETRO_SCAN
+                                      type: string
+                                    - nullable: true
+                                      type: string
+                                detection_reasons:
+                                  items:
+                                    type: string
+                                  type: array
+                                edf_hash:
+                                  nullable: true
+                                  type: string
+                                final_disposition:
+                                  allOf:
+                                    - enum:
+                                        - MALICIOUS
+                                        - MALICIOUS-BEC
+                                        - SUSPICIOUS
+                                        - SPOOF
+                                        - SPAM
+                                        - BULK
+                                        - ENCRYPTED
+                                        - EXTERNAL
+                                        - UNKNOWN
+                                        - NONE
+                                      type: string
+                                    - nullable: true
+                                      type: string
+                                findings:
+                                  items:
+                                    properties:
+                                      detail:
+                                        nullable: true
+                                        type: string
+                                      name:
+                                        nullable: true
+                                        type: string
+                                      value:
+                                        nullable: true
+                                        type: string
+                                    type: object
+                                  nullable: true
+                                  type: array
+                                from:
+                                  nullable: true
+                                  type: string
+                                from_name:
+                                  nullable: true
+                                  type: string
+                                is_phish_submission:
+                                  type: boolean
+                                is_quarantined:
+                                  type: boolean
+                                message_id:
+                                  nullable: true
+                                  type: string
+                                postfix_id:
+                                  description: The identifier of the message.
+                                  example: 4Njp3P0STMz2c02Q
+                                  title: postfix_id
+                                  type: string
+                                properties:
+                                  properties:
+                                    allowlisted_pattern:
+                                      type: string
+                                    allowlisted_pattern_type:
+                                      allOf:
+                                        - enum:
+                                            - quarantine_release
+                                            - acceptable_sender
+                                            - allowed_sender
+                                            - allowed_recipient
+                                            - domain_similarity
+                                            - domain_recency
+                                            - managed_acceptable_sender
+                                          type: string
+                                    blocklisted_message:
+                                      type: boolean
+                                    blocklisted_pattern:
+                                      type: string
+                                    whitelisted_pattern_type:
+                                      allOf:
+                                        - enum:
+                                            - quarantine_release
+                                            - acceptable_sender
+                                            - allowed_sender
+                                            - allowed_recipient
+                                            - domain_similarity
+                                            - domain_recency
+                                            - managed_acceptable_sender
+                                          type: string
+                                  type: object
+                                sent_date:
+                                  nullable: true
+                                  type: string
+                                subject:
+                                  nullable: true
+                                  type: string
+                                threat_categories:
+                                  items:
+                                    type: string
+                                  nullable: true
+                                  type: array
+                                to:
+                                  items:
+                                    type: string
+                                  nullable: true
+                                  type: array
+                                to_name:
+                                  items:
+                                    type: string
+                                  nullable: true
+                                  type: array
+                                ts:
+                                  type: string
+                                validation:
+                                  allOf:
+                                    - properties:
+                                        comment:
+                                          nullable: true
+                                          type: string
+                                        dkim:
+                                          allOf:
+                                            - enum:
+                                                - pass
+                                                - neutral
+                                                - fail
+                                                - error
+                                                - none
+                                              type: string
+                                            - nullable: true
+                                              type: string
+                                        dmarc:
+                                          allOf:
+                                            - enum:
+                                                - pass
+                                                - neutral
+                                                - fail
+                                                - error
+                                                - none
+                                              type: string
+                                            - nullable: true
+                                              type: string
+                                        spf:
+                                          allOf:
+                                            - enum:
+                                                - pass
+                                                - neutral
+                                                - fail
+                                                - error
+                                                - none
+                                              type: string
+                                            - nullable: true
+                                              type: string
+                                      type: object
+                                    - nullable: true
+                                      type: object
+                              required:
+                                - ts
+                                - client_recipients
+                                - postfix_id
+                                - detection_reasons
+                                - action_log
+                                - is_quarantined
+                                - is_phish_submission
+                                - properties
+                              type: object
+                            - properties:
+                                id:
+                                  type: string
+                                  x-auditable: true
+                              required:
+                                - id
+                              type: object
+                          example:
+                            action_log: []
+                            alert_id: 4Njp3P0STMz2c02Q-2022-12-30T02:44:49
+                            client_recipients:
+                              - email@example.com
+                            delivery_mode: DIRECT
+                            detection_reasons:
+                              - >-
+                                Selector is a source of spam/uce :
+                                Smtp-Helo-Server-Ip=<b>127.0.0[dot]186</b>
+                            edf_hash: null
+                            final_disposition: MALICIOUS
+                            findings: null
+                            from: d1994@example.com
+                            from_name: Sender Name
+                            id: 47JJcT1w6GztQV7-email@example.com
+                            is_phish_submission: false
+                            is_quarantined: false
+                            message_id: >-
+                              <4VAZPrAdg7IGNxdt1DWRNu0gvOeL_iZiwP4BQfo4DaE.Yw-woXuugQbeFhBpzwFQtqq_v2v1HOKznoMBqbciQpE@example.com>
+                            postfix_id: 47JJcT1w6GztQV7
+                            properties: {}
+                            sent_date: '2019-11-21T00:22:01'
+                            subject: >-
+                              listen, I highly recommend u to read that email,
+                              just to ensure not a thing will take place
+                            threat_categories:
+                              - IPReputation
+                              - ASNReputation
+                            to:
+                              - email@example.com
+                            to_name:
+                              - Recipient Name
+                            ts: '2019-11-20T23:22:01'
+                            validation:
+                              comment: null
+                              dkim: pass
+                              dmarc: none
+                              spf: fail
+                        type: array
+                      result_info:
+                        properties:
+                          count:
+                            description: Total number of results for the requested service
+                            example: 1
+                            format: int32
+                            type: integer
+                          page:
+                            description: Current page within paginated list of results
+                            example: 1
+                            format: int32
+                            type: integer
+                          per_page:
+                            description: Number of results per page of results
+                            example: 20
+                            format: int32
+                            type: integer
+                          total_count:
+                            description: >-
+                              Total results available without any search
+                              parameters
+                            example: 2000
+                            format: int32
+                            type: integer
+                        required:
+                          - count
+                          - page
+                          - per_page
+                          - total_count
+                        type: object
+                    required:
+                      - result
+                      - result_info
+                    type: object
+          description: Contains the search results for the provided query.
+        4XX:
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    example:
+                      - code: 7003
+                        message: No route for the URI
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    example: []
+                    items:
+                      properties:
+                        code:
+                          format: int32
+                          minimum: 1000
+                          type: integer
+                        message:
+                          type: string
+                      required:
+                        - code
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    nullable: true
+                    type: object
+                  success:
+                    example: false
+                    type: boolean
+                required:
+                  - result
+                  - success
+                  - errors
+                  - messages
+                type: object
+          description: Client Error
+      security:
+        - api_email: []
+          api_key: []
+      summary: Search email messages
+      tags:
+        - Email Security
+      x-api-token-group:
+        - 'Cloud Email Security: Write'
+        - 'Cloud Email Security: Read'

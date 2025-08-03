@@ -1,0 +1,487 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /zones/{zone_id}/firewall/waf/packages/{package_id}/rules:
+    get:
+      deprecated: true
+      description: >-
+        Fetches WAF rules in a WAF package.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-rules-list-waf-rules
+      parameters:
+        - in: path
+          name: package_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_schemas-identifier'
+        - in: query
+          name: mode
+          schema:
+            description: Defines the action/mode a rule has been overridden to perform.
+            enum:
+              - DIS
+              - CHL
+              - BLK
+              - SIM
+            example: CHL
+            type: string
+        - in: query
+          name: group_id
+          schema:
+            allOf:
+              - $ref: >-
+                  #/components/schemas/waf-managed-rules_components-schemas-identifier
+        - in: query
+          name: page
+          schema:
+            default: 1
+            description: Defines the page number of paginated results.
+            minimum: 1
+            type: number
+        - in: query
+          name: per_page
+          schema:
+            default: 50
+            description: Defines the number of rules per page.
+            maximum: 100
+            minimum: 5
+            type: number
+        - in: query
+          name: order
+          schema:
+            description: Defines the field used to sort returned rules.
+            enum:
+              - priority
+              - group_id
+              - description
+            example: status
+            type: string
+        - in: query
+          name: direction
+          schema:
+            description: Defines the direction used to sort returned rules.
+            enum:
+              - asc
+              - desc
+            example: desc
+            type: string
+        - in: query
+          name: match
+          schema:
+            default: all
+            description: >-
+              Defines the search requirements. When set to `all`, all the search
+              requirements must match. When set to `any`, only one of the search
+              requirements has to match.
+            enum:
+              - any
+              - all
+            type: string
+        - in: query
+          name: description
+          schema:
+            description: Defines the public description of the WAF rule.
+            example: SQL injection prevention for SELECT statements
+            readOnly: true
+            type: string
+        - in: query
+          name: priority
+          schema:
+            description: >-
+              Defines the order in which the individual WAF rule is executed
+              within its rule group.
+            readOnly: true
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/waf-managed-rules_rule_response_collection
+          description: List WAF rules response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_rule_response_collection
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_api-response-common-failure
+          description: List WAF rules response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List WAF rules
+      tags:
+        - WAF rules
+      x-api-token-group:
+        - Firewall Services Write
+        - Firewall Services Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/firewall/waf/packages/{package_id}/rules/{rule_id}:
+    get:
+      deprecated: true
+      description: >-
+        Fetches the details of a WAF rule in a WAF package.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-rules-get-a-waf-rule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_identifier'
+        - in: path
+          name: package_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_schemas-identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/waf-managed-rules_rule_response_single'
+          description: Get a WAF rule response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_rule_response_single
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_api-response-common-failure
+          description: Get a WAF rule response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a WAF rule
+      tags:
+        - WAF rules
+      x-api-token-group:
+        - Firewall Services Write
+        - Firewall Services Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    patch:
+      deprecated: true
+      description: >-
+        Updates a WAF rule. You can only update the mode/action of the rule.
+
+
+        **Note:** Applies only to the [previous version of WAF managed
+        rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+      operationId: waf-rules-update-a-waf-rule
+      parameters:
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_identifier'
+        - in: path
+          name: package_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_identifier'
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/waf-managed-rules_schemas-identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                mode:
+                  description: >-
+                    Defines the mode/action of the rule when triggered. You must
+                    use a value from the `allowed_modes` array of the current
+                    rule.
+                  enum:
+                    - default
+                    - disable
+                    - simulate
+                    - block
+                    - challenge
+                    - 'on'
+                    - 'off'
+                  example: 'on'
+                  type: string
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_rule_response_single
+                  - properties:
+                      result:
+                        oneOf:
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_anomaly_rule
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_traditional_deny_rule
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_traditional_allow_rule
+                    type: object
+          description: Update a WAF rule response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_rule_response_single
+                  - properties:
+                      result:
+                        oneOf:
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_anomaly_rule
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_traditional_deny_rule
+                          - $ref: >-
+                              #/components/schemas/waf-managed-rules_traditional_allow_rule
+                    type: object
+                  - $ref: >-
+                      #/components/schemas/waf-managed-rules_api-response-common-failure
+          description: Update a WAF rule response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a WAF rule
+      tags:
+        - WAF rules
+      x-api-token-group:
+        - Firewall Services Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+components:
+  schemas:
+    waf-managed-rules_anomaly_rule:
+      allOf:
+        - $ref: '#/components/schemas/waf-managed-rules_schemas-base'
+        - properties:
+            allowed_modes:
+              $ref: '#/components/schemas/waf-managed-rules_allowed_modes_anomaly'
+            mode:
+              $ref: '#/components/schemas/waf-managed-rules_mode_anomaly'
+          type: object
+      description: >-
+        When triggered, anomaly detection WAF rules contribute to an overall
+        threat score that will determine if a request is considered malicious.
+        You can configure the total scoring threshold through the 'sensitivity'
+        property of the WAF package.
+      required:
+        - id
+        - description
+        - priority
+        - allowed_modes
+        - mode
+        - group
+        - package_id
+      title: Anomaly detection WAF rule
+      type: object
+    waf-managed-rules_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/waf-managed-rules_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/waf-managed-rules_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Defines whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    waf-managed-rules_components-schemas-identifier:
+      description: Defines the unique identifier of the rule group.
+      example: de677e5818985db1285d0e80225f06e5
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    waf-managed-rules_identifier:
+      description: Defines the unique identifier of a WAF package.
+      example: a25a9a7e9c00afc1fb2e0245519d725b
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    waf-managed-rules_rule_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/waf-managed-rules_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/waf-managed-rules_rule'
+              type: array
+          type: object
+    waf-managed-rules_rule_response_single:
+      allOf:
+        - $ref: '#/components/schemas/waf-managed-rules_api-response-single'
+        - properties:
+            result:
+              type: object
+          type: object
+    waf-managed-rules_schemas-identifier:
+      description: Defines an identifier of a schema.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    waf-managed-rules_traditional_allow_rule:
+      allOf:
+        - $ref: '#/components/schemas/waf-managed-rules_base'
+        - properties:
+            allowed_modes:
+              $ref: >-
+                #/components/schemas/waf-managed-rules_allowed_modes_allow_traditional
+            mode:
+              $ref: '#/components/schemas/waf-managed-rules_mode_allow_traditional'
+          type: object
+      description: >-
+        When triggered, traditional WAF rules cause the firewall to immediately
+        act on the request based on the rule configuration. An 'allow' rule will
+        immediately allow the request and no other rules will be processed.
+      required:
+        - id
+        - description
+        - priority
+        - allowed_modes
+        - default_mode
+        - mode
+        - group
+        - package_id
+      title: Traditional (allow) WAF rule
+    waf-managed-rules_traditional_deny_rule:
+      allOf:
+        - $ref: '#/components/schemas/waf-managed-rules_base'
+        - properties:
+            allowed_modes:
+              $ref: >-
+                #/components/schemas/waf-managed-rules_allowed_modes_deny_traditional
+            default_mode:
+              $ref: '#/components/schemas/waf-managed-rules_default_mode'
+            mode:
+              $ref: '#/components/schemas/waf-managed-rules_mode_deny_traditional'
+          type: object
+      description: >-
+        When triggered, traditional WAF rules cause the firewall to immediately
+        act upon the request based on the configuration of the rule. A 'deny'
+        rule will immediately respond to the request based on the configured
+        rule action/mode (for example, 'block') and no other rules will be
+        processed.
+      required:
+        - id
+        - description
+        - priority
+        - allowed_modes
+        - default_mode
+        - mode
+        - group
+        - package_id
+      title: Traditional (deny) WAF rule

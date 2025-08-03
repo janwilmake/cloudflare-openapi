@@ -1,0 +1,417 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/access/apps/{app_id}/policies:
+    get:
+      description: >-
+        Lists Access policies configured for an application. Returns both
+        exclusively scoped and reusable policies used by the application.
+      operationId: access-policies-list-access-app-policies
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-response_collection
+          description: List Access application policies response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: List Access application policies response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List Access application policies
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+        - 'Access: Apps and Policies Read'
+    post:
+      description: >-
+        Creates a policy applying exclusive to a single application that defines
+        the users or groups who can reach it. We recommend creating a reusable
+        policy instead and subsequently referencing its ID in the application's
+        'policies' array.
+      operationId: access-policies-create-an-access-policy
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access_app_policy_request'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-single_response
+          description: Create an Access application policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Create an Access application policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create an Access application policy
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+  /accounts/{account_id}/access/apps/{app_id}/policies/{policy_id}:
+    get:
+      description: >-
+        Fetches a single Access policy configured for an application. Returns
+        both exclusively owned and reusable policies used by the application.
+      operationId: access-policies-get-an-access-policy
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - description: The policy ID.
+          in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-single_response
+          description: Get an Access policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Get an Access policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+      summary: Get an Access application policy
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+        - 'Access: Apps and Policies Read'
+    put:
+      description: >-
+        Updates an Access policy specific to an application. To update a
+        reusable policy, use the /accounts/{account_id}/policies/{uid} endpoint.
+      operationId: access-policies-update-an-access-policy
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - description: The policy ID.
+          in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access_app_policy_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-single_response
+          description: Update an Access application policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Update an Access application policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update an Access application policy
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+    delete:
+      description: >-
+        Deletes an Access policy specific to an application. To delete a
+        reusable policy, use the /accounts/{account_id}/policies/{uid} endpoint.
+      operationId: access-policies-delete-an-access-policy
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - description: The policy ID.
+          in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-id_response
+          description: Delete an Access application policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Delete an Access application policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete an Access application policy
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+  /accounts/{account_id}/access/apps/{app_id}/policies/{policy_id}/make_reusable:
+    put:
+      description: >-
+        Converts an application-scoped policy to a reusable policy. The policy
+        will no longer be exclusively scoped to the application. Further updates
+        to the policy should go through the
+        /accounts/{account_id}/policies/{uid} endpoint.
+      operationId: access-policies-convert-reusable
+      parameters:
+        - description: The application ID.
+          in: path
+          name: app_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - description: The policy ID.
+          in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_app-policies_components-schemas-response_collection
+          description: Convert an Access application policy to a reusable policy
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Convert an Access application policy to a reusable policy failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Convert an Access application policy to a reusable policy
+      tags:
+        - Access application-scoped policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+components:
+  schemas:
+    access_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    access_app-policies_components-schemas-id_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              properties:
+                id:
+                  $ref: '#/components/schemas/access_uuid'
+              type: object
+          type: object
+      type: object
+    access_app-policies_components-schemas-response_collection:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/access_app_policy_response'
+              type: array
+          type: object
+      type: object
+    access_app-policies_components-schemas-single_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/access_app_policy_response'
+          type: object
+      type: object
+    access_app_policy_request:
+      allOf:
+        - properties:
+            precedence:
+              $ref: '#/components/schemas/access_precedence'
+          type: object
+        - $ref: '#/components/schemas/access_policy_req'
+      type: object
+    access_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    access_uuid:
+      description: UUID.
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      maxLength: 36
+      type: string
+      x-auditable: true

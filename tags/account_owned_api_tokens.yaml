@@ -1,0 +1,624 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/tokens:
+    get:
+      description: List all Account Owned API tokens created for this account.
+      operationId: account-api-tokens-list-tokens
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - in: query
+          name: page
+          schema:
+            default: 1
+            description: Page number of paginated results.
+            minimum: 1
+            type: number
+        - in: query
+          name: per_page
+          schema:
+            default: 20
+            description: Maximum number of results per page.
+            maximum: 50
+            minimum: 5
+            type: number
+        - in: query
+          name: direction
+          schema:
+            description: Direction to order results.
+            enum:
+              - asc
+              - desc
+            example: desc
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_collection_tokens_response'
+          description: List Tokens response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: List Tokens response failure
+      security:
+        - api_token: []
+      summary: List Tokens
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+        - Account API Tokens Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.list
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: Create a new Account Owned API token.
+      operationId: account-api-tokens-create-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/iam_create_payload'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_single_token_create_response'
+          description: Create Token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Create Token response failure
+      security:
+        - api_token: []
+      summary: Create Token
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.create
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/tokens/permission_groups:
+    get:
+      description: Find all available permission groups for Account Owned API Tokens
+      operationId: account-api-tokens-list-permission-groups
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - description: |-
+            Filter by the name of the permission group.
+            The value must be URL-encoded.
+          in: query
+          name: name
+          schema:
+            example: Account%20Settings%20Write
+            type: string
+        - description: |-
+            Filter by the scope of the permission group.
+            The value must be URL-encoded.
+          in: query
+          name: scope
+          schema:
+            example: com.cloudflare.api.account.zone
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_permissions_group_response_collection'
+          description: List Account Owned API Token Permission Groups response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: List Account Owned API Token Permission Groups response failure
+      security:
+        - api_token: []
+      summary: List Permission Groups
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+        - Account API Tokens Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/tokens/verify:
+    get:
+      description: Test whether a token works.
+      operationId: account-api-tokens-verify-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_token_verify_response_single_segment'
+          description: Verify Token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Verify Token response failure
+      security:
+        - api_token: []
+      summary: Verify Token
+      tags:
+        - Account Owned API Tokens
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/tokens/{token_id}:
+    get:
+      description: Get information about a specific Account Owned API token.
+      operationId: account-api-tokens-token-details
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - in: path
+          name: token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_token_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_single_token_response'
+          description: Token Details response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Token Details response failure
+      security:
+        - api_token: []
+      summary: Token Details
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+        - Account API Tokens Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Update an existing token.
+      operationId: account-api-tokens-update-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - in: path
+          name: token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_token_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/iam_token_body'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_single_token_response'
+          description: Update Token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Update Token response failure
+      security:
+        - api_token: []
+      summary: Update Token
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.update
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Destroy an Account Owned API token.
+      operationId: account-api-tokens-delete-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - in: path
+          name: token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_token_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-single-id'
+          description: Delete Token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Delete Token response failure
+      security:
+        - api_token: []
+      summary: Delete Token
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.delete
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/tokens/{token_id}/value:
+    put:
+      description: Roll the Account Owned API token secret.
+      operationId: account-api-tokens-roll-token
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_account_identifier'
+        - in: path
+          name: token_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/iam_token_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_response_single_value'
+          description: Roll Token response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Roll Token response failure
+      security:
+        - api_token: []
+      summary: Roll Token
+      tags:
+        - Account Owned API Tokens
+      x-api-token-group:
+        - Account API Tokens Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.account.token.update
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    iam_account_identifier:
+      allOf:
+        - $ref: '#/components/schemas/iam_common_components-schemas-identifier'
+      description: Account identifier tag.
+      title: Account Identifier
+    iam_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/iam_schemas-messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/iam_schemas-messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    iam_api-response-single-id:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-common'
+        - properties:
+            result:
+              nullable: true
+              properties:
+                id:
+                  $ref: >-
+                    #/components/schemas/iam_common_components-schemas-identifier
+              required:
+                - id
+              type: object
+      type: object
+    iam_collection_tokens_response:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/iam_token_base'
+              type: array
+          type: object
+      title: Response with a list of tokens
+    iam_create_payload:
+      properties:
+        condition:
+          $ref: '#/components/schemas/iam_condition'
+        expires_on:
+          $ref: '#/components/schemas/iam_expires_on'
+        name:
+          $ref: '#/components/schemas/iam_name'
+        not_before:
+          $ref: '#/components/schemas/iam_not_before'
+        policies:
+          $ref: '#/components/schemas/iam_token_policies'
+      required:
+        - name
+        - policies
+      type: object
+    iam_permissions_group_response_collection:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-collection'
+        - properties:
+            result:
+              example:
+                - id: 7cf72faf220841aabcfdfab81c43c4f6
+                  name: Billing Read
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: 9d24387c6e8544e2bc4024a03991339f
+                  name: 'Load Balancing: Monitors and Pools Read'
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: d2a1802cc9a34e30852f8b33869b2f3c
+                  name: 'Load Balancing: Monitors and Pools Write'
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: 8b47d2786a534c08a1f94ee8f9f599ef
+                  name: Workers KV Storage Read
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: f7f0eda5697f475c90846e879bab8666
+                  name: Workers KV Storage Write
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: 1a71c399035b4950a1bd1466bbe4f420
+                  name: Workers Scripts Read
+                  scopes:
+                    - com.cloudflare.api.account
+                - id: e086da7e2179491d91ee5f35b3ca210a
+                  name: Workers Scripts Write
+                  scopes:
+                    - com.cloudflare.api.account
+              items:
+                properties:
+                  id:
+                    description: Public ID.
+                    type: string
+                    x-auditable: true
+                  name:
+                    description: Permission Group Name
+                    type: string
+                    x-auditable: true
+                  scopes:
+                    description: Resources to which the Permission Group is scoped
+                    items:
+                      enum:
+                        - com.cloudflare.api.account
+                        - com.cloudflare.api.account.zone
+                        - com.cloudflare.api.user
+                        - com.cloudflare.edge.r2.bucket
+                      type: string
+                      x-auditable: true
+                    type: array
+                type: object
+              type: array
+          type: object
+    iam_response_single_value:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/iam_value'
+          type: object
+    iam_single_token_create_response:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/iam_token_with_value'
+          type: object
+      title: Response of a create request with a single token
+    iam_single_token_response:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/iam_token_base'
+          type: object
+      title: Response with a single token
+    iam_token_body:
+      allOf:
+        - $ref: '#/components/schemas/iam_token_base'
+        - type: object
+        - required:
+            - name
+            - policies
+      title: Token defined in a request body
+    iam_token_identifier:
+      description: Token identifier tag.
+      example: ed17574386854bf78a67040be0a770b0
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    iam_token_verify_response_single_segment:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-single'
+        - properties:
+            result:
+              properties:
+                expires_on:
+                  $ref: '#/components/schemas/iam_expires_on'
+                id:
+                  $ref: '#/components/schemas/iam_token_identifier'
+                not_before:
+                  $ref: '#/components/schemas/iam_not_before'
+                status:
+                  $ref: '#/components/schemas/iam_token_status'
+              required:
+                - id
+                - status
+          type: object

@@ -1,0 +1,367 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/gateway/proxy_endpoints:
+    get:
+      description: Fetches all Zero Trust Gateway proxy endpoints for an account.
+      operationId: zero-trust-gateway-proxy-endpoints-list-proxy-endpoints
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_schemas-identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+          description: List proxy endpoints response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_api-response-common-failure
+                type: object
+          description: List proxy endpoints response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List proxy endpoints
+      tags:
+        - Zero Trust Gateway proxy endpoints
+      x-api-token-group:
+        - Zero Trust Read
+        - Zero Trust Write
+    post:
+      description: Creates a new Zero Trust Gateway proxy endpoint.
+      operationId: zero-trust-gateway-proxy-endpoints-create-proxy-endpoint
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_schemas-identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                ips:
+                  $ref: '#/components/schemas/zero-trust-gateway_ips'
+                name:
+                  $ref: >-
+                    #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-name
+              required:
+                - name
+                - ips
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+          description: Create a proxy endpoint response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_api-response-common-failure
+                type: object
+          description: Create a proxy endpoint response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a proxy endpoint
+      tags:
+        - Zero Trust Gateway proxy endpoints
+      x-api-token-group:
+        - Zero Trust Write
+  /accounts/{account_id}/gateway/proxy_endpoints/{proxy_endpoint_id}:
+    get:
+      description: Fetches a single Zero Trust Gateway proxy endpoint.
+      operationId: zero-trust-gateway-proxy-endpoints-proxy-endpoint-details
+      parameters:
+        - in: path
+          name: proxy_endpoint_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_components-schemas-uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_schemas-identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-response_collection
+          description: Get a proxy endpoint response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-response_collection
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_api-response-common-failure
+                type: object
+          description: Get a proxy endpoint response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a proxy endpoint
+      tags:
+        - Zero Trust Gateway proxy endpoints
+      x-api-token-group:
+        - Zero Trust Read
+        - Zero Trust Write
+    patch:
+      description: Updates a configured Zero Trust Gateway proxy endpoint.
+      operationId: zero-trust-gateway-proxy-endpoints-update-proxy-endpoint
+      parameters:
+        - in: path
+          name: proxy_endpoint_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_components-schemas-uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_schemas-identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                ips:
+                  $ref: '#/components/schemas/zero-trust-gateway_ips'
+                name:
+                  $ref: >-
+                    #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-name
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+          description: Update a proxy endpoint response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_proxy-endpoints_components-schemas-single_response
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_api-response-common-failure
+                type: object
+          description: Update a proxy endpoint response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a proxy endpoint
+      tags:
+        - Zero Trust Gateway proxy endpoints
+      x-api-token-group:
+        - Zero Trust Write
+    delete:
+      description: Deletes a configured Zero Trust Gateway proxy endpoint.
+      operationId: zero-trust-gateway-proxy-endpoints-delete-proxy-endpoint
+      parameters:
+        - in: path
+          name: proxy_endpoint_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_components-schemas-uuid'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/zero-trust-gateway_schemas-identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zero-trust-gateway_empty_response'
+          description: Delete a proxy endpoint response
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                  - $ref: '#/components/schemas/zero-trust-gateway_empty_response'
+                  - $ref: >-
+                      #/components/schemas/zero-trust-gateway_api-response-common-failure
+                type: object
+          description: Delete a proxy endpoint response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a proxy endpoint
+      tags:
+        - Zero Trust Gateway proxy endpoints
+      x-api-token-group:
+        - Zero Trust Write
+components:
+  schemas:
+    zero-trust-gateway_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/zero-trust-gateway_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+          type: object
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/zero-trust-gateway_messages'
+          example: []
+          type: object
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    zero-trust-gateway_components-schemas-uuid:
+      example: ed35569b41ce4d1facfe683550f54086
+      type: string
+      x-auditable: true
+    zero-trust-gateway_empty_response:
+      allOf:
+        - $ref: '#/components/schemas/zero-trust-gateway_api-response-single'
+        - properties:
+            result:
+              type: object
+      type: object
+    zero-trust-gateway_ips:
+      description: A list of CIDRs to restrict ingress connections.
+      items:
+        description: >-
+          The IPv4 CIDR or IPv6 CIDR. IPv6 CIDRs are limited to a maximum of
+          /109. IPv4 CIDRs are limited to a maximum of /25.
+        example: 192.0.2.1/32
+        type: string
+        x-auditable: true
+      type: array
+    zero-trust-gateway_proxy-endpoints_components-schemas-name:
+      description: The name of the proxy endpoint.
+      example: Devops team
+      type: string
+      x-auditable: true
+    zero-trust-gateway_proxy-endpoints_components-schemas-response_collection:
+      allOf:
+        - $ref: '#/components/schemas/zero-trust-gateway_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/zero-trust-gateway_proxy-endpoints'
+              type: array
+      type: object
+    zero-trust-gateway_proxy-endpoints_components-schemas-single_response:
+      allOf:
+        - $ref: '#/components/schemas/zero-trust-gateway_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/zero-trust-gateway_proxy-endpoints'
+      type: object
+    zero-trust-gateway_schemas-identifier:
+      example: 699d98642c564d2e855e9661899b7252
+      type: string
+      x-auditable: true

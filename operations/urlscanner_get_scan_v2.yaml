@@ -1,0 +1,1469 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/urlscanner/v2/result/{scan_id}:
+    get:
+      description: Get URL scan by uuid
+      operationId: urlscanner-get-scan-v2
+      parameters:
+        - description: Scan UUID.
+          in: path
+          name: scan_id
+          required: true
+          schema:
+            description: Scan UUID.
+            format: uuid
+            type: string
+        - description: Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account ID.
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    properties:
+                      console:
+                        items:
+                          properties:
+                            message:
+                              properties:
+                                level:
+                                  type: string
+                                source:
+                                  type: string
+                                text:
+                                  type: string
+                                url:
+                                  type: string
+                              required:
+                                - source
+                                - level
+                                - text
+                                - url
+                              type: object
+                          required:
+                            - message
+                          type: object
+                        type: array
+                      cookies:
+                        items:
+                          properties:
+                            domain:
+                              type: string
+                            expires:
+                              type: number
+                            httpOnly:
+                              type: boolean
+                            name:
+                              type: string
+                            path:
+                              type: string
+                            priority:
+                              type: string
+                            sameParty:
+                              type: boolean
+                            secure:
+                              type: boolean
+                            session:
+                              type: boolean
+                            size:
+                              type: number
+                            sourcePort:
+                              type: number
+                            sourceScheme:
+                              type: string
+                            value:
+                              type: string
+                          required:
+                            - name
+                            - value
+                            - domain
+                            - path
+                            - expires
+                            - size
+                            - httpOnly
+                            - secure
+                            - session
+                            - priority
+                            - sameParty
+                            - sourceScheme
+                            - sourcePort
+                          type: object
+                        type: array
+                      globals:
+                        items:
+                          properties:
+                            prop:
+                              type: string
+                            type:
+                              type: string
+                          required:
+                            - prop
+                            - type
+                          type: object
+                        type: array
+                      links:
+                        items:
+                          properties:
+                            href:
+                              type: string
+                            text:
+                              type: string
+                          required:
+                            - href
+                            - text
+                          type: object
+                        type: array
+                      performance:
+                        items:
+                          properties:
+                            duration:
+                              type: number
+                            entryType:
+                              type: string
+                            name:
+                              type: string
+                            startTime:
+                              type: number
+                          required:
+                            - name
+                            - entryType
+                            - startTime
+                            - duration
+                          type: object
+                        type: array
+                      requests:
+                        items:
+                          properties:
+                            request:
+                              properties:
+                                documentURL:
+                                  type: string
+                                frameId:
+                                  type: string
+                                hasUserGesture:
+                                  type: boolean
+                                initiator:
+                                  properties:
+                                    host:
+                                      type: string
+                                    type:
+                                      type: string
+                                    url:
+                                      type: string
+                                  required:
+                                    - type
+                                    - url
+                                    - host
+                                  type: object
+                                loaderId:
+                                  type: string
+                                primaryRequest:
+                                  type: boolean
+                                redirectHasExtraInfo:
+                                  type: boolean
+                                redirectResponse:
+                                  properties:
+                                    charset:
+                                      type: string
+                                    headers:
+                                      type: object
+                                    mimeType:
+                                      type: string
+                                    protocol:
+                                      type: string
+                                    remoteIPAddress:
+                                      type: string
+                                    remotePort:
+                                      type: number
+                                    securityHeaders:
+                                      items:
+                                        properties:
+                                          name:
+                                            type: string
+                                          value:
+                                            type: string
+                                        required:
+                                          - name
+                                          - value
+                                        type: object
+                                      type: array
+                                    securityState:
+                                      type: string
+                                    status:
+                                      type: number
+                                    statusText:
+                                      type: string
+                                    url:
+                                      type: string
+                                  required:
+                                    - url
+                                    - status
+                                    - statusText
+                                    - mimeType
+                                    - charset
+                                    - remoteIPAddress
+                                    - remotePort
+                                    - protocol
+                                    - securityState
+                                    - securityHeaders
+                                  type: object
+                                request:
+                                  properties:
+                                    headers:
+                                      type: object
+                                    initialPriority:
+                                      type: string
+                                    isSameSite:
+                                      type: boolean
+                                    method:
+                                      type: string
+                                    mixedContentType:
+                                      type: string
+                                    referrerPolicy:
+                                      type: string
+                                    url:
+                                      type: string
+                                  required:
+                                    - url
+                                    - method
+                                    - mixedContentType
+                                    - initialPriority
+                                    - referrerPolicy
+                                    - isSameSite
+                                  type: object
+                                requestId:
+                                  type: string
+                                type:
+                                  type: string
+                                wallTime:
+                                  type: number
+                              required:
+                                - requestId
+                                - documentURL
+                                - request
+                                - wallTime
+                                - initiator
+                                - redirectHasExtraInfo
+                                - type
+                                - hasUserGesture
+                              type: object
+                            requests:
+                              items:
+                                properties:
+                                  documentURL:
+                                    type: string
+                                  frameId:
+                                    type: string
+                                  hasUserGesture:
+                                    type: boolean
+                                  initiator:
+                                    properties:
+                                      type:
+                                        type: string
+                                    required:
+                                      - type
+                                    type: object
+                                  loaderId:
+                                    type: string
+                                  redirectHasExtraInfo:
+                                    type: boolean
+                                  request:
+                                    properties:
+                                      headers:
+                                        properties:
+                                          name:
+                                            type: string
+                                        required:
+                                          - name
+                                        type: object
+                                      initialPriority:
+                                        type: string
+                                      isSameSite:
+                                        type: boolean
+                                      method:
+                                        type: string
+                                      mixedContentType:
+                                        type: string
+                                      referrerPolicy:
+                                        type: string
+                                      url:
+                                        type: string
+                                    required:
+                                      - url
+                                      - method
+                                      - headers
+                                      - mixedContentType
+                                      - initialPriority
+                                      - referrerPolicy
+                                      - isSameSite
+                                    type: object
+                                  requestId:
+                                    type: string
+                                  type:
+                                    type: string
+                                  wallTime:
+                                    type: number
+                                required:
+                                  - requestId
+                                  - loaderId
+                                  - frameId
+                                  - documentURL
+                                  - wallTime
+                                  - request
+                                  - type
+                                  - initiator
+                                  - hasUserGesture
+                                  - redirectHasExtraInfo
+                                type: object
+                              type: array
+                            response:
+                              properties:
+                                asn:
+                                  properties:
+                                    asn:
+                                      type: string
+                                    country:
+                                      type: string
+                                    description:
+                                      type: string
+                                    ip:
+                                      type: string
+                                    name:
+                                      type: string
+                                    org:
+                                      type: string
+                                  required:
+                                    - ip
+                                    - asn
+                                    - country
+                                    - description
+                                    - name
+                                    - org
+                                  type: object
+                                contentAvailable:
+                                  type: boolean
+                                dataLength:
+                                  type: number
+                                encodedDataLength:
+                                  type: number
+                                geoip:
+                                  properties:
+                                    city:
+                                      type: string
+                                    country:
+                                      type: string
+                                    country_name:
+                                      type: string
+                                    geonameId:
+                                      type: string
+                                    ll:
+                                      items:
+                                        type: number
+                                      type: array
+                                    region:
+                                      type: string
+                                  required:
+                                    - country
+                                    - region
+                                    - city
+                                    - ll
+                                    - country_name
+                                    - geonameId
+                                  type: object
+                                hasExtraInfo:
+                                  type: boolean
+                                hash:
+                                  type: string
+                                requestId:
+                                  type: string
+                                response:
+                                  properties:
+                                    charset:
+                                      type: string
+                                    headers:
+                                      type: object
+                                    mimeType:
+                                      type: string
+                                    protocol:
+                                      type: string
+                                    remoteIPAddress:
+                                      type: string
+                                    remotePort:
+                                      type: number
+                                    securityDetails:
+                                      properties:
+                                        certificateId:
+                                          type: number
+                                        certificateTransparencyCompliance:
+                                          type: string
+                                        cipher:
+                                          type: string
+                                        encryptedClientHello:
+                                          type: boolean
+                                        issuer:
+                                          type: string
+                                        keyExchange:
+                                          type: string
+                                        keyExchangeGroup:
+                                          type: string
+                                        protocol:
+                                          type: string
+                                        sanList:
+                                          items:
+                                            type: string
+                                          type: array
+                                        serverSignatureAlgorithm:
+                                          type: number
+                                        subjectName:
+                                          type: string
+                                        validFrom:
+                                          type: number
+                                        validTo:
+                                          type: number
+                                      required:
+                                        - protocol
+                                        - keyExchange
+                                        - keyExchangeGroup
+                                        - cipher
+                                        - certificateId
+                                        - subjectName
+                                        - sanList
+                                        - issuer
+                                        - validFrom
+                                        - validTo
+                                        - certificateTransparencyCompliance
+                                        - serverSignatureAlgorithm
+                                        - encryptedClientHello
+                                      type: object
+                                    securityHeaders:
+                                      items:
+                                        properties:
+                                          name:
+                                            type: string
+                                          value:
+                                            type: string
+                                        required:
+                                          - name
+                                          - value
+                                        type: object
+                                      type: array
+                                    securityState:
+                                      type: string
+                                    status:
+                                      type: number
+                                    statusText:
+                                      type: string
+                                    url:
+                                      type: string
+                                  required:
+                                    - url
+                                    - status
+                                    - statusText
+                                    - mimeType
+                                    - charset
+                                    - remoteIPAddress
+                                    - remotePort
+                                    - protocol
+                                    - securityState
+                                    - securityDetails
+                                    - securityHeaders
+                                  type: object
+                                size:
+                                  type: number
+                                type:
+                                  type: string
+                              required:
+                                - encodedDataLength
+                                - dataLength
+                                - requestId
+                                - type
+                                - response
+                                - hasExtraInfo
+                                - size
+                                - asn
+                                - geoip
+                              type: object
+                          required:
+                            - request
+                            - response
+                          type: object
+                        type: array
+                    required:
+                      - requests
+                      - cookies
+                      - console
+                      - links
+                      - globals
+                      - performance
+                    type: object
+                  lists:
+                    properties:
+                      asns:
+                        items:
+                          type: string
+                        type: array
+                      certificates:
+                        items:
+                          properties:
+                            issuer:
+                              type: string
+                            subjectName:
+                              type: string
+                            validFrom:
+                              type: number
+                            validTo:
+                              type: number
+                          required:
+                            - issuer
+                            - subjectName
+                            - validFrom
+                            - validTo
+                          type: object
+                        type: array
+                      continents:
+                        items:
+                          type: string
+                        type: array
+                      countries:
+                        items:
+                          type: string
+                        type: array
+                      domains:
+                        items:
+                          type: string
+                        type: array
+                      hashes:
+                        items:
+                          type: string
+                        type: array
+                      ips:
+                        items:
+                          type: string
+                        type: array
+                      linkDomains:
+                        items:
+                          type: string
+                        type: array
+                      servers:
+                        items:
+                          type: string
+                        type: array
+                      urls:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                      - ips
+                      - countries
+                      - continents
+                      - asns
+                      - domains
+                      - servers
+                      - urls
+                      - linkDomains
+                      - certificates
+                      - hashes
+                    type: object
+                  meta:
+                    properties:
+                      processors:
+                        properties:
+                          asn:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    asn:
+                                      type: string
+                                    country:
+                                      type: string
+                                    description:
+                                      type: string
+                                    ip:
+                                      type: string
+                                    name:
+                                      type: string
+                                  required:
+                                    - ip
+                                    - asn
+                                    - country
+                                    - description
+                                    - name
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          dns:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    address:
+                                      type: string
+                                    dnssec_valid:
+                                      type: boolean
+                                    name:
+                                      type: string
+                                    type:
+                                      type: string
+                                  required:
+                                    - name
+                                    - address
+                                    - type
+                                    - dnssec_valid
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          domainCategories:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    inherited:
+                                      type: object
+                                    isPrimary:
+                                      type: boolean
+                                    name:
+                                      type: string
+                                  required:
+                                    - name
+                                    - isPrimary
+                                    - inherited
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          geoip:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    geoip:
+                                      properties:
+                                        city:
+                                          type: string
+                                        country:
+                                          type: string
+                                        country_name:
+                                          type: string
+                                        ll:
+                                          items:
+                                            type: number
+                                          type: array
+                                        region:
+                                          type: string
+                                      required:
+                                        - country
+                                        - region
+                                        - city
+                                        - ll
+                                        - country_name
+                                      type: object
+                                    ip:
+                                      type: string
+                                  required:
+                                    - ip
+                                    - geoip
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          phishing:
+                            properties:
+                              data:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          radarRank:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    bucket:
+                                      type: string
+                                    hostname:
+                                      type: string
+                                    rank:
+                                      type: number
+                                  required:
+                                    - hostname
+                                    - bucket
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          urlCategories:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    content:
+                                      items:
+                                        properties:
+                                          id:
+                                            type: number
+                                          name:
+                                            type: string
+                                          super_category_id:
+                                            type: number
+                                        required:
+                                          - id
+                                          - name
+                                          - super_category_id
+                                        type: object
+                                      type: array
+                                    inherited:
+                                      properties:
+                                        content:
+                                          items:
+                                            properties:
+                                              id:
+                                                type: number
+                                              name:
+                                                type: string
+                                              super_category_id:
+                                                type: number
+                                            required:
+                                              - id
+                                              - name
+                                              - super_category_id
+                                            type: object
+                                          type: array
+                                        from:
+                                          type: string
+                                        risks:
+                                          items:
+                                            properties:
+                                              id:
+                                                type: number
+                                              name:
+                                                type: string
+                                              super_category_id:
+                                                type: number
+                                            required:
+                                              - id
+                                              - name
+                                              - super_category_id
+                                            type: object
+                                          type: array
+                                      required:
+                                        - from
+                                        - content
+                                        - risks
+                                      type: object
+                                    name:
+                                      type: string
+                                    risks:
+                                      items:
+                                        properties:
+                                          id:
+                                            type: number
+                                          name:
+                                            type: string
+                                          super_category_id:
+                                            type: number
+                                        required:
+                                          - id
+                                          - name
+                                          - super_category_id
+                                        type: object
+                                      type: array
+                                  required:
+                                    - name
+                                    - content
+                                    - risks
+                                    - inherited
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                          wappa:
+                            properties:
+                              data:
+                                items:
+                                  properties:
+                                    app:
+                                      type: string
+                                    categories:
+                                      items:
+                                        properties:
+                                          name:
+                                            type: string
+                                          priority:
+                                            type: number
+                                        required:
+                                          - name
+                                          - priority
+                                        type: object
+                                      type: array
+                                    confidence:
+                                      items:
+                                        properties:
+                                          confidence:
+                                            type: number
+                                          name:
+                                            type: string
+                                          pattern:
+                                            type: string
+                                          patternType:
+                                            type: string
+                                        required:
+                                          - confidence
+                                          - pattern
+                                          - patternType
+                                          - name
+                                        type: object
+                                      type: array
+                                    confidenceTotal:
+                                      type: number
+                                    icon:
+                                      type: string
+                                    website:
+                                      type: string
+                                  required:
+                                    - confidence
+                                    - confidenceTotal
+                                    - app
+                                    - icon
+                                    - website
+                                    - categories
+                                  type: object
+                                type: array
+                            required:
+                              - data
+                            type: object
+                        required:
+                          - geoip
+                          - asn
+                          - wappa
+                          - domainCategories
+                          - dns
+                          - radarRank
+                          - phishing
+                        type: object
+                    required:
+                      - processors
+                    type: object
+                  page:
+                    properties:
+                      apexDomain:
+                        type: string
+                      asn:
+                        type: string
+                      asnname:
+                        type: string
+                      city:
+                        type: string
+                      country:
+                        type: string
+                      domain:
+                        type: string
+                      ip:
+                        type: string
+                      mimeType:
+                        type: string
+                      screenshot:
+                        properties:
+                          dhash:
+                            type: string
+                          mm3Hash:
+                            type: number
+                          name:
+                            type: string
+                          phash:
+                            type: string
+                        required:
+                          - phash
+                          - dhash
+                          - mm3Hash
+                          - name
+                        type: object
+                      server:
+                        type: string
+                      status:
+                        example: '200'
+                        type: string
+                      title:
+                        type: string
+                      tlsAgeDays:
+                        type: number
+                      tlsIssuer:
+                        type: string
+                      tlsValidDays:
+                        type: number
+                      tlsValidFrom:
+                        type: string
+                      url:
+                        type: string
+                    required:
+                      - asn
+                      - asnname
+                      - city
+                      - country
+                      - domain
+                      - ip
+                      - server
+                      - url
+                      - mimeType
+                      - apexDomain
+                      - status
+                      - title
+                      - tlsIssuer
+                      - tlsValidFrom
+                      - tlsAgeDays
+                      - tlsValidDays
+                    type: object
+                  scanner:
+                    properties:
+                      colo:
+                        type: string
+                      country:
+                        type: string
+                    required:
+                      - country
+                      - colo
+                    type: object
+                  stats:
+                    properties:
+                      IPv6Percentage:
+                        type: number
+                      domainStats:
+                        items:
+                          properties:
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            domain:
+                              type: string
+                            encodedSize:
+                              type: number
+                            index:
+                              type: number
+                            initiators:
+                              items:
+                                type: string
+                              type: array
+                            ips:
+                              items:
+                                type: string
+                              type: array
+                            redirects:
+                              type: number
+                            size:
+                              type: number
+                          required:
+                            - count
+                            - ips
+                            - domain
+                            - size
+                            - encodedSize
+                            - countries
+                            - index
+                            - initiators
+                            - redirects
+                          type: object
+                        type: array
+                      ipStats:
+                        items:
+                          properties:
+                            asn:
+                              properties:
+                                asn:
+                                  type: string
+                                country:
+                                  type: string
+                                description:
+                                  type: string
+                                ip:
+                                  type: string
+                                name:
+                                  type: string
+                                org:
+                                  type: string
+                              required:
+                                - ip
+                                - asn
+                                - country
+                                - description
+                                - name
+                                - org
+                              type: object
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            domains:
+                              items:
+                                type: string
+                              type: array
+                            encodedSize:
+                              type: number
+                            geoip:
+                              properties:
+                                city:
+                                  type: string
+                                country:
+                                  type: string
+                                country_name:
+                                  type: string
+                                ll:
+                                  items:
+                                    type: number
+                                  type: array
+                                region:
+                                  type: string
+                              required:
+                                - country
+                                - region
+                                - city
+                                - ll
+                                - country_name
+                              type: object
+                            index:
+                              type: number
+                            ip:
+                              type: string
+                            ipv6:
+                              type: boolean
+                            redirects:
+                              type: number
+                            requests:
+                              type: number
+                            size:
+                              type: number
+                          required:
+                            - requests
+                            - domains
+                            - ip
+                            - size
+                            - encodedSize
+                            - countries
+                            - index
+                            - ipv6
+                            - redirects
+                            - geoip
+                            - asn
+                          type: object
+                        type: array
+                      malicious:
+                        type: number
+                      protocolStats:
+                        items:
+                          properties:
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            encodedSize:
+                              type: number
+                            ips:
+                              items:
+                                type: string
+                              type: array
+                            protocol:
+                              type: string
+                            size:
+                              type: number
+                          required:
+                            - count
+                            - size
+                            - encodedSize
+                            - ips
+                            - countries
+                            - protocol
+                          type: object
+                        type: array
+                      resourceStats:
+                        items:
+                          properties:
+                            compression:
+                              type: number
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            encodedSize:
+                              type: number
+                            ips:
+                              items:
+                                type: string
+                              type: array
+                            percentage:
+                              type: number
+                            size:
+                              type: number
+                            type:
+                              type: string
+                          required:
+                            - count
+                            - size
+                            - encodedSize
+                            - ips
+                            - countries
+                            - compression
+                            - percentage
+                            - type
+                          type: object
+                        type: array
+                      securePercentage:
+                        type: number
+                      secureRequests:
+                        type: number
+                      serverStats:
+                        items:
+                          properties:
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            encodedSize:
+                              type: number
+                            ips:
+                              items:
+                                type: string
+                              type: array
+                            server:
+                              type: string
+                            size:
+                              type: number
+                          required:
+                            - count
+                            - size
+                            - encodedSize
+                            - ips
+                            - countries
+                            - server
+                          type: object
+                        type: array
+                      tlsStats:
+                        items:
+                          properties:
+                            count:
+                              type: number
+                            countries:
+                              items:
+                                type: string
+                              type: array
+                            encodedSize:
+                              type: number
+                            ips:
+                              items:
+                                type: string
+                              type: array
+                            protocols:
+                              properties:
+                                TLS 1.3 / AES_128_GCM:
+                                  type: number
+                              required:
+                                - TLS 1.3 / AES_128_GCM
+                              type: object
+                            securityState:
+                              type: string
+                            size:
+                              type: number
+                          required:
+                            - count
+                            - size
+                            - encodedSize
+                            - ips
+                            - countries
+                            - protocols
+                            - securityState
+                          type: object
+                        type: array
+                      totalLinks:
+                        type: number
+                      uniqASNs:
+                        type: number
+                      uniqCountries:
+                        type: number
+                    required:
+                      - IPv6Percentage
+                      - domainStats
+                      - ipStats
+                      - malicious
+                      - protocolStats
+                      - resourceStats
+                      - secureRequests
+                      - tlsStats
+                      - serverStats
+                      - securePercentage
+                      - totalLinks
+                      - uniqCountries
+                      - uniqASNs
+                    type: object
+                  task:
+                    properties:
+                      apexDomain:
+                        type: string
+                      domURL:
+                        type: string
+                      domain:
+                        type: string
+                      method:
+                        type: string
+                      options:
+                        properties:
+                          customHeaders:
+                            description: Custom headers set.
+                            type: object
+                          screenshotsResolutions:
+                            items:
+                              type: string
+                            type: array
+                        type: object
+                      reportURL:
+                        type: string
+                      screenshotURL:
+                        type: string
+                      source:
+                        type: string
+                      success:
+                        type: boolean
+                      time:
+                        type: string
+                      url:
+                        type: string
+                      uuid:
+                        type: string
+                      visibility:
+                        type: string
+                    required:
+                      - uuid
+                      - url
+                      - time
+                      - visibility
+                      - source
+                      - method
+                      - domain
+                      - apexDomain
+                      - reportURL
+                      - screenshotURL
+                      - domURL
+                      - options
+                      - success
+                    type: object
+                  verdicts:
+                    properties:
+                      overall:
+                        properties:
+                          categories:
+                            items:
+                              type: string
+                            type: array
+                          hasVerdicts:
+                            type: boolean
+                          malicious:
+                            type: boolean
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                        required:
+                          - malicious
+                          - hasVerdicts
+                          - categories
+                          - tags
+                        type: object
+                    required:
+                      - overall
+                    type: object
+                required:
+                  - data
+                  - page
+                  - lists
+                  - meta
+                  - scanner
+                  - stats
+                  - task
+                  - verdicts
+                type: object
+          description: Scan has finished. It may or may not have been successful.
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        detail:
+                          type: string
+                        status:
+                          description: Status code.
+                          example: 400
+                          type: integer
+                        title:
+                          example: Invalid url
+                          type: string
+                      required:
+                        - title
+                        - detail
+                        - status
+                      type: object
+                    type: array
+                  message:
+                    type: string
+                  status:
+                    description: Status code.
+                    example: 400
+                    type: integer
+                required:
+                  - message
+                  - status
+                  - errors
+                type: object
+          description: Invalid input.
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        detail:
+                          example: Queued
+                          type: string
+                        status:
+                          description: Status code.
+                          example: 404
+                          type: integer
+                        title:
+                          example: Scan is not finished yet.
+                          type: string
+                      required:
+                        - title
+                        - detail
+                        - status
+                      type: object
+                    type: array
+                  message:
+                    description: Scan not found or in progress.
+                    example: Scan is not finished yet.
+                    type: string
+                  status:
+                    description: Status code.
+                    example: 404
+                    type: integer
+                  task:
+                    properties:
+                      status:
+                        example: Queued
+                        type: string
+                      time:
+                        type: string
+                      url:
+                        type: string
+                      uuid:
+                        type: string
+                      visibility:
+                        example: public
+                        type: string
+                    required:
+                      - uuid
+                      - url
+                      - time
+                      - status
+                      - visibility
+                    type: object
+                required:
+                  - message
+                  - status
+                  - errors
+                  - task
+                type: object
+          description: Scan not found or in progress.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get URL scan
+      tags:
+        - URL Scanner
+      x-api-token-group:
+        - URL Scanner Write
+        - URL Scanner Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true

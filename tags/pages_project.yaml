@@ -1,0 +1,422 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/pages/projects:
+    get:
+      description: Fetch a list of all user projects.
+      operationId: pages-project-get-projects
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pages_projects-response'
+          description: Get projects response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/pages_projects-response'
+                  - $ref: '#/components/schemas/pages_api-response-common-failure'
+          description: Get projects response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get projects
+      tags:
+        - Pages Project
+      x-api-token-group:
+        - Pages Read
+        - Pages Write
+    post:
+      description: Create a new project.
+      operationId: pages-project-create-project
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pages_project-object'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pages_project-response'
+          description: Create project response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/pages_project-response'
+                  - $ref: '#/components/schemas/pages_api-response-common-failure'
+          description: Create project response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Create project
+      tags:
+        - Pages Project
+      x-api-token-group:
+        - Pages Write
+  /accounts/{account_id}/pages/projects/{project_name}:
+    get:
+      description: Fetch a project by name.
+      operationId: pages-project-get-project
+      parameters:
+        - in: path
+          name: project_name
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_project_name'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pages_project-response'
+          description: Get project response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/pages_project-response'
+                  - $ref: '#/components/schemas/pages_api-response-common-failure'
+          description: Get project response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get project
+      tags:
+        - Pages Project
+      x-api-token-group:
+        - Pages Read
+        - Pages Write
+    patch:
+      description: >-
+        Set new attributes for an existing project. Modify environment
+        variables. To delete an environment variable, set the key to null.
+      operationId: pages-project-update-project
+      parameters:
+        - in: path
+          name: project_name
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_project_name'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pages_project-patch'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pages_project-response'
+          description: Update project response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/pages_project-response'
+                  - $ref: '#/components/schemas/pages_api-response-common-failure'
+          description: Update project response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Update project
+      tags:
+        - Pages Project
+      x-api-token-group:
+        - Pages Write
+    delete:
+      description: Delete a project by name.
+      operationId: pages-project-delete-project
+      parameters:
+        - in: path
+          name: project_name
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_project_name'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/pages_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/pages_api-response-common'
+                  - properties:
+                      result:
+                        nullable: true
+                        type: object
+                    type: object
+          description: Delete project response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - example:
+                      errors: []
+                      messages: []
+                      result: null
+                      success: true
+                  - $ref: '#/components/schemas/pages_api-response-common-failure'
+          description: Delete project response failure.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Delete project
+      tags:
+        - Pages Project
+      x-api-token-group:
+        - Pages Write
+components:
+  schemas:
+    pages_api-response-common:
+      properties:
+        errors:
+          $ref: '#/components/schemas/pages_messages'
+        messages:
+          $ref: '#/components/schemas/pages_messages'
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+            - true
+          example: true
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    pages_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/pages_messages'
+          example:
+            - code: 7003
+              message: No route for the URI.
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/pages_messages'
+          example: []
+        result:
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    pages_identifier:
+      description: Identifier
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string
+      x-auditable: true
+    pages_project-object:
+      properties:
+        build_config:
+          $ref: '#/components/schemas/pages_build_config'
+        canonical_deployment:
+          allOf:
+            - $ref: '#/components/schemas/pages_deployments'
+            - description: Most recent deployment to the repo.
+              nullable: true
+              readOnly: true
+              type: object
+        created_on:
+          description: When the project was created.
+          example: '2017-01-01T00:00:00Z'
+          format: date-time
+          readOnly: true
+          type: string
+          x-auditable: true
+        deployment_configs:
+          $ref: '#/components/schemas/pages_deployment_configs'
+        domains:
+          description: A list of associated custom domains for the project.
+          example:
+            - customdomain.com
+            - customdomain.org
+          items:
+            type: string
+            x-auditable: true
+          readOnly: true
+          type: array
+        id:
+          description: Id of the project.
+          example: 7b162ea7-7367-4d67-bcde-1160995d5
+          readOnly: true
+          type: string
+          x-auditable: true
+        latest_deployment:
+          allOf:
+            - $ref: '#/components/schemas/pages_deployments'
+            - description: Most recent deployment to the repo.
+              nullable: true
+              readOnly: true
+              type: object
+        name:
+          description: Name of the project.
+          example: NextJS Blog
+          type: string
+          x-auditable: true
+        production_branch:
+          description: >-
+            Production branch of the project. Used to identify production
+            deployments.
+          example: main
+          type: string
+          x-auditable: true
+        source:
+          $ref: '#/components/schemas/pages_source'
+        subdomain:
+          description: The Cloudflare subdomain associated with the project.
+          example: helloworld.pages.dev
+          readOnly: true
+          type: string
+          x-auditable: true
+      type: object
+    pages_project-patch:
+      allOf:
+        - $ref: '#/components/schemas/pages_project-object'
+        - example:
+            deployment_configs:
+              production:
+                compatibility_date: '2022-01-01'
+                compatibility_flags:
+                  - url_standard
+                env_vars:
+                  BUILD_VERSION:
+                    value: '3.3'
+                  delete_this_env_var: null
+                  secret_var:
+                    type: secret_text
+                    value: A_CMS_API_TOKEN
+          type: object
+    pages_project-response:
+      allOf:
+        - $ref: '#/components/schemas/pages_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/pages_project-object'
+    pages_project_name:
+      description: Name of the project.
+      example: this-is-my-project-01
+      pattern: ^[a-z0-9][a-z0-9-]*$
+      type: string
+      x-auditable: true
+    pages_projects-response:
+      allOf:
+        - $ref: '#/components/schemas/pages_api-response-common'
+        - $ref: '#/components/schemas/pages_api-response-pagination'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/pages_deployments'
+              type: array

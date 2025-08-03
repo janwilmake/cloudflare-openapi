@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /user:
+    get:
+      operationId: user-user-details
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_single_user_response'
+          description: User Details response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: User Details response failure
+      security:
+        - api_email: []
+          api_key: []
+      summary: User Details
+      tags:
+        - User
+      x-api-token-group:
+        - User Details Write
+        - User Details Read
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.user.read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    patch:
+      description: Edit part of your user details.
+      operationId: user-edit-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                country:
+                  $ref: '#/components/schemas/iam_country'
+                first_name:
+                  $ref: '#/components/schemas/iam_first_name'
+                last_name:
+                  $ref: '#/components/schemas/iam_last_name'
+                telephone:
+                  $ref: '#/components/schemas/iam_telephone'
+                zipcode:
+                  $ref: '#/components/schemas/iam_zipcode'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_single_user_response'
+          description: Edit User response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/iam_api-response-common-failure'
+          description: Edit User response failure
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Edit User
+      tags:
+        - User
+      x-api-token-group:
+        - User Details Write
+      x-cfPermissionsRequired:
+        enum:
+          - com.cloudflare.api.user.update
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    iam_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/iam_schemas-messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/iam_schemas-messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    iam_country:
+      description: The country in which the user lives.
+      example: US
+      maxLength: 30
+      nullable: true
+      type: string
+    iam_first_name:
+      description: User's first name
+      example: John
+      maxLength: 60
+      nullable: true
+      type: string
+      x-auditable: true
+    iam_last_name:
+      description: User's last name
+      example: Appleseed
+      maxLength: 60
+      nullable: true
+      type: string
+      x-auditable: true
+    iam_single_user_response:
+      allOf:
+        - $ref: '#/components/schemas/iam_api-response-single'
+        - properties:
+            result:
+              properties:
+                betas:
+                  description: Lists the betas that the user is participating in.
+                  items:
+                    description: User feature flag
+                    example: zone_level_access_beta
+                    type: string
+                  readOnly: true
+                  type: array
+                country:
+                  $ref: '#/components/schemas/iam_country'
+                first_name:
+                  $ref: '#/components/schemas/iam_first_name'
+                has_business_zones:
+                  default: false
+                  description: Indicates whether user has any business zones
+                  readOnly: true
+                  type: boolean
+                has_enterprise_zones:
+                  default: false
+                  description: Indicates whether user has any enterprise zones
+                  readOnly: true
+                  type: boolean
+                has_pro_zones:
+                  default: false
+                  description: Indicates whether user has any pro zones
+                  readOnly: true
+                  type: boolean
+                id:
+                  description: Identifier of the user.
+                  example: 6d7f2f5f5b1d4a0e9081fdc98d432fd1
+                  readOnly: true
+                  type: string
+                last_name:
+                  $ref: '#/components/schemas/iam_last_name'
+                organizations:
+                  items:
+                    $ref: '#/components/schemas/iam_organization'
+                  type: array
+                suspended:
+                  default: false
+                  description: Indicates whether user has been suspended
+                  readOnly: true
+                  type: boolean
+                telephone:
+                  $ref: '#/components/schemas/iam_telephone'
+                two_factor_authentication_enabled:
+                  $ref: '#/components/schemas/iam_two_factor_authentication_enabled'
+                two_factor_authentication_locked:
+                  $ref: '#/components/schemas/iam_two_factor_authentication_locked'
+                zipcode:
+                  $ref: '#/components/schemas/iam_zipcode'
+              type: object
+          type: object
+    iam_telephone:
+      description: User's telephone number
+      example: +1 123-123-1234
+      maxLength: 20
+      nullable: true
+      type: string
+    iam_zipcode:
+      description: The zipcode or postal code where the user lives.
+      example: '12345'
+      maxLength: 20
+      nullable: true
+      type: string

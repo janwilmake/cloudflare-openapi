@@ -1,0 +1,493 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/magic/sites/{site_id}/acls:
+    get:
+      description: Lists Site ACLs associated with an account.
+      operationId: magic-site-acls-list-acls
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acls_collection_response'
+          description: List Site ACLs response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: List Site ACLs response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List Site ACLs
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic WAN Read
+        - Magic Transit Read
+        - Magic Transit Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    post:
+      description: Creates a new Site ACL.
+      operationId: magic-site-acls-create-acl
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/magic_acls_add_single_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acl_single_response'
+          description: Create Site ACL response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: Create Site ACL response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a new Site ACL
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic Transit Write
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+  /accounts/{account_id}/magic/sites/{site_id}/acls/{acl_id}:
+    get:
+      description: Get a specific Site ACL.
+      operationId: magic-site-acls-acl-details
+      parameters:
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: acl_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acl_single_response'
+          description: Site ACL Details response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: Site ACL Details response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Site ACL Details
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic WAN Read
+        - Magic Transit Read
+        - Magic Transit Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#organization:read'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    put:
+      description: Update a specific Site ACL.
+      operationId: magic-site-acls-update-acl
+      parameters:
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: acl_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/magic_acl_update_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acl_modified_response'
+          description: Update Site ACL response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: Update Site ACL response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update Site ACL
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic Transit Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#organization:edit'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    patch:
+      description: Patch a specific Site ACL.
+      operationId: magic-site-acls-patch-acl
+      parameters:
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: acl_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/magic_acl_update_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acl_modified_response'
+          description: Patch Site ACL response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: Patch Site ACL response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Patch Site ACL
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic Transit Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#organization:edit'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+    delete:
+      description: Remove a specific Site ACL.
+      operationId: magic-site-acls-delete-acl
+      parameters:
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+        - in: path
+          name: acl_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/magic_identifier'
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_acl_deleted_response'
+          description: Delete Site ACL response
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/magic_api-response-common-failure'
+          description: Delete Site ACL response failure
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete Site ACL
+      tags:
+        - Magic Site ACLs
+      x-api-token-group:
+        - Magic WAN Write
+        - Magic Transit Write
+      x-cfPermissionsRequired:
+        enum:
+          - '#organization:edit'
+      x-cfPlanAvailability:
+        business: false
+        enterprise: true
+        free: false
+        pro: false
+components:
+  schemas:
+    magic_acl_deleted_response:
+      allOf:
+        - $ref: '#/components/schemas/magic_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/magic_acl'
+    magic_acl_modified_response:
+      allOf:
+        - $ref: '#/components/schemas/magic_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/magic_acl'
+    magic_acl_single_response:
+      allOf:
+        - $ref: '#/components/schemas/magic_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/magic_acl'
+    magic_acl_update_request:
+      properties:
+        description:
+          description: Description for the ACL.
+          example: Allows local traffic between PIN pads and cash register.
+          type: string
+        forward_locally:
+          $ref: '#/components/schemas/magic_forward_locally'
+        lan_1:
+          $ref: '#/components/schemas/magic_lan-acl-configuration'
+        lan_2:
+          $ref: '#/components/schemas/magic_lan-acl-configuration'
+        name:
+          description: The name of the ACL.
+          example: PIN Pad - Cash Register
+          type: string
+        protocols:
+          items:
+            description: >-
+              Array of allowed communication protocols between configured LANs.
+              If no protocols are provided, all protocols are allowed.
+            enum:
+              - tcp
+              - udp
+              - icmp
+            type: string
+          type: array
+        unidirectional:
+          $ref: '#/components/schemas/magic_unidirectional'
+      type: object
+    magic_acls_add_single_request:
+      description: Bidirectional ACL policy for local network traffic within a site.
+      properties:
+        description:
+          description: Description for the ACL.
+          example: Allows local traffic between PIN pads and cash register.
+          type: string
+        forward_locally:
+          $ref: '#/components/schemas/magic_forward_locally'
+        lan_1:
+          $ref: '#/components/schemas/magic_lan-acl-configuration'
+        lan_2:
+          $ref: '#/components/schemas/magic_lan-acl-configuration'
+        name:
+          description: The name of the ACL.
+          example: PIN Pad - Cash Register
+          type: string
+        protocols:
+          items:
+            description: >-
+              Array of allowed communication protocols between configured LANs.
+              If no protocols are provided, all protocols are allowed.
+            enum:
+              - tcp
+              - udp
+              - icmp
+            type: string
+          type: array
+        unidirectional:
+          $ref: '#/components/schemas/magic_unidirectional'
+      required:
+        - name
+        - lan_1
+        - lan_2
+      type: object
+    magic_acls_collection_response:
+      allOf:
+        - $ref: '#/components/schemas/magic_api-response-single'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/magic_acl'
+              type: array
+    magic_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/magic_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/magic_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    magic_identifier:
+      description: Identifier
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      readOnly: true
+      type: string

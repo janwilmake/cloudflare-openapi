@@ -1,0 +1,791 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/rum/site_info:
+    post:
+      description: Creates a new Web Analytics site.
+      operationId: web-analytics-create-site
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_create-site-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_site-response-single'
+          description: Created Web Analytics site.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a Web Analytics site
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rum/site_info/list:
+    get:
+      description: Lists all Web Analytics sites of an account.
+      operationId: web-analytics-list-sites
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: query
+          name: per_page
+          schema:
+            $ref: '#/components/schemas/rum_per_page'
+        - in: query
+          name: page
+          schema:
+            $ref: '#/components/schemas/rum_page'
+        - in: query
+          name: order_by
+          schema:
+            $ref: '#/components/schemas/rum_order_by'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_sites-response-collection'
+          description: List of Web Analytics sites.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List Web Analytics sites
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rum/site_info/{site_id}:
+    get:
+      description: Retrieves a Web Analytics site.
+      operationId: web-analytics-get-site
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_site-response-single'
+          description: Web Analytics site.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get a Web Analytics site
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    put:
+      description: Updates an existing Web Analytics site.
+      operationId: web-analytics-update-site
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_update-site-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_site-response-single'
+          description: Updated Web Analytics site.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a Web Analytics site
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    delete:
+      description: Deletes an existing Web Analytics site.
+      operationId: web-analytics-delete-site
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: site_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_site-tag-response-single'
+          description: Deleted Web Analytics site identifier.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a Web Analytics site
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+  /accounts/{account_id}/rum/v2/{ruleset_id}/rule:
+    post:
+      description: Creates a new rule in a Web Analytics ruleset.
+      operationId: web-analytics-create-rule
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_ruleset_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_create-rule-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rule-response-single'
+          description: Created Web Analytics rule.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create a Web Analytics rule
+      tags:
+        - Web Analytics
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /accounts/{account_id}/rum/v2/{ruleset_id}/rule/{rule_id}:
+    put:
+      description: Updates a rule in a Web Analytics ruleset.
+      operationId: web-analytics-update-rule
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_ruleset_identifier'
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_rule_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_create-rule-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rule-response-single'
+          description: Updated Web Analytics rule.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update a Web Analytics rule
+      tags:
+        - Web Analytics
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+    delete:
+      description: Deletes an existing rule from a Web Analytics ruleset.
+      operationId: web-analytics-delete-rule
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_ruleset_identifier'
+        - in: path
+          name: rule_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_rule_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rule-id-response-single'
+          description: Deleted Web Analytics rule identifier.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete a Web Analytics rule
+      tags:
+        - Web Analytics
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /accounts/{account_id}/rum/v2/{ruleset_id}/rules:
+    get:
+      description: Lists all the rules in a Web Analytics ruleset.
+      operationId: web-analytics-list-rules
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_ruleset_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rules-response-collection'
+          description: List of Web Analytics rules in the ruleset.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List rules in Web Analytics ruleset
+      tags:
+        - Web Analytics
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    post:
+      description: >-
+        Modifies one or more rules in a Web Analytics ruleset with a single
+        request.
+      operationId: web-analytics-modify-rules
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+        - in: path
+          name: ruleset_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_ruleset_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_modify-rules-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rules-response-collection'
+          description: List of modified Web Analytics rules.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update Web Analytics rules
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Account Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: false
+        pro: true
+  /zones/{zone_id}/settings/rum:
+    get:
+      description: Retrieves RUM status for a zone.
+      operationId: web-analytics-get-rum-status
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rum-site-response-single'
+          description: Rum Status.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get RUM status for a zone
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Zone Settings Write
+        - Zone Settings Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+    patch:
+      description: Toggles RUM on/off for an existing zone.
+      operationId: web-analytics-toggle-rum
+      parameters:
+        - in: path
+          name: zone_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/rum_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rum_toggle-rum-request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_rum-site-response-single'
+          description: Rum toggled on/off for an existing zone.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rum_api-response-common-failure'
+          description: Failure response.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Toggle RUM on/off for a zone
+      tags:
+        - Web Analytics
+      x-api-token-group:
+        - Zone Settings Write
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+components:
+  schemas:
+    rum_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/rum_schemas-messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/rum_schemas-messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    rum_create-rule-request:
+      properties:
+        host:
+          example: example.com
+          type: string
+        inclusive:
+          description: Whether the rule includes or excludes traffic from being measured.
+          example: true
+          type: boolean
+        is_paused:
+          description: Whether the rule is paused or not.
+          example: false
+          type: boolean
+        paths:
+          example:
+            - '*'
+          items:
+            type: string
+          type: array
+      type: object
+    rum_create-site-request:
+      properties:
+        auto_install:
+          $ref: '#/components/schemas/rum_auto_install'
+        host:
+          $ref: '#/components/schemas/rum_host'
+        zone_tag:
+          $ref: '#/components/schemas/rum_zone_tag'
+      type: object
+    rum_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    rum_modify-rules-request:
+      properties:
+        delete_rules:
+          description: A list of rule identifiers to delete.
+          items:
+            $ref: '#/components/schemas/rum_rule_identifier'
+          type: array
+        rules:
+          description: A list of rules to create or update.
+          items:
+            properties:
+              host:
+                example: example.com
+                type: string
+              id:
+                $ref: '#/components/schemas/rum_rule_identifier'
+              inclusive:
+                example: true
+                type: boolean
+              is_paused:
+                example: false
+                type: boolean
+              paths:
+                example:
+                  - '*'
+                items:
+                  type: string
+                type: array
+            type: object
+          type: array
+      type: object
+    rum_order_by:
+      description: The property used to sort the list of results.
+      enum:
+        - host
+        - created
+      example: host
+      type: string
+    rum_page:
+      description: Current page within the paginated list of results.
+      example: 1
+      type: number
+    rum_per_page:
+      description: Number of items to return per page of results.
+      example: 10
+      type: number
+    rum_rule-id-response-single:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              properties:
+                id:
+                  $ref: '#/components/schemas/rum_rule_identifier'
+              type: object
+          type: object
+    rum_rule-response-single:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/rum_rule'
+          type: object
+    rum_rule_identifier:
+      description: The Web Analytics rule identifier.
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      type: string
+      x-auditable: true
+    rum_rules-response-collection:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              properties:
+                rules:
+                  $ref: '#/components/schemas/rum_rules'
+                ruleset:
+                  $ref: '#/components/schemas/rum_ruleset'
+              type: object
+          type: object
+    rum_ruleset_identifier:
+      description: The Web Analytics ruleset identifier.
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      type: string
+      x-auditable: true
+    rum_rum-site-response-single:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/rum_rum_site'
+          type: object
+    rum_site-response-single:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              $ref: '#/components/schemas/rum_site'
+          type: object
+    rum_site-tag-response-single:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              properties:
+                site_tag:
+                  $ref: '#/components/schemas/rum_site_tag'
+              type: object
+          type: object
+    rum_sites-response-collection:
+      allOf:
+        - $ref: '#/components/schemas/rum_api-response-common'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/rum_site'
+              type: array
+            result_info:
+              $ref: '#/components/schemas/rum_result_info'
+          type: object
+    rum_toggle-rum-request:
+      properties:
+        value:
+          description: Value can either be On or Off.
+          example: 'on'
+          type: string
+      type: object
+    rum_update-site-request:
+      properties:
+        auto_install:
+          $ref: '#/components/schemas/rum_auto_install'
+        enabled:
+          $ref: '#/components/schemas/rum_enabled'
+        host:
+          $ref: '#/components/schemas/rum_host'
+        lite:
+          $ref: '#/components/schemas/rum_lite'
+        zone_tag:
+          $ref: '#/components/schemas/rum_zone_tag'
+      type: object

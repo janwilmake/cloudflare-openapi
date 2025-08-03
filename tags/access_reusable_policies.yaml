@@ -1,0 +1,329 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/access/policies:
+    get:
+      description: Lists Access reusable policies.
+      operationId: access-policies-list-access-reusable-policies
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_reusable-policies_components-schemas-response_collection
+          description: List Access reusable policies response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: List Access reusable policies response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: List Access reusable policies
+      tags:
+        - Access reusable policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+        - 'Access: Apps and Policies Read'
+    post:
+      description: Creates a new Access reusable policy.
+      operationId: access-policies-create-an-access-reusable-policy
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access_policy_req'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_reusable-policies_components-schemas-single_response
+          description: Create an Access reusable policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Create an Access reusable policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Create an Access reusable policy
+      tags:
+        - Access reusable policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+  /accounts/{account_id}/access/policies/{policy_id}:
+    get:
+      description: Fetches a single Access reusable policy.
+      operationId: access-policies-get-an-access-reusable-policy
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_schemas-uuid'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_reusable-policies_components-schemas-single_response
+          description: Get an Access reusable policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Get an Access reusable policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Get an Access reusable policy
+      tags:
+        - Access reusable policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+        - 'Access: Apps and Policies Read'
+    put:
+      description: Updates a Access reusable policy.
+      operationId: access-policies-update-an-access-reusable-policy
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_schemas-uuid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/access_policy_req'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_reusable-policies_components-schemas-single_response
+          description: Update an Access reusable policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Update an Access reusable policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Update an Access reusable policy
+      tags:
+        - Access reusable policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+    delete:
+      description: Deletes an Access reusable policy.
+      operationId: access-policies-delete-an-access-reusable-policy
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_identifier'
+        - in: path
+          name: policy_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/access_schemas-uuid'
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/access_reusable-policies_components-schemas-id_response
+          description: Delete an Access reusable policy response.
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/access_api-response-common-failure'
+          description: Delete an Access reusable policy response failure.
+      security:
+        - api_email: []
+          api_key: []
+          api_token: []
+      summary: Delete an Access reusable policy
+      tags:
+        - Access reusable policies
+      x-api-token-group:
+        - 'Access: Apps and Policies Write'
+components:
+  schemas:
+    access_api-response-common-failure:
+      properties:
+        errors:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example:
+            - code: 7003
+              message: No route for the URI
+          minLength: 1
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/access_messages'
+          example: []
+        result:
+          enum:
+            - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+            - false
+          example: false
+          type: boolean
+      required:
+        - success
+        - errors
+        - messages
+        - result
+      type: object
+    access_identifier:
+      description: Identifier.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+      x-auditable: true
+    access_policy_req:
+      allOf:
+        - $ref: '#/components/schemas/access_base_policy_req'
+      properties:
+        approval_groups:
+          $ref: '#/components/schemas/access_approval_groups'
+        approval_required:
+          $ref: '#/components/schemas/access_approval_required'
+        isolation_required:
+          $ref: '#/components/schemas/access_isolation_required'
+        purpose_justification_prompt:
+          $ref: '#/components/schemas/access_purpose_justification_prompt'
+        purpose_justification_required:
+          $ref: '#/components/schemas/access_purpose_justification_required'
+        session_duration:
+          $ref: '#/components/schemas/access_components-schemas-session_duration'
+      type: object
+    access_reusable-policies_components-schemas-id_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              properties:
+                id:
+                  $ref: '#/components/schemas/access_schemas-uuid'
+              type: object
+      type: object
+    access_reusable-policies_components-schemas-response_collection:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-collection'
+        - properties:
+            result:
+              items:
+                $ref: '#/components/schemas/access_reusable_policy_resp'
+              type: array
+      type: object
+    access_reusable-policies_components-schemas-single_response:
+      allOf:
+        - $ref: '#/components/schemas/access_api-response-single'
+        - properties:
+            result:
+              $ref: '#/components/schemas/access_reusable_policy_resp'
+      type: object
+    access_schemas-uuid:
+      description: The UUID of the policy
+      example: f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+      maxLength: 36
+      type: string

@@ -1,0 +1,1207 @@
+openapi: 3.0.3
+info:
+  description: >-
+    Welcome to Cloudflare's API documentation site. We are experimenting with an
+    updated version of our API documentation - check out
+    [developers.cloudflare.com/api-next/](https://developers.cloudflare.com/api-next/)
+    to test out the new experience.
+
+
+    To get started using Cloudflare's products and services via the API, refer
+    to [how to interact with
+    Cloudflare](https://developers.cloudflare.com/fundamentals/basic-tasks/interact-with-cloudflare/),
+    which covers using tools like
+    [Terraform](https://developers.cloudflare.com/terraform/#cloudflare-terraform)
+    and the [official
+    SDKs](https://developers.cloudflare.com/fundamentals/api/reference/sdks/) to
+    maintain your Cloudflare resources.
+
+
+    Using the Cloudflare API requires authentication so that Cloudflare knows
+    who is making requests and what permissions you have. Create an API token to
+    grant access to the API to perform actions. You can also authenticate with
+    [API
+    keys](https://developers.cloudflare.com/fundamentals/api/get-started/keys/),
+    but these keys have [several
+    limitations](https://developers.cloudflare.com/fundamentals/api/get-started/keys/#limitations)
+    that make them less secure than API tokens. Whenever possible, use API
+    tokens to interact with the Cloudflare API.
+
+
+    To create an API token, from the Cloudflare dashboard, go to My Profile >
+    API Tokens and select Create Token. For more information on how to create
+    and troubleshoot API tokens, refer to
+
+    our [API fundamentals](https://developers.cloudflare.com/fundamentals/api/).
+
+
+    For information regarding rate limits, refer to our [API Rate
+    Limits](https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/platform/limits/#api-rate-limits).
+
+
+    Totally new to Cloudflare? [Start
+    here](https://developers.cloudflare.com/fundamentals/get-started/).
+  license:
+    name: BSD-3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  title: Cloudflare API
+  version: 4.0.0
+servers:
+  - description: Client API
+    url: https://api.cloudflare.com/client/v4
+paths:
+  /accounts/{account_id}/urlscanner/scan/{scan_id}:
+    get:
+      deprecated: true
+      description: Get URL scan by uuid
+      operationId: urlscanner-get-scan
+      parameters:
+        - description: Scan UUID.
+          in: path
+          name: scan_id
+          required: true
+          schema:
+            description: Scan UUID.
+            format: uuid
+            type: string
+        - description: Account ID.
+          in: path
+          name: account_id
+          required: true
+          schema:
+            description: Account ID.
+            type: string
+        - description: Whether to return full report (scan summary and network log).
+          in: query
+          name: full
+          schema:
+            description: Whether to return full report (scan summary and network log).
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        message:
+                          example: Error
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      properties:
+                        message:
+                          example: OK
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    properties:
+                      scan:
+                        properties:
+                          asns:
+                            description: >-
+                              Dictionary of Autonomous System Numbers where
+                              ASN's are the keys
+                            properties:
+                              asn:
+                                description: ASN's contacted
+                                properties:
+                                  asn:
+                                    example: '15133'
+                                    type: string
+                                  description:
+                                    example: EDGECAST
+                                    type: string
+                                  location_alpha2:
+                                    example: US
+                                    type: string
+                                  name:
+                                    example: EDGECAST
+                                    type: string
+                                  org_name:
+                                    example: Edgecast Inc.
+                                    type: string
+                                required:
+                                  - asn
+                                  - name
+                                  - description
+                                  - org_name
+                                  - location_alpha2
+                                type: object
+                            type: object
+                          certificates:
+                            items:
+                              properties:
+                                issuer:
+                                  type: string
+                                subjectName:
+                                  example: rkmod.somee.com
+                                  type: string
+                                validFrom:
+                                  example: 1682684400
+                                  type: number
+                                validTo:
+                                  example: 1696698000
+                                  type: number
+                              required:
+                                - issuer
+                                - subjectName
+                                - validFrom
+                                - validTo
+                              type: object
+                            type: array
+                          domains:
+                            properties:
+                              example.com:
+                                properties:
+                                  categories:
+                                    properties:
+                                      content:
+                                        items:
+                                          properties:
+                                            id:
+                                              type: integer
+                                            name:
+                                              example: Technology
+                                              type: string
+                                            super_category_id:
+                                              type: integer
+                                          required:
+                                            - id
+                                            - name
+                                          type: object
+                                        type: array
+                                      inherited:
+                                        properties:
+                                          content:
+                                            items:
+                                              properties:
+                                                id:
+                                                  type: integer
+                                                name:
+                                                  example: Technology
+                                                  type: string
+                                                super_category_id:
+                                                  type: integer
+                                              required:
+                                                - id
+                                                - name
+                                              type: object
+                                            type: array
+                                          from:
+                                            example: example.com
+                                            type: string
+                                          risks:
+                                            items:
+                                              properties:
+                                                id:
+                                                  type: integer
+                                                name:
+                                                  example: Technology
+                                                  type: string
+                                                super_category_id:
+                                                  type: integer
+                                              required:
+                                                - id
+                                                - name
+                                              type: object
+                                            type: array
+                                        type: object
+                                      risks:
+                                        items:
+                                          properties:
+                                            id:
+                                              type: integer
+                                            name:
+                                              example: Technology
+                                              type: string
+                                            super_category_id:
+                                              type: integer
+                                          required:
+                                            - id
+                                            - name
+                                          type: object
+                                        type: array
+                                    required:
+                                      - inherited
+                                    type: object
+                                  dns:
+                                    items:
+                                      properties:
+                                        address:
+                                          example: 93.184.216.34
+                                          type: string
+                                        dnssec_valid:
+                                          type: boolean
+                                        name:
+                                          example: example.com
+                                          type: string
+                                        type:
+                                          example: A
+                                          type: string
+                                      required:
+                                        - name
+                                        - address
+                                        - type
+                                        - dnssec_valid
+                                      type: object
+                                    type: array
+                                  name:
+                                    example: example.com
+                                    type: string
+                                  rank:
+                                    properties:
+                                      bucket:
+                                        example: '500'
+                                        type: string
+                                      name:
+                                        example: example.com
+                                        type: string
+                                      rank:
+                                        description: >-
+                                          Rank in the Global Radar Rank, if set.
+                                          See more at
+                                          https://blog.cloudflare.com/radar-domain-rankings/
+                                        type: integer
+                                    required:
+                                      - name
+                                      - bucket
+                                    type: object
+                                  type:
+                                    example: Apex domain
+                                    type: string
+                                required:
+                                  - name
+                                  - type
+                                  - categories
+                                  - dns
+                                  - rank
+                                type: object
+                            type: object
+                          geo:
+                            properties:
+                              continents:
+                                items:
+                                  description: GeoIP continent location
+                                  example: North America
+                                  type: string
+                                type: array
+                              locations:
+                                items:
+                                  description: GeoIP country location
+                                  example: US
+                                  type: string
+                                type: array
+                            required:
+                              - locations
+                              - continents
+                            type: object
+                          ips:
+                            properties:
+                              ip:
+                                properties:
+                                  asn:
+                                    example: '15133'
+                                    type: string
+                                  asnDescription:
+                                    example: EDGECAST
+                                    type: string
+                                  asnLocationAlpha2:
+                                    example: US
+                                    type: string
+                                  asnName:
+                                    example: EDGECAST
+                                    type: string
+                                  asnOrgName:
+                                    example: Edgecast Inc.
+                                    type: string
+                                  continent:
+                                    example: North America
+                                    type: string
+                                  geonameId:
+                                    example: '6252001'
+                                    type: string
+                                  ip:
+                                    example: 2606:2800:220:1:248:1893:25c8:1946
+                                    type: string
+                                  ipVersion:
+                                    example: IPv6
+                                    type: string
+                                  latitude:
+                                    example: '39.76'
+                                    type: string
+                                  locationAlpha2:
+                                    example: US
+                                    type: string
+                                  locationName:
+                                    example: United States
+                                    type: string
+                                  longitude:
+                                    example: '-98.5'
+                                    type: string
+                                  subdivision1Name:
+                                    type: string
+                                  subdivision2Name:
+                                    type: string
+                                required:
+                                  - ip
+                                  - ipVersion
+                                  - locationAlpha2
+                                  - locationName
+                                  - subdivision1Name
+                                  - subdivision2Name
+                                  - latitude
+                                  - longitude
+                                  - continent
+                                  - geonameId
+                                  - asn
+                                  - asnName
+                                  - asnOrgName
+                                  - asnDescription
+                                  - asnLocationAlpha2
+                                type: object
+                            type: object
+                          links:
+                            properties:
+                              link:
+                                properties:
+                                  href:
+                                    description: Outgoing link detected in the DOM
+                                    example: https://www.iana.org/domains/example
+                                    type: string
+                                  text:
+                                    example: More information...
+                                    type: string
+                                required:
+                                  - href
+                                  - text
+                                type: object
+                            type: object
+                          meta:
+                            properties:
+                              processors:
+                                properties:
+                                  categories:
+                                    properties:
+                                      content:
+                                        items:
+                                          properties:
+                                            id:
+                                              example: 155
+                                              type: integer
+                                            name:
+                                              example: Technology
+                                              type: string
+                                            super_category_id:
+                                              type: integer
+                                          required:
+                                            - id
+                                            - name
+                                          type: object
+                                        type: array
+                                      risks:
+                                        items:
+                                          properties:
+                                            id:
+                                              example: 17
+                                              type: integer
+                                            name:
+                                              example: Newly Seen Domains
+                                              type: string
+                                            super_category_id:
+                                              example: 32
+                                              type: integer
+                                          required:
+                                            - id
+                                            - super_category_id
+                                            - name
+                                          type: object
+                                        type: array
+                                    required:
+                                      - content
+                                      - risks
+                                    type: object
+                                  phishing:
+                                    items:
+                                      example: CredentialHarvester
+                                      type: string
+                                    type: array
+                                  rank:
+                                    properties:
+                                      bucket:
+                                        example: '500'
+                                        type: string
+                                      name:
+                                        example: example.com
+                                        type: string
+                                      rank:
+                                        description: >-
+                                          Rank in the Global Radar Rank, if set.
+                                          See more at
+                                          https://blog.cloudflare.com/radar-domain-rankings/
+                                        type: integer
+                                    required:
+                                      - name
+                                      - bucket
+                                    type: object
+                                  tech:
+                                    items:
+                                      properties:
+                                        categories:
+                                          items:
+                                            properties:
+                                              groups:
+                                                items:
+                                                  type: integer
+                                                type: array
+                                              id:
+                                                example: 63
+                                                type: integer
+                                              name:
+                                                example: IAAS
+                                                type: string
+                                              priority:
+                                                example: 8
+                                                type: integer
+                                              slug:
+                                                example: iaas
+                                                type: string
+                                            required:
+                                              - id
+                                              - slug
+                                              - groups
+                                              - name
+                                              - priority
+                                            type: object
+                                          type: array
+                                        confidence:
+                                          example: 100
+                                          type: integer
+                                        description:
+                                          type: string
+                                        evidence:
+                                          properties:
+                                            impliedBy:
+                                              items:
+                                                type: string
+                                              type: array
+                                            patterns:
+                                              items:
+                                                properties:
+                                                  confidence:
+                                                    example: 100
+                                                    type: integer
+                                                  excludes:
+                                                    items:
+                                                      type: string
+                                                    type: array
+                                                  implies:
+                                                    items:
+                                                      type: string
+                                                    type: array
+                                                  match:
+                                                    example: ECS
+                                                    type: string
+                                                  name:
+                                                    description: Header or Cookie name when set
+                                                    example: server
+                                                    type: string
+                                                  regex:
+                                                    example: ^ECS
+                                                    type: string
+                                                  type:
+                                                    example: headers
+                                                    type: string
+                                                  value:
+                                                    example: ECS (dcb/7EEE)
+                                                    type: string
+                                                  version:
+                                                    type: string
+                                                required:
+                                                  - type
+                                                  - regex
+                                                  - value
+                                                  - match
+                                                  - name
+                                                  - confidence
+                                                  - version
+                                                  - implies
+                                                  - excludes
+                                                type: object
+                                              type: array
+                                          required:
+                                            - patterns
+                                            - impliedBy
+                                          type: object
+                                        icon:
+                                          example: Amazon ECS.svg
+                                          type: string
+                                        name:
+                                          example: Amazon ECS
+                                          type: string
+                                        slug:
+                                          example: amazon-ecs
+                                          type: string
+                                        website:
+                                          example: https://aws.amazon.com/ecs/
+                                          type: string
+                                      required:
+                                        - name
+                                        - slug
+                                        - categories
+                                        - confidence
+                                        - icon
+                                        - website
+                                        - evidence
+                                      type: object
+                                    type: array
+                                required:
+                                  - tech
+                                  - categories
+                                  - rank
+                                  - phishing
+                                type: object
+                            required:
+                              - processors
+                            type: object
+                          page:
+                            properties:
+                              asn:
+                                example: '15133'
+                                type: string
+                              asnLocationAlpha2:
+                                example: US
+                                type: string
+                              asnname:
+                                example: EDGECAST
+                                type: string
+                              console:
+                                items:
+                                  properties:
+                                    category:
+                                      example: network
+                                      type: string
+                                    text:
+                                      example: >-
+                                        Failed to load resource: the server
+                                        responded with a status of 404 (Not
+                                        Found)
+                                      type: string
+                                    type:
+                                      example: error
+                                      type: string
+                                    url:
+                                      example: http://example.com/favicon.ico
+                                      type: string
+                                  required:
+                                    - type
+                                    - text
+                                    - category
+                                  type: object
+                                type: array
+                              cookies:
+                                items:
+                                  properties:
+                                    domain:
+                                      example: rkmod.somee.com
+                                      type: string
+                                    expires:
+                                      example: -1
+                                      type: number
+                                    httpOnly:
+                                      type: boolean
+                                    name:
+                                      example: b
+                                      type: string
+                                    path:
+                                      example: /
+                                      type: string
+                                    priority:
+                                      example: Medium
+                                      type: string
+                                    sameParty:
+                                      type: boolean
+                                    secure:
+                                      type: boolean
+                                    session:
+                                      example: true
+                                      type: boolean
+                                    size:
+                                      example: 2
+                                      type: number
+                                    sourcePort:
+                                      example: 443
+                                      type: number
+                                    sourceScheme:
+                                      example: Secure
+                                      type: string
+                                    value:
+                                      example: b
+                                      type: string
+                                  required:
+                                    - name
+                                    - value
+                                    - domain
+                                    - path
+                                    - expires
+                                    - size
+                                    - httpOnly
+                                    - secure
+                                    - session
+                                    - sameParty
+                                    - sourceScheme
+                                    - sourcePort
+                                  type: object
+                                type: array
+                              country:
+                                example: United States
+                                type: string
+                              countryLocationAlpha2:
+                                example: US
+                                type: string
+                              domain:
+                                example: example.com
+                                type: string
+                              headers:
+                                items:
+                                  properties:
+                                    name:
+                                      example: Content-Length
+                                      type: string
+                                    value:
+                                      example: '648'
+                                      type: string
+                                  required:
+                                    - name
+                                    - value
+                                  type: object
+                                type: array
+                              ip:
+                                example: 2606:2800:220:1:248:1893:25c8:1946
+                                type: string
+                              js:
+                                properties:
+                                  variables:
+                                    items:
+                                      properties:
+                                        name:
+                                          example: checkFrame
+                                          type: string
+                                        type:
+                                          example: string
+                                          type: string
+                                      required:
+                                        - name
+                                        - type
+                                      type: object
+                                    type: array
+                                required:
+                                  - variables
+                                type: object
+                              securityViolations:
+                                items:
+                                  properties:
+                                    category:
+                                      example: csp
+                                      type: string
+                                    text:
+                                      example: >-
+                                        [Report Only] Refused to load the
+                                        stylesheet
+                                        'https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css'
+                                        because it violates the following
+                                        Content Security Policy directive: ... 
+                                      type: string
+                                    url:
+                                      example: http://example.com/
+                                      type: string
+                                  required:
+                                    - text
+                                    - category
+                                    - url
+                                  type: object
+                                type: array
+                              status:
+                                example: 200
+                                type: number
+                              subdivision1Name:
+                                type: string
+                              subdivision2name:
+                                type: string
+                              url:
+                                example: http://example.com/
+                                type: string
+                            required:
+                              - url
+                              - domain
+                              - country
+                              - countryLocationAlpha2
+                              - subdivision1Name
+                              - subdivision2name
+                              - ip
+                              - asn
+                              - asnname
+                              - asnLocationAlpha2
+                              - cookies
+                              - headers
+                              - status
+                              - js
+                              - console
+                              - securityViolations
+                            type: object
+                          performance:
+                            items:
+                              properties:
+                                connectEnd:
+                                  example: 82.59999999403954
+                                  type: number
+                                connectStart:
+                                  example: 72.79999999701977
+                                  type: number
+                                decodedBodySize:
+                                  example: 1256
+                                  type: number
+                                domComplete:
+                                  example: 306
+                                  type: number
+                                domContentLoadedEventEnd:
+                                  example: 305.8999999910593
+                                  type: number
+                                domContentLoadedEventStart:
+                                  example: 305.8999999910593
+                                  type: number
+                                domInteractive:
+                                  example: 305.8999999910593
+                                  type: number
+                                domainLookupEnd:
+                                  example: 72.79999999701977
+                                  type: number
+                                domainLookupStart:
+                                  example: 2.199999988079071
+                                  type: number
+                                duration:
+                                  example: 306
+                                  type: number
+                                encodedBodySize:
+                                  example: 648
+                                  type: number
+                                entryType:
+                                  example: navigation
+                                  type: string
+                                fetchStart:
+                                  example: 0.8999999910593033
+                                  type: number
+                                initiatorType:
+                                  example: navigation
+                                  type: string
+                                loadEventEnd:
+                                  example: 306
+                                  type: number
+                                loadEventStart:
+                                  example: 306
+                                  type: number
+                                name:
+                                  example: http://example.com/
+                                  type: string
+                                nextHopProtocol:
+                                  example: http/1.1
+                                  type: string
+                                redirectCount:
+                                  type: number
+                                redirectEnd:
+                                  type: number
+                                redirectStart:
+                                  type: number
+                                requestStart:
+                                  example: 82.69999998807907
+                                  type: number
+                                responseEnd:
+                                  example: 270.8999999910593
+                                  type: number
+                                responseStart:
+                                  example: 265.69999998807907
+                                  type: number
+                                secureConnectionStart:
+                                  type: number
+                                startTime:
+                                  type: number
+                                transferSize:
+                                  example: 948
+                                  type: number
+                                type:
+                                  example: navigate
+                                  type: string
+                                unloadEventEnd:
+                                  type: number
+                                unloadEventStart:
+                                  type: number
+                                workerStart:
+                                  type: number
+                              required:
+                                - name
+                                - entryType
+                                - startTime
+                                - duration
+                                - initiatorType
+                                - nextHopProtocol
+                                - workerStart
+                                - redirectStart
+                                - redirectEnd
+                                - fetchStart
+                                - domainLookupStart
+                                - domainLookupEnd
+                                - connectStart
+                                - connectEnd
+                                - secureConnectionStart
+                                - requestStart
+                                - responseStart
+                                - responseEnd
+                                - transferSize
+                                - encodedBodySize
+                                - decodedBodySize
+                                - unloadEventStart
+                                - unloadEventEnd
+                                - domInteractive
+                                - domContentLoadedEventStart
+                                - domContentLoadedEventEnd
+                                - domComplete
+                                - loadEventStart
+                                - loadEventEnd
+                                - type
+                                - redirectCount
+                              type: object
+                            type: array
+                          task:
+                            properties:
+                              clientLocation:
+                                description: Submitter location
+                                example: PT
+                                type: string
+                              clientType:
+                                enum:
+                                  - Site
+                                  - Automatic
+                                  - Api
+                                type: string
+                              effectiveUrl:
+                                description: >-
+                                  URL of the primary request, after all HTTP
+                                  redirects
+                                example: http://example.com/
+                                type: string
+                              errors:
+                                items:
+                                  properties:
+                                    message:
+                                      type: string
+                                  required:
+                                    - message
+                                  type: object
+                                type: array
+                              scannedFrom:
+                                properties:
+                                  colo:
+                                    description: IATA code of Cloudflare datacenter
+                                    example: MAD
+                                    type: string
+                                required:
+                                  - colo
+                                type: object
+                              status:
+                                enum:
+                                  - Queued
+                                  - InProgress
+                                  - InPostProcessing
+                                  - Finished
+                                type: string
+                              success:
+                                example: true
+                                type: boolean
+                              time:
+                                example: '2023-05-03T17:05:04.843Z'
+                                type: string
+                              timeEnd:
+                                example: '2023-05-03T17:05:19.374Z'
+                                type: string
+                              url:
+                                description: Submitted URL
+                                example: http://example.com
+                                type: string
+                              uuid:
+                                description: Scan ID
+                                example: 2ee568d0-bf70-4827-b922-b7088c0f056f
+                                type: string
+                              visibility:
+                                enum:
+                                  - Public
+                                  - Unlisted
+                                type: string
+                            required:
+                              - uuid
+                              - url
+                              - status
+                              - success
+                              - errors
+                              - time
+                              - timeEnd
+                              - visibility
+                              - clientLocation
+                              - clientType
+                              - effectiveUrl
+                              - scannedFrom
+                            type: object
+                          verdicts:
+                            properties:
+                              overall:
+                                properties:
+                                  categories:
+                                    items:
+                                      properties:
+                                        id:
+                                          example: 117
+                                          type: number
+                                        name:
+                                          example: Malware
+                                          type: string
+                                        super_category_id:
+                                          example: 32
+                                          type: number
+                                      required:
+                                        - id
+                                        - super_category_id
+                                        - name
+                                      type: object
+                                    type: array
+                                  malicious:
+                                    description: >-
+                                      At least one of our subsystems marked the
+                                      site as potentially malicious at the time
+                                      of the scan.
+                                    example: true
+                                    type: boolean
+                                  phishing:
+                                    items:
+                                      example: Credential Harvester
+                                      type: string
+                                    type: array
+                                required:
+                                  - malicious
+                                  - categories
+                                  - phishing
+                                type: object
+                            required:
+                              - overall
+                            type: object
+                        required:
+                          - task
+                          - meta
+                          - page
+                          - geo
+                          - certificates
+                          - performance
+                          - verdicts
+                        type: object
+                    required:
+                      - scan
+                    type: object
+                  success:
+                    description: Whether request was successful or not
+                    type: boolean
+                required:
+                  - messages
+                  - errors
+                  - success
+                  - result
+                type: object
+          description: Scan has finished. It may or may not have been successful.
+        '202':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        message:
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      properties:
+                        message:
+                          example: In Progress
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  result:
+                    properties:
+                      scan:
+                        properties:
+                          task:
+                            properties:
+                              effectiveUrl:
+                                example: http://example.com/
+                                type: string
+                              errors:
+                                items:
+                                  properties:
+                                    message:
+                                      type: string
+                                  required:
+                                    - message
+                                  type: object
+                                type: array
+                              location:
+                                example: PT
+                                type: string
+                              region:
+                                example: enam
+                                type: string
+                              status:
+                                example: InProgress
+                                type: string
+                              success:
+                                example: true
+                                type: boolean
+                              time:
+                                example: '2023-05-03T17:05:04.843Z'
+                                type: string
+                              url:
+                                example: http://example.com
+                                type: string
+                              uuid:
+                                example: 2ee568d0-bf70-4827-b922-b7088c0f056f
+                                type: string
+                              visibility:
+                                example: Public
+                                type: string
+                            required:
+                              - uuid
+                              - url
+                              - status
+                              - success
+                              - errors
+                              - time
+                              - visibility
+                              - location
+                              - region
+                              - effectiveUrl
+                            type: object
+                        required:
+                          - task
+                        type: object
+                    required:
+                      - scan
+                    type: object
+                  success:
+                    description: Whether request was successful or not
+                    type: boolean
+                required:
+                  - messages
+                  - errors
+                  - success
+                  - result
+                type: object
+          description: >-
+            Scan is in progress. Check current status in
+            `result.scan.task.status`. Possible statuses:
+            `Queued`,`InProgress`,`InPostProcessing`,`Finished`.
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        message:
+                          example: Scan ID is not a valid UUID.
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      properties:
+                        message:
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  success:
+                    description: Whether request was successful or not
+                    type: boolean
+                required:
+                  - messages
+                  - errors
+                  - success
+                type: object
+          description: Invalid params.
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    items:
+                      properties:
+                        message:
+                          example: Scan not found.
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  messages:
+                    items:
+                      properties:
+                        message:
+                          type: string
+                      required:
+                        - message
+                      type: object
+                    type: array
+                  success:
+                    description: Whether request was successful or not
+                    type: boolean
+                required:
+                  - messages
+                  - errors
+                  - success
+                type: object
+          description: Scan not found.
+      security:
+        - api_token: []
+        - api_email: []
+          api_key: []
+      summary: Get URL scan
+      tags:
+        - URL Scanner (Deprecated)
+      x-api-token-group:
+        - URL Scanner Write
+        - URL Scanner Read
+      x-cfPlanAvailability:
+        business: true
+        enterprise: true
+        free: true
+        pro: true
+      x-stainless-deprecation-message: >-
+        Use
+        [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/get/)
+        instead.
